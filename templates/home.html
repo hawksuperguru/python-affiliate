@@ -1,0 +1,471 @@
+{% extends 'layout.html' %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+      {{message}}
+      </div>
+    {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <section class="content-header">
+    <h1>
+      WELCOME
+      <small>to AFFILIATE ADMIN!</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Dashboard</li>
+    </ol>
+  </section>
+  <section>
+  <div class="col-xs-12">
+  <div class="panel panel-default" style="margin-top: 50px;">
+    <div class="panel-heading">
+      <h1 class="panel-title alert alert-info alert-dismissible">Summary</h1>
+    </div>
+    <section class="content">
+      <div class="panel-body">
+        <div class="box">
+          <div class="box-body">
+            <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="dataTables_length" id="example1_length">
+                    <label>Show&nbsp;&nbsp;&nbsp;
+                    <select name="example1_length" aria-controls="example1" class="form-control input-sm">
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                    </select>
+                    entires  
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div id="example1_filter" class="dataTables_filter">
+                    <label>Search:&nbsp;&nbsp;&nbsp;
+                      <input type="search" class="form-control input-sm" aria-controls="example1" placeholder="Search">
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th>No</th>
+                        <th>Site</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Position on betfy</th>
+                        <th>Googel Analytics Clicks</th>
+                        <th>Clicks</th>
+                        <th>Signups</th>
+                        <th># of paying signups</th>
+                        <th>Comissions</th>
+                        <th>currency</th>
+                        <th>position</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="text-align: center;">
+                        <th scope="row">1</th>
+                        <td>BET365</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[0].total}}</td>
+                        <td>Dollar</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">2</th>
+                        <td>888</td>
+                        <td>5/31/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[1].click}}</td>
+                        <td>{{data[1].registration}}</td>
+                        <td></td>
+                        <td>{{data[1].balance}}</td>
+                        <td>Dollar</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">3</th>
+                        <td>10BET</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[2].click}}</td>
+                        <td>{{data[2].registration}}</td>
+                        <td></td>
+                        <td>{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
+                        <td>EURO</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">4</th>
+                        <td>REAL DEAL DATA</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[3].click}}</td>
+                        <td>{{data[3].registration}}</td>
+                        <td></td>
+                        <td>{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
+                        <td>EURO</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">5</th>
+                        <td>SYEBET</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[13].click}}</td>
+                        <td>{{data[13].registration}}</td>
+                        <td></td>
+                        <td>{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
+                        <td>GBP</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">6</th>
+                        <td>WILLIAM HILL</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                        <td>EURO</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">7</th>
+                        <td>LADBROKES</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
+                        <td>GBP</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">8</th>
+                        <td>BET VICTOR</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">9</th>
+                        <td>PADDY POWER</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
+                        <td>EURO</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">10</th>
+                        <td>NETBET</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>???</td>
+                        <td>EURO</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">11</th>
+                        <td>TITANBET</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[7].balance}}</td>
+                        <td>Dollar</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">12</th>
+                        <td>STAN JAMES</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[8].click}}</td>
+                        <td>{{data[8].registration}}</td>
+                        <td></td>
+                        <td>{{data[8].commission}}</td>
+                        <td>Dollar</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">13</th>
+                        <td>CORAL</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[9].click}}</td>
+                        <td>{{data[9].registration}}</td>
+                        <td></td>
+                        <td>{{data[9].commission}}</td>
+                        <td>Dollar</td>
+                        <td></td>
+                      </tr>
+                      <tr style="text-align: center;">
+                        <th scope="row">14</th>
+                        <td>BETFRED</td>
+                        <td>6/1/2017</td>
+                        <td>6/30/2017</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{data[5].click}}</td>
+                        <td>{{data[5].registration}}</td>
+                        <td></td>
+                        <td>{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
+                        <td>GBP</td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+    </div>
+  </div>
+  </section>
+  <section class="content">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>BET365</h3>
+              <p>{{data[0].total}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ url_for('bet365') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>888</h3>
+              <p>{{data[1].balance}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="{{ url_for('eight88') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>10BET</h3>
+              <p>{{(data[2].commission * data[10])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="{{ url_for('bet10') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3>REAL DEAL BET</h3>
+              <p>{{(data[3].commission * data[10])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="{{ url_for('realDeal') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>SKYBET</h3>
+              <p>{{(data[13].commission * data[11])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ url_for('skyBet') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>WILLIAM HILL</h3>
+              <p>{{(data[12].balance * data[10])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="{{ url_for('william') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>LADBROKES</h3>
+              <p>{{(data[4].balance * data[11])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="{{ url_for('ladBroke') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3>BETFRED</h3>
+              <p>{{(data[5].commission * data[11])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="{{ url_for('betFred') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>BET VICTOR</h3>
+              <p>???</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ url_for('victor') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>PADDY POWER</h3>
+              <p>{{(data[6].balance * data[10])|round(2, 'floor')}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="{{ url_for('paddy') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>NETBET</h3>
+              <p>???</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="{{ url_for('netBet') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3>TITANBET</h3>
+              <p>{{data[7].balance}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="{{ url_for('titanBet') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>STAN JAMES</h3>
+              <p>{{data[8].commission}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ url_for('stan') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>CORAL</h3>
+              <p>{{data[9].commission}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="{{ url_for('coral') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+      </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block aside %}
+  {% include 'aside.html' %}
+{% endblock %}

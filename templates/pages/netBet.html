@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+	<section class="content-header">
+    <h1>
+      <small>WELCOME to</small>
+      NETBET
+      <small>!</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Dashboard</li>
+    </ol>
+  </section>
+
+  <div class="panel panel-default" style="margin-top: 50px;">
+    <div class="panel-heading">
+      <h1 class="panel-title alert alert-info alert-dismissible">BALANCE :</h1>
+    </div>
+
+    <div class="panel-body">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  balance :
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+              <div class="panel-body">
+                {{ data.balance }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block aside %}
+  {% include 'aside.html' %}
+{% endblock %}

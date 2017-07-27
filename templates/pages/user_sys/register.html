@@ -1,0 +1,57 @@
+{% extends 'pages/user_sys/login.html' %}
+
+<!-- pip install flask-wtf -->
+{% block content %}
+<div class="content-wrapper">
+	<section class="content-header">
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Register</h3>
+    </div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {{message}}
+        </div>
+      {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form data-toggle="validator" role="form" action="" method="post">
+      <div class="box-body">
+        <div class="form-group">
+          <label for="username" class="control-label">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Enter Username" value="{{ request.form.username }}" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="email" class="control-label">Email address</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter email" data-error="Hey, that email address is invalid" value="{{ request.form.email }}" name="email" required>
+          <div class="help-block with-errors"></div>
+        </div>
+        <div class="form-group">
+          <label for="password" class="control-label">Password</label>
+          <div class="form-group">
+            <input type="password" data-minlength="2" class="form-control" id="password" placeholder="Password" value="{{ request.form.password }}" name="password" required>
+            <div class="help-block">Minimum of 2 characters</div>
+          </div>
+          <label for="password" class="control-label">Confirm Password</label>
+          <div class="form-group">
+            <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#password" data-match-error="Whoops, these don't match" placeholder="Confirm" required>
+            <div class="help-block with-errors"></div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+	</section>
+</div>
+{% endblock %}
+
+{% block aside %}
+  {% include 'aside.html' %}
+{% endblock %}
