@@ -66,221 +66,235 @@
               <div class="row">
                 <div class="col-sm-12">
                   <table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                    <thead>
-                      <tr style="text-align: center;">
-                        <th>No</th>
-                        <th>Site</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th>Position on betfy</th>
-                        <th>Googel Analytics Clicks</th>
-                        <th>Clicks</th>
-                        <th>Signups</th>
-                        <th># of paying signups</th>
-                        <th>Comissions</th>
-                        <th>currency</th>
-                        <th>position</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="text-align: center;">
-                        <th scope="row">1</th>
-                        <td>BET365</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[0].total}}</td>
-                        <td>Dollar</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">2</th>
-                        <td>888</td>
-                        <td>5/31/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[1].click}}</td>
-                        <td>{{data[1].registration}}</td>
-                        <td></td>
-                        <td>{{data[1].balance}}</td>
-                        <td>Dollar</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">3</th>
-                        <td>10BET</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[2].click}}</td>
-                        <td>{{data[2].registration}}</td>
-                        <td></td>
-                        <td>{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
-                        <td>EURO</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">4</th>
-                        <td>REAL DEAL DATA</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[3].click}}</td>
-                        <td>{{data[3].registration}}</td>
-                        <td></td>
-                        <td>{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
-                        <td>EURO</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">5</th>
-                        <td>SYEBET</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[13].click}}</td>
-                        <td>{{data[13].registration}}</td>
-                        <td></td>
-                        <td>{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
-                        <td>GBP</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">6</th>
-                        <td>WILLIAM HILL</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
-                        <td>EURO</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">7</th>
-                        <td>LADBROKES</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
-                        <td>GBP</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">8</th>
-                        <td>BET VICTOR</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">9</th>
-                        <td>PADDY POWER</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
-                        <td>EURO</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">10</th>
-                        <td>NETBET</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>???</td>
-                        <td>EURO</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">11</th>
-                        <td>TITANBET</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[7].balance}}</td>
-                        <td>Dollar</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">12</th>
-                        <td>STAN JAMES</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[8].click}}</td>
-                        <td>{{data[8].registration}}</td>
-                        <td></td>
-                        <td>{{data[8].commission}}</td>
-                        <td>Dollar</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">13</th>
-                        <td>CORAL</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[9].click}}</td>
-                        <td>{{data[9].registration}}</td>
-                        <td></td>
-                        <td>{{data[9].commission}}</td>
-                        <td>Dollar</td>
-                        <td></td>
-                      </tr>
-                      <tr style="text-align: center;">
-                        <th scope="row">14</th>
-                        <td>BETFRED</td>
-                        <td>6/1/2017</td>
-                        <td>6/30/2017</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{data[5].click}}</td>
-                        <td>{{data[5].registration}}</td>
-                        <td></td>
-                        <td>{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
-                        <td>GBP</td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <thead>
+                    <tr style="text-align: center;">
+                      <th>No</th>
+                      <th>Site</th>
+                      <th>Start date</th>
+                      <th>End date</th>
+                      <th>Position on betfy</th>
+                      <th>Googel Analytics Clicks</th>
+                      <th>Clicks</th>
+                      <th>Signups</th>
+                      <th># of paying signups</th>
+                      <th>Comissions</th>
+                      <th>currency</th>
+                      <th>position</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr style="text-align: center;">
+                      <th scope="row">1</th>
+                      <td>BET365 STATUS</td>
+                      <td>{{data[0].fromDate}}</td>
+                      <td>{{data[0].toDate}}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[0].balance * 100}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">2</th>
+                      <td>BET365</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[0].total}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">3</th>
+                      <td>888</td>
+                      <td>5/31/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[1].click}}</td>
+                      <td>{{data[1].registration}}</td>
+                      <td></td>
+                      <td>{{data[1].balance}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">4</th>
+                      <td>10BET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[2].click}}</td>
+                      <td>{{data[2].registration}}</td>
+                      <td></td>
+                      <td>{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
+                      <td>EURO</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">5</th>
+                      <td>REAL DEAL DATA</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[3].click}}</td>
+                      <td>{{data[3].registration}}</td>
+                      <td></td>
+                      <td>{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
+                      <td>EURO</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">6</th>
+                      <td>SYEBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[13].click}}</td>
+                      <td>{{data[13].registration}}</td>
+                      <td></td>
+                      <td>{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
+                      <td>GBP</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">7</th>
+                      <td>WILLIAM HILL</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                      <td>EURO</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">8</th>
+                      <td>LADBROKES</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
+                      <td>GBP</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">9</th>
+                      <td>BET VICTOR</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">10</th>
+                      <td>PADDY POWER</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
+                      <td>EURO</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">11</th>
+                      <td>NETBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[14].balance}}</td>
+                      <td>EURO</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">12</th>
+                      <td>TITANBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[7].balance}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">13</th>
+                      <td>STAN JAMES</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[8].click}}</td>
+                      <td>{{data[8].registration}}</td>
+                      <td></td>
+                      <td>{{data[8].commission}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">14</th>
+                      <td>CORAL</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[9].click}}</td>
+                      <td>{{data[9].registration}}</td>
+                      <td></td>
+                      <td>{{data[9].commission}}</td>
+                      <td>Dollar</td>
+                      <td></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th scope="row">14</th>
+                      <td>BETFRED</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[5].click}}</td>
+                      <td>{{data[5].registration}}</td>
+                      <td></td>
+                      <td>{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
+                      <td>GBP</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
                 </div>
               </div>
             </div>
@@ -293,6 +307,18 @@
   </section>
   <section class="content">
     <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>BET365</h3>
+              <p>{{data[15].balance * 100}}</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ url_for('bet365') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
         <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-aqua">
             <div class="inner">
@@ -417,7 +443,7 @@
           <div class="small-box bg-yellow">
             <div class="inner">
               <h3>NETBET</h3>
-              <p>???</p>
+              <p>{{data[14].balance}}</p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
