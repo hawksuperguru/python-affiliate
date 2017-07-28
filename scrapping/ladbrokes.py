@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 from sqlalchemy import create_engine
 import psycopg2
-import os, re
+import os, re, time
 
 
 def ladbrokes_scrapping():
