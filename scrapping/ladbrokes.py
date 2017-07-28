@@ -21,7 +21,7 @@ def ladbrokes_scrapping():
                 Ladbrokes.set_window_size(1120, 550)
                 Ladbrokes.get("http://www.ladbrokespartners.com")
                 Ladbrokes.find_element_by_class_name("top-login-link").click()
-                Netbet.implicitly_wait(10)
+                Ladbrokes.implicitly_wait(10)
                 time.sleep(5)
                 Ladbrokes.find_element_by_id("loginusername").send_keys("betfyuk")
                 time.sleep(2)
@@ -30,8 +30,6 @@ def ladbrokes_scrapping():
                 pwd = Ladbrokes.find_element_by_id("loginPassword")
                 pwd.send_keys(Keys.RETURN)
                 waiter = wait(Ladbrokes, 15)
-                uniSign = unicode("£", encoding='utf-8')
-                waiter.until(EC.text_to_be_present_in_element((By.XPATH, "//div[@ng-bind='currentEarning']"), uniSign))
                 currentEaring = Ladbrokes.find_element_by_xpath('//div[@ng-bind="currentEarning"]').text
                 pattern = re.compile(r'[\d\.\d]+')
                 tmp = pattern.search(currentEaring)
