@@ -3,7 +3,7 @@ import json, gc
 from functools import wraps
 from passlib.handlers.sha2_crypt import sha256_crypt
 from flask_sqlalchemy import SQLAlchemy
-from forex_python.converter import CurrencyRates
+from forex_python.converter import CurrencyRates, CurrencyCodes
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
@@ -344,10 +344,17 @@ def dashboard():
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
 
     currency = CurrencyRates()
+    sg_cur = CurrencyCodes()
     eur = float(currency.get_rate('EUR', 'USD'))
     gbp = float(currency.get_rate('GBP', 'USD'))
 
-    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other]
+    sg_usd = sg_cur.get_symbol('USD')
+    sg_eur = sg_cur.get_symbol('EUR')
+    sg_gbp = sg_cur.get_symbol('GBP')
+
+    valSg = [sg_usd, sg_eur, sg_gbp]
+
+    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
     return render_template('home.html', data = data)
 
 
@@ -370,11 +377,17 @@ def summary():
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
 
     currency = CurrencyRates()
+    sg_cur = CurrencyCodes()
     eur = float(currency.get_rate('EUR', 'USD'))
     gbp = float(currency.get_rate('GBP', 'USD'))
-    # sg_gbp = currency.get_symbol('GBP')
 
-    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, "$$"]
+    sg_usd = sg_cur.get_symbol('USD')
+    sg_eur = sg_cur.get_symbol('EUR')
+    sg_gbp = sg_cur.get_symbol('GBP')
+
+    valSg = [sg_usd, sg_eur, sg_gbp]
+
+    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
 
     return render_template('pages/summary.html', data = data)
 
