@@ -346,7 +346,7 @@ def dashboard():
     currency = CurrencyRates()
     eur = float(currency.get_rate('EUR', 'USD'))
     gbp = float(currency.get_rate('GBP', 'USD'))
-    
+
     data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other]
     return render_template('home.html', data = data)
 
@@ -372,8 +372,9 @@ def summary():
     currency = CurrencyRates()
     eur = float(currency.get_rate('EUR', 'USD'))
     gbp = float(currency.get_rate('GBP', 'USD'))
+    sg_gbp = currency.get_symbol('GBP')
 
-    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other]
+    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, sg_gbp]
 
     return render_template('pages/summary.html', data = data)
 
