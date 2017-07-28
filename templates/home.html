@@ -78,24 +78,24 @@
                       <th>Signups</th>
                       <th># of paying signups</th>
                       <th>Comissions</th>
-                      <th>currency</th>
-                      <th>position</th>
+                      <th>Currency</th>
+                      <th>Dollars</th>
                     </tr>
                   </thead>
                   <tbody>
                   <tr style="text-align: center;">
                       <th scope="row">1</th>
                       <td>BET365 STATUS</td>
-                      <td>{{data[0].fromDate}}</td>
-                      <td>{{data[0].toDate}}</td>
+                      <td>{{data[15].fromdate}}</td>
+                      <td>{{data[15].todate}}</td>
                       <td></td>
                       <td></td>
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[0].balance * 100}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[15].balance * 100}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[15].balance * 100}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">2</th>
@@ -108,8 +108,8 @@
                       <td></td>
                       <td></td>
                       <td>{{data[0].total}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[0].total}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">3</th>
@@ -122,8 +122,8 @@
                       <td>{{data[1].registration}}</td>
                       <td></td>
                       <td>{{data[1].balance}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[1].balance}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">4</th>
@@ -135,9 +135,9 @@
                       <td>{{data[2].click}}</td>
                       <td>{{data[2].registration}}</td>
                       <td></td>
+                      <td>{{data[2].commission}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td>{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
-                      <td>EURO</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">5</th>
@@ -149,9 +149,9 @@
                       <td>{{data[3].click}}</td>
                       <td>{{data[3].registration}}</td>
                       <td></td>
+                      <td>{{data[3].commission}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td>{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
-                      <td>EURO</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">6</th>
@@ -163,9 +163,9 @@
                       <td>{{data[13].click}}</td>
                       <td>{{data[13].registration}}</td>
                       <td></td>
+                      <td>{{data[13].commission}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td>{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
-                      <td>GBP</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">7</th>
@@ -177,9 +177,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td>{{data[12].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td>{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
-                      <td>EURO</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">8</th>
@@ -191,9 +191,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td>{{data[4].balance}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td>{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
-                      <td>GBP</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">9</th>
@@ -219,9 +219,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td>{{data[6].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td>{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
-                      <td>EURO</td>
-                      <td></td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">11</th>
@@ -234,8 +234,8 @@
                       <td></td>
                       <td></td>
                       <td>{{data[14].balance}}</td>
-                      <td>EURO</td>
-                      <td></td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td>{{(data[14].balance * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">12</th>
@@ -248,8 +248,8 @@
                       <td></td>
                       <td></td>
                       <td>{{data[7].balance}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[7].balance}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">13</th>
@@ -262,8 +262,8 @@
                       <td>{{data[8].registration}}</td>
                       <td></td>
                       <td>{{data[8].commission}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[8].commission}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th scope="row">14</th>
@@ -276,11 +276,11 @@
                       <td>{{data[9].registration}}</td>
                       <td></td>
                       <td>{{data[9].commission}}</td>
-                      <td>Dollar</td>
-                      <td></td>
+                      <td>{{data[16][0]}}</td>
+                      <td>{{data[9].commission}}</td>
                     </tr>
                     <tr style="text-align: center;">
-                      <th scope="row">14</th>
+                      <th scope="row">15</th>
                       <td>BETFRED</td>
                       <td>6/1/2017</td>
                       <td>6/30/2017</td>
@@ -289,9 +289,9 @@
                       <td>{{data[5].click}}</td>
                       <td>{{data[5].registration}}</td>
                       <td></td>
+                      <td>{{data[5].commission}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td>{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
-                      <td>GBP</td>
-                      <td></td>
                     </tr>
                   </tbody>
                 </table>
