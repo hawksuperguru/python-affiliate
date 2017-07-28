@@ -367,7 +367,7 @@ def summary():
     coral = db.session.query(Coral).order_by(Coral.id.desc()).first()
     william = db.session.query(William).order_by(William.id.desc()).first()
     skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-    # bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
+    bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
 
     currency = CurrencyRates()
     eur = float(currency.get_rate('EUR', 'USD'))
