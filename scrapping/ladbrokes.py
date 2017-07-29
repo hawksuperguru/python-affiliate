@@ -30,6 +30,7 @@ def ladbrokes_scrapping():
                 pwd = Ladbrokes.find_element_by_id("loginPassword")
                 pwd.send_keys(Keys.RETURN)
                 waiter = wait(Ladbrokes, 15)
+                time.sleep(4)
                 currentEaring = Ladbrokes.find_element_by_xpath('//div[@ng-bind="currentEarning"]').text
                 pattern = re.compile(r'[\d\.\d]+')
                 tmp = pattern.search(currentEaring)
