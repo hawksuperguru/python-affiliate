@@ -40,11 +40,16 @@ def bet365_other_scrapping():
 		bet365.find_element_by_id('m_mainPlaceholder_Refresh').send_keys(Keys.RETURN)
 
 		val = []
-		
-		depo = bet365.find_element_by_xpath('//*[@id="m_mainPlaceholder_ResultsBody"]/tr[27]/td[3]').text
+		# depo = bet365.find_element_by_xpath('//*[@id="m_mainPlaceholder_ResultsBody"]/tr[29]/td[3]').text
 		fromDate = bet365.find_element_by_id('m_mainPlaceholder_FromDate').get_attribute('value')
 		toDate = bet365.find_element_by_id('m_mainPlaceholder_ToDate').get_attribute('value')
 		
+		tblWrapper = bet365.find_element_by_class_name('dataTables_scrollBody')
+		table = tblWrapper.find_element_by_tag_name('table')
+		row = table.find_elements_by_tag_name('tr')[-1]
+		depo = row.find_elements_by_tag_name('td')[2].text
+
+
 		val = [depo, fromDate, toDate]
 		print(val)		
 		return val
@@ -55,9 +60,9 @@ def bet365_other_scrapping():
 data = bet365_other_scrapping()
 
 balance  = data[0]
-fromDate = data[1]
-toDate = data[2]
+fromdate = data[1]
+todate = data[2]
 
 
 engine = create_engine('postgresql://postgres:root@localhost/kyan')
-result = engine.execute("INSERT INTO bet365others (balance, fromDate, toDate) VALUES (%s, %s, %s);", balance, fromDate, toDate)
+result = engine.execute("INSERT INTO bet365others (balance, fromdate, todate) VALUES (%s, %s, %s);", balance, fromdate, todate)

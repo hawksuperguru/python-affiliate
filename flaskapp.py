@@ -31,21 +31,25 @@ class User(db.Model):
 class Bet365(db.Model):
     __tablename__ = "bet365s"
     id = db.Column(db.Integer, primary_key=True)
+    fromdate = db.Column(db.String(10))
+    todate = db.Column(db.String(10))
     sports = db.Column(db.Float)
     casino = db.Column(db.Float)
     poker = db.Column(db.Float)
     games_bingo = db.Column(db.Float)
     total = db.Column(db.Float)
-    withdrawal = db.Column(db.Float)
+    click = db.Column(db.Integer)
     balance = db.Column(db.Float)
 
-    def __init__(self, sports, casino, poker, games_bingo, total, withdrawal, balance):
+    def __init__(self, fromdate, todate sports, casino, poker, games_bingo, total, click, balance):
+        self.fromdate = fromdate
+        self.todate = todate
         self.sports = sports
         self.casino = casino
         self.poker = poker
         self.games_bingo = games_bingo
         self.total = total
-        self.withdrawal = withdrawal
+        self.click = click
         self.balance = balance
 
 
@@ -235,7 +239,7 @@ class Bet365Other(db.Model):
     fromdate = db.Column(db.String(10))
     todate = db.Column(db.String(10))
 
-    def __init__(self, balance, fromDate, toDate):
+    def __init__(self, balance, fromdate, todate):
         self.balance = balance
         self.fromdate = fromdate
         self.todate = todate
