@@ -41,7 +41,7 @@ class Bet365(db.Model):
     click = db.Column(db.Integer)
     balance = db.Column(db.Float)
 
-    def __init__(self, fromdate, todate sports, casino, poker, games_bingo, total, click, balance):
+    def __init__(self, fromdate, todate, sports, casino, poker, games_bingo, total, click, balance):
         self.fromdate = fromdate
         self.todate = todate
         self.sports = sports
