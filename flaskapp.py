@@ -442,7 +442,7 @@ def paddy():
 @app.route('/netBet/')
 def netBet():
     data = db.session.query(NetBet).order_by(NetBet.id.desc()).first()
-    return render_template('pages/error.html', data = data)
+    return render_template('pages/netBet.html', data = data)
 
 
 @app.route('/titanBet/')
