@@ -11,7 +11,7 @@
 {% block content %}
 <div class="content-wrapper">
   <div class="col-xs-12">
-  <div class="panel panel-default" style="margin-top: 50px;">
+  <div class="panel panel-default" style="margin-top: 20px;">
     <div class="panel-heading">
       <h1 class="panel-title alert alert-info alert-dismissible">Summary</h1>
     </div>
@@ -43,21 +43,21 @@
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                <table id="example1" class="table table-bordered table-striped" role="grid" aria-describedby="example1_info">
                   <thead>
-                    <tr style="text-align: center;">
-                      <th>No</th>
-                      <th>Site</th>
-                      <th>Start date</th>
-                      <th>End date</th>
-                      <th>Position on betfy</th>
-                      <th>Googel Analytics Clicks</th>
-                      <th>Clicks</th>
-                      <th>Signups</th>
-                      <th># of paying signups</th>
-                      <th>Commissions</th>
-                      <th>Currency</th>
-                      <th>Dollars</th>
+                    <tr>
+                      <th style="text-align: center;">No</th>
+                      <th style="text-align: center;">Site</th>
+                      <th style="text-align: center;">Start date</th>
+                      <th style="text-align: center;">End date</th>
+                      <th style="text-align: center;">Position on betfy</th>
+                      <th style="text-align: center;">Googel Analytics Clicks</th>
+                      <th style="text-align: center;">Clicks</th>
+                      <th style="text-align: center;">Signups</th>
+                      <th style="text-align: center;"># of paying signups</th>
+                      <th style="text-align: center;">Commissions</th>
+                      <th style="text-align: center;">Currency</th>
+                      <th style="text-align: center;">Dollars</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -272,6 +272,20 @@
                       <td>{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
                   </tbody>
+                  <tfoot>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">MTD Total:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">{{(data[5].commission * data[11])|round(2, 'floor') + data[9].commission + data[8].commission + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commission * data[11])|round(2, 'floor') + (data[3].commission * data[10])|round(2, 'floor') + (data[2].commission * data[10])|round(2, 'floor') + data[1].balance + data[0].balance + data[15].balance * 100}}</th>
+                  </tfoot>
                 </table>
               </div>
             </div>
@@ -280,9 +294,9 @@
       </div>
     </div>
     </section>
+    </div>
   </div>
   </div>
-</div>
 {% endblock %}
 
 {% block aside %}
