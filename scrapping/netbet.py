@@ -40,7 +40,7 @@ def netbet_scrapping():
             # tmp = pattern.search(balance)
             # balance = tmp.group(0)
             # print(balance)
-            time.sleep(4)
+            time.sleep(10)
             print(Netbet.title)
             header = Netbet.find_element_by_class_name('dshb_icoNav')
             statistics = header.find_elements_by_tag_name('li')[2]
