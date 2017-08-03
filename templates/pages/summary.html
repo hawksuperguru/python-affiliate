@@ -78,16 +78,16 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">2</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365</td>
-                      <td>{{data[0].fromdate}}</td>
-                      <td>{{data[0].todate}}</td>
+                      <td>{{data[0].dateto}}</td>
+                      <td>{{data[0].dateto}}</td>
                       <td></td>
                       <td></td>
                       <td>{{data[0].click}}</td>
                       <td></td>
                       <td></td>
-                      <td>{{data[0].balance}}</td>
+                      <td>{{data[0].commission}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[0].balance}}</td>
+                      <td class="bg-gray color-palette">{{data[0].commission}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
@@ -284,7 +284,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th style="text-align: center;" class="bg-green">{{(data[5].commission * data[11])|round(2, 'floor') + data[9].commission + data[8].commission + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commission * data[11])|round(2, 'floor') + (data[3].commission * data[10])|round(2, 'floor') + (data[2].commission * data[10])|round(2, 'floor') + data[1].balance + data[0].balance + data[15].balance * 100}}</th>
+                    <th style="text-align: center;" class="bg-green">{{(data[5].commission * data[11])|round(2, 'floor') + data[9].commission + data[8].commission + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commission * data[11])|round(2, 'floor') + (data[3].commission * data[10])|round(2, 'floor') + (data[2].commission * data[10])|round(2, 'floor') + data[1].balance + data[0].commission + data[15].balance * 100}}</th>
                   </tfoot>
                 </table>
               </div>

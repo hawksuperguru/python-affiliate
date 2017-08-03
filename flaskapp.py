@@ -3,7 +3,9 @@ import json, gc
 from functools import wraps
 from passlib.handlers.sha2_crypt import sha256_crypt
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func  
 from forex_python.converter import CurrencyRates, CurrencyCodes
+import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
@@ -31,26 +33,47 @@ class User(db.Model):
 class Bet365(db.Model):
     __tablename__ = "bet365s"
     id = db.Column(db.Integer, primary_key=True)
-    fromdate = db.Column(db.String(10))
-    todate = db.Column(db.String(10))
-    sports = db.Column(db.Float)
-    casino = db.Column(db.Float)
-    poker = db.Column(db.Float)
-    games_bingo = db.Column(db.Float)
-    total = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
     click = db.Column(db.Integer)
-    balance = db.Column(db.Float)
+    nsignup = db.Column(db.Integer)
+    ndepo = db.Column(db.Integer)
+    valdepo = db.Column(db.Float)
+    numdepo = db.Column(db.Integer)
+    spotsturn = db.Column(db.Float)
+    numsptbet = db.Column(db.Integer)
+    acsptusr = db.Column(db.Integer)
+    sptnetrev = db.Column(db.Float)
+    casinonetrev = db.Column(db.Float)
+    pokernetrev = db.Column(db.Float)
+    bingonetrev = db.Column(db.Float)
+    netrev = db.Column(db.Float)
+    afspt = db.Column(db.Float)
+    afcasino = db.Column(db.Float)
+    afpoker = db.Column(db.Float)
+    afbingo = db.Column(db.Float)
+    commission = db.Column(db.Float)
+    
 
-    def __init__(self, fromdate, todate, sports, casino, poker, games_bingo, total, click, balance):
-        self.fromdate = fromdate
-        self.todate = todate
-        self.sports = sports
-        self.casino = casino
-        self.poker = poker
-        self.games_bingo = games_bingo
-        self.total = total
+    def __init__(self, dateto, click, nsignup, ndepo, valdepo, numdepo, spotsturn, numsptbet, acsptusr, sptnetrev, casinonetrev, pokernetrev, bingonetrev, netrev, afspt, afcasino, afpoker, afbingo, commission):
+        self.dateto = dateto
         self.click = click
-        self.balance = balance
+        self.nsignup = nsignup
+        self.ndepo = ndepo
+        self.valdepo = valdepo
+        self.numdepo = numdepo
+        self.spotsturn = spotsturn
+        self.numsptbet = numsptbet
+        self.acsptusr = acsptusr
+        self.sptnetrev = sptnetrev
+        self.casinonetrev = casinonetrev
+        self.pokernetrev = pokernetrev
+        self.bingonetrev = bingonetrev
+        self.netrev = netrev
+        self.afspt = afspt
+        self.afcasino = afcasino
+        self.afpoker = afpoker
+        self.afbingo = afbingo
+        self.commission = commission
 
 
 class Eight88(db.Model):
@@ -397,10 +420,123 @@ def summary():
 
 
 
-@app.route('/bet365/')
+@app.route('/bet365/', methods = ['GET', 'POST'])
 def bet365():
-    data = db.session.query(Bet365).order_by(Bet365.id.desc()).first()
-    return render_template('pages/bet365.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        now = datetime.datetime.now()
+        today = now.date()
+        data = db.session.query(Bet365).filter(Bet365.dateto == today)
+        return render_template('pages/bet365.html', data = data)
+
+    elif request.method == 'POST': 
+        period = request.json['period']
+        optVal = request.json['optVal']
+        fromDate = datetime.datetime.strptime(period.split('-')[0].strip(), '%m/%d/%Y').date()
+        toDate = datetime.datetime.strptime(period.split('-')[1].strip(), '%m/%d/%Y').date()
+        
+        jsonData = []
+        if (optVal == 0) or (optVal == '1'):
+            data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
+            for perDay in data:
+                jsonData.append({
+                    "dateto" : perDay.dateto,
+                    "click" : perDay.click,
+                    "nSignup" : perDay.nsignup,
+                    "nDepo" : perDay.ndepo,
+                    "valDepo" : perDay.valdepo,
+                    "numDepo" : perDay.numdepo,
+                    "spotsTurn" : perDay.spotsturn,
+                    "numSptBet" : perDay.numsptbet,
+                    "acSptUsr" : perDay.acsptusr,
+                    "sptNetRev" : perDay.sptnetrev,
+                    "casinoNetRev" : perDay.casinonetrev,
+                    "pokerNetRev" : perDay.pokernetrev,
+                    "bingoNetRev" : perDay.bingonetrev,
+                    "netRev" : perDay.netrev,
+                    "afSpt" : perDay.afspt,
+                    "afCasino" : perDay.afcasino,
+                    "afPoker" : perDay.afpoker,
+                    "afBingo" : perDay.afbingo,
+                    "commission" : perDay.commission
+                })
+            return jsonify(jsonData = jsonData)
+
+        elif optVal == '2':
+            data = db.session.execute("""SELECT 
+                SUM(click) as click,
+                SUM(nSignup) as nsignup,
+                SUM(nDepo) as ndepo,
+                SUM(valDepo) as valdepo,
+                SUM(numDepo) as numdepo,
+                SUM(spotsTurn) as spotsturn,
+                SUM(numsptbet) as numsptbet,
+                SUM(acsptusr) as acsptusr,
+                SUM(sptnetrev) as sptnetrev,
+                SUM(casinonetrev) as casinonetrev,
+                SUM(pokernetrev) as pokernetrev,
+                SUM(bingonetrev) as bingonetrev,
+                SUM(netrev) as netrev,
+                SUM(afspt) as afspt,
+                SUM(afcasino) as afcasino,
+                SUM(afpoker) as afpoker,
+                SUM(afbingo) as afbingo,
+                SUM(commission) as commission,
+                EXTRACT(YEAR FROM dateto)::text || '/' ||EXTRACT(MONTH FROM dateto)::text || '(' || EXTRACT(WEEK FROM dateto)::text || 'wk.' || ')' AS datefield 
+            FROM bet365s
+            WHERE dateto >= '%s' AND dateto <= '%s'
+            GROUP BY datefield
+            ORDER By datefield;""" % (fromDate, toDate))
+
+        elif optVal == '3':            
+            data = db.session.execute("""SELECT 
+                SUM(click) as click,
+                SUM(nSignup) as nsignup,
+                SUM(nDepo) as ndepo,
+                SUM(valDepo) as valdepo,
+                SUM(numDepo) as numdepo,
+                SUM(spotsTurn) as spotsturn,
+                SUM(numsptbet) as numsptbet,
+                SUM(acsptusr) as acsptusr,
+                SUM(sptnetrev) as sptnetrev,
+                SUM(casinonetrev) as casinonetrev,
+                SUM(pokernetrev) as pokernetrev,
+                SUM(bingonetrev) as bingonetrev,
+                SUM(netrev) as netrev,
+                SUM(afspt) as afspt,
+                SUM(afcasino) as afcasino,
+                SUM(afpoker) as afpoker,
+                SUM(afbingo) as afbingo,
+                SUM(commission) as commission,
+                EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+            FROM bet365s
+            WHERE dateto >= '%s' AND dateto <= '%s'
+            GROUP BY datefield
+            ORDER By datefield;""" % (fromDate, toDate))
+                    
+        for perDay in data:
+            jsonData.append({
+                "dateto" : perDay.datefield,
+                "click" : perDay.click,
+                "nSignup" : perDay.nsignup,
+                "nDepo" : perDay.ndepo,
+                "valDepo" : perDay.valdepo,
+                "numDepo" : perDay.numdepo,
+                "spotsTurn" : perDay.spotsturn,
+                "numSptBet" : perDay.numsptbet,
+                "acSptUsr" : perDay.acsptusr,
+                "sptNetRev" : perDay.sptnetrev,
+                "casinoNetRev" : perDay.casinonetrev,
+                "pokerNetRev" : perDay.pokernetrev,
+                "bingoNetRev" : perDay.bingonetrev,
+                "netRev" : perDay.netrev,
+                "afSpt" : perDay.afspt,
+                "afCasino" : perDay.afcasino,
+                "afPoker" : perDay.afpoker,
+                "afBingo" : perDay.afbingo,
+                "commission" : perDay.commission
+            })
+        return jsonify(jsonData = jsonData)
 
 
 @app.route('/eight88/')
