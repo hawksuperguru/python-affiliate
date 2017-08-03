@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 from sqlalchemy import create_engine
 import psycopg2
-import os
+import os, time
 
 def betfred_scrapping():
 	display = Display(visible=0, size=(1200, 900))
@@ -22,6 +22,7 @@ def betfred_scrapping():
 		pwd = Betfred.find_element_by_id("password")
 		pwd.send_keys(Keys.RETURN)
 		Betfred.implicitly_wait(10)
+		time.sleep(5)
 		mtd_valArr = []
 		table = Betfred.find_element(by=By.ID, value = "dashboard_quick_stats")
 		mtds_val = table.find_element(by=By.CLASS_NAME, value = "row_light_color")
