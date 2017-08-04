@@ -443,24 +443,24 @@ def bet365():
             for perDay in data:
                 jsonData.append({
                     "dateto" : perDay.dateto,
-                    "click" : 'perDay.click',
-                    "nSignup" : 'perDay.nsignup',
-                    "nDepo" : 'perDay.ndepo',
-                    "valDepo" : 'perDay.valdepo',
-                    "numDepo" : 'perDay.numdepo',
-                    "spotsTurn" : 'perDay.spotsturn',
-                    "numSptBet" : 'perDay.numsptbet',
-                    "acSptUsr" : 'perDay.acsptusr',
-                    "sptNetRev" : 'perDay.sptnetrev',
-                    "casinoNetRev" : 'perDay.casinonetrev',
-                    "pokerNetRev" : 'perDay.pokernetrev',
-                    "bingoNetRev" : 'perDay.bingonetrev',
-                    "netRev" : 'perDay.netrev',
-                    "afSpt" : 'perDay.afspt',
-                    "afCasino" : 'perDay.afcasino',
-                    "afPoker" : 'perDay.afpoker',
-                    "afBingo" : 'perDay.afbingo',
-                    "commission" : 'perDay.commission'
+                    "click" : perDay.click,
+                    "nSignup" : perDay.nsignup,
+                    "nDepo" : perDay.ndepo,
+                    "valDepo" : perDay.valdepo,
+                    "numDepo" : perDay.numdepo,
+                    "spotsTurn" : perDay.spotsturn,
+                    "numSptBet" : perDay.numsptbet,
+                    "acSptUsr" : perDay.acsptusr,
+                    "sptNetRev" : perDay.sptnetrev,
+                    "casinoNetRev" : perDay.casinonetrev,
+                    "pokerNetRev" : perDay.pokernetrev,
+                    "bingoNetRev" : perDay.bingonetrev,
+                    "netRev" : perDay.netrev,
+                    "afSpt" : perDay.afspt,
+                    "afCasino" : perDay.afcasino,
+                    "afPoker" : perDay.afpoker,
+                    "afBingo" : perDay.afbingo,
+                    "commission" : perDay.commission
                 })
             return jsonify(jsonData = jsonData)
 
