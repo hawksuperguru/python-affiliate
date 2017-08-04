@@ -438,7 +438,7 @@ def bet365():
         
         jsonData = []
         if (optVal == '0') or (optVal == '1'):
-            # data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
+            data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
             
             # for perDay in data:
             #     jsonData.append({
@@ -462,27 +462,28 @@ def bet365():
             #         "afBingo" : perDay.afbingo,
             #         "commission" : perDay.commission
             #     })
-            jsonData.append({
-                "dateto" : '2017-07-08',
-                "click" : '1',
-                "nSignup" : '1',
-                "nDepo" : '1',
-                "valDepo" : '1',
-                "numDepo" : '1',
-                "spotsTurn" : '1',
-                "numSptBet" : '1',
-                "acSptUsr" : '1',
-                "sptNetRev" : '1',
-                "casinoNetRev" : '1',
-                "pokerNetRev" : '1',
-                "bingoNetRev" : '1',
-                "netRev" : '1',
-                "afSpt" : '1',
-                "afCasino" : '1',
-                "afPoker" : '1',
-                "afBingo" : '1',
-                "commission" : '1'
-                })
+            for perDay in data:
+                jsonData.append({
+                    "dateto" : '2017-07-08',
+                    "click" : '1',
+                    "nSignup" : '1',
+                    "nDepo" : '1',
+                    "valDepo" : '1',
+                    "numDepo" : '1',
+                    "spotsTurn" : '1',
+                    "numSptBet" : '1',
+                    "acSptUsr" : '1',
+                    "sptNetRev" : '1',
+                    "casinoNetRev" : '1',
+                    "pokerNetRev" : '1',
+                    "bingoNetRev" : '1',
+                    "netRev" : '1',
+                    "afSpt" : '1',
+                    "afCasino" : '1',
+                    "afPoker" : '1',
+                    "afBingo" : '1',
+                    "commission" : '1'
+                    })
             return jsonify(jsonData = jsonData)
 
         elif optVal == '2':
