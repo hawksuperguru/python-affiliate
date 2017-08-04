@@ -73,7 +73,7 @@ function sendAjax() {
   let optVal = $('.selectpicker').val();
   
   if (optVal == ''){
-    optVal = 0;
+    optVal = '0';
   }
 
   $.ajax({
