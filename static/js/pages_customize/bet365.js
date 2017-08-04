@@ -172,7 +172,7 @@ function sendAjax() {
               sSpotsTurn: parseFloat(sSpotsTurn).toFixed(2),
               sAcsptusr,
               sNumsptbet,
-              sSptnetrev,
+              sSptnetrev: parseFloat(sSptnetrev).toFixed(2),
               sCasinonetrev: parseFloat(sCasinonetrev).toFixed(2),
               sPokernetrev: parseFloat(sPokernetrev).toFixed(2),
               sBingonetrev: parseFloat(sBingonetrev).toFixed(2),
