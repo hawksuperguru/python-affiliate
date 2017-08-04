@@ -24,10 +24,9 @@ def netbet_scrapping():
             Netbet.find_element_by_xpath('//*[@id="top"]/div/a').click()
             Netbet.implicitly_wait(10)
             Netbet.find_element_by_id("login_username").send_keys("betfyuk")
-            time.sleep(5)
             time.sleep(2)
             Netbet.find_element_by_id("login_password").send_keys("dontfuckwithme")
-            time.sleep(1)
+            time.sleep(5)
             pwd = Netbet.find_element_by_id("login_password")
             pwd.send_keys(Keys.RETURN)
 
@@ -40,13 +39,13 @@ def netbet_scrapping():
             # tmp = pattern.search(balance)
             # balance = tmp.group(0)
             # print(balance)
-            time.sleep(10)
+            time.sleep(5)
             assert "Live Partners - Dashboard" in Netbet.title
             print(Netbet.title)
             header = Netbet.find_element_by_class_name('dshb_icoNav')
             statistics = header.find_elements_by_tag_name('li')[2]
             statistics.click()
-            time.sleep(5)
+            time.sleep(4)
             Netbet.find_element_by_xpath('//*[@id="search_period"]/option[12]').click()
             time.sleep(3)
             toDate = Netbet.find_element_by_id('date_start').get_attribute('value')
