@@ -466,8 +466,8 @@ def bet365():
                 jsonData.append({
                     "dateto" : '2017-07-08',
                     "click" : perDay.click,
-                    "nSignup" : '1',
-                    "nDepo" : '1',
+                    "nSignup" : perDay.nsignup,
+                    "nDepo" : perDay.ndepo,
                     "valDepo" : '1',
                     "numDepo" : '1',
                     "spotsTurn" : '1',
