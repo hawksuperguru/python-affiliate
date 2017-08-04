@@ -440,31 +440,9 @@ def bet365():
         if (optVal == '0') or (optVal == '1'):
             data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
             
-            # for perDay in data:
-            #     jsonData.append({
-            #         "dateto" : perDay.dateto,
-            #         "click" : perDay.click,
-            #         "nSignup" : perDay.nsignup,
-            #         "nDepo" : perDay.ndepo,
-            #         "valDepo" : perDay.valdepo,
-            #         "numDepo" : perDay.numdepo,
-            #         "spotsTurn" : perDay.spotsturn,
-            #         "numSptBet" : perDay.numsptbet,
-            #         "acSptUsr" : perDay.acsptusr,
-            #         "sptNetRev" : perDay.sptnetrev,
-            #         "casinoNetRev" : perDay.casinonetrev,
-            #         "pokerNetRev" : perDay.pokernetrev,
-            #         "bingoNetRev" : perDay.bingonetrev,
-            #         "netRev" : perDay.netrev,
-            #         "afSpt" : perDay.afspt,
-            #         "afCasino" : perDay.afcasino,
-            #         "afPoker" : perDay.afpoker,
-            #         "afBingo" : perDay.afbingo,
-            #         "commission" : perDay.commission
-            #     })
             for perDay in data:
                 jsonData.append({
-                    "dateto" : '2017-07-08',
+                    "dateto" : perDay.dateto,
                     "click" : perDay.click,
                     "nSignup" : perDay.nsignup,
                     "nDepo" : perDay.ndepo,
