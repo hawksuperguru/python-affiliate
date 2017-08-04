@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 import psycopg2
 import os, re
 from selenium.common.exceptions import TimeoutException
-import time
+import time, datetime
 
 def netbet_scrapping():
 
@@ -21,7 +21,7 @@ def netbet_scrapping():
         try:
             Netbet = webdriver.Chrome(executable_path=os.path.abspath("/usr/bin/chromedriver"))
             Netbet.get("https://www.livepartners.com/")
-            Netbet.find_element_by_css_selector("#top > div > a").click()
+            Netbet.find_element_by_xpath('//*[@id="top"]/div/a').click()
             Netbet.implicitly_wait(10)
             Netbet.find_element_by_id("login_username").send_keys("betfyuk")
             time.sleep(5)
@@ -40,15 +40,27 @@ def netbet_scrapping():
             # tmp = pattern.search(balance)
             # balance = tmp.group(0)
             # print(balance)
-            time.sleep(5)
+            time.sleep(10)
             assert "Live Partners - Dashboard" in Netbet.title
             print(Netbet.title)
             header = Netbet.find_element_by_class_name('dshb_icoNav')
             statistics = header.find_elements_by_tag_name('li')[2]
             statistics.click()
             time.sleep(5)
-            Netbet.find_element_by_xpath('//*[@id="search_period"]/option[6]').click()
+            Netbet.find_element_by_xpath('//*[@id="search_period"]/option[12]').click()
             time.sleep(3)
+            toDate = Netbet.find_element_by_id('date_start').get_attribute('value')
+            toDateObj = datetime.datetime.strptime(toDate, '%Y-%m-%d').date()
+            delta = datetime.timedelta(days = 2)
+
+            aDayAgo = toDateObj - delta
+
+            aDayAgoObj = aDayAgo.strftime("%Y-%m-%d")
+
+            Netbet.execute_script("document.getElementById('date_start').value = '{0}'".format(aDayAgoObj))
+            Netbet.execute_script("document.getElementById('date_end').value = '{0}'".format(aDayAgoObj))
+
+            time.sleep(5)
             Netbet.find_element_by_id('ToolTables_results_0').click()
             time.sleep(3)
             tblWrapper = Netbet.find_element_by_class_name('datatable_result_row')
