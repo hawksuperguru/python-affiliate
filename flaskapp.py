@@ -438,7 +438,12 @@ def bet365():
         jsonData = []
         if (optVal == 0) or (optVal == '1'):
             # data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
-            data = db.session.query(Bet365)
+            data = db.session.execute("""SELECT
+                * 
+                FROM bet365s
+                WHERE dateto >= '%s' AND dateto <= '%s'
+                ORDER By dateto;""" % (fromDate, toDate))
+
             for perDay in data:
                 jsonData.append({
                     "dateto" : perDay.dateto,
