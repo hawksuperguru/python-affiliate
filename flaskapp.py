@@ -437,7 +437,7 @@ def bet365():
         toDate = datetime.datetime.strptime(period.split('-')[1].strip(), '%m/%d/%Y').date()
         
         jsonData = []
-        if optVal == '0':
+        if (optVal == '0') or (optVal == '1'):
             data = db.session.query(Bet365).filter(Bet365.dateto >= fromDate).filter(Bet365.dateto <= toDate)
             
             for perDay in data:
