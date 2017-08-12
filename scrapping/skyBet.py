@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 from sqlalchemy import create_engine
-import psycopg2
+import psycopg2, time
 import os
 
 
@@ -21,10 +21,13 @@ def sky_scrapping():
 		sky.get("https://www.skybet.com/affiliatehub/")
 		sky.find_element_by_link_text("Login").send_keys(Keys.RETURN)
 		sky.find_element_by_name("username").send_keys("betfy")
+		time.sleep(2)
 		sky.find_element_by_name("password").send_keys("dontfuckwithme")
+		time.sleep(5)
 		pwd = sky.find_element_by_name("password")
 		pwd.send_keys(Keys.RETURN)
 		sky.implicitly_wait(10)
+		time.sleep(5)
 		mtd_valArr = []
 		table = sky.find_element(by=By.ID, value = "dashboard_quick_stats")
 		mtds_val = table.find_element(by=By.CLASS_NAME, value = "row_light_color")
