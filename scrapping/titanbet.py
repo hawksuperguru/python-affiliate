@@ -40,7 +40,3 @@ data  = titan_scrapping()
 balance = data
 engine = create_engine('postgresql://postgres:root@localhost/kyan')
 result = engine.execute("INSERT INTO titanbets (balance) VALUES (%s);", balance)
-
-
-
-

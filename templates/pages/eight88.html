@@ -27,6 +27,20 @@
       <h1 class="panel-title alert alert-info alert-dismissible">Stats at a Glance |  This Month (1st - Today)</h1>
     </div>
     <div class="panel-body">
+      <div class="panel-group">
+        <label class="date_range"></label>
+        <div class="input-group col-sm-4">
+          <div class="input-group-addon bg-green color-palette">
+            <i class="fa fa-calendar-minus-o"></i>
+          </div>
+          <select class="selectpicker" title='Choose one of the following...'>
+            <option value="1" selected="">This Month (1st - Today)</option>
+            <option value="2">Last 7 Days</option>
+            <option value="3">Previous Month</option>
+            <option value="4">Today</option>
+          </select>
+        </div>
+      </div>
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingOne">

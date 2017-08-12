@@ -76,6 +76,52 @@ class Bet365(db.Model):
         self.commission = commission
 
 
+
+class Bet365Other(db.Model):
+    __tablename__ = "bet365others"
+    id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
+    click = db.Column(db.Integer)
+    nsignup = db.Column(db.Integer)
+    ndepo = db.Column(db.Integer)
+    valdepo = db.Column(db.Float)
+    numdepo = db.Column(db.Integer)
+    spotsturn = db.Column(db.Float)
+    numsptbet = db.Column(db.Integer)
+    acsptusr = db.Column(db.Integer)
+    sptnetrev = db.Column(db.Float)
+    casinonetrev = db.Column(db.Float)
+    pokernetrev = db.Column(db.Float)
+    bingonetrev = db.Column(db.Float)
+    netrev = db.Column(db.Float)
+    afspt = db.Column(db.Float)
+    afcasino = db.Column(db.Float)
+    afpoker = db.Column(db.Float)
+    afbingo = db.Column(db.Float)
+    commission = db.Column(db.Float)
+    
+    def __init__(self, dateto, click, nsignup, ndepo, valdepo, numdepo, spotsturn, numsptbet, acsptusr, sptnetrev, casinonetrev, pokernetrev, bingonetrev, netrev, afspt, afcasino, afpoker, afbingo, commission):
+        self.dateto = dateto
+        self.click = click
+        self.nsignup = nsignup
+        self.ndepo = ndepo
+        self.valdepo = valdepo
+        self.numdepo = numdepo
+        self.spotsturn = spotsturn
+        self.numsptbet = numsptbet
+        self.acsptusr = acsptusr
+        self.sptnetrev = sptnetrev
+        self.casinonetrev = casinonetrev
+        self.pokernetrev = pokernetrev
+        self.bingonetrev = bingonetrev
+        self.netrev = netrev
+        self.afspt = afspt
+        self.afcasino = afcasino
+        self.afpoker = afpoker
+        self.afbingo = afbingo
+        self.commission = commission
+
+
 class Eight88(db.Model):
     __tablename__ = "eight88s"
     id = db.Column(db.Integer, primary_key=True)
@@ -85,14 +131,45 @@ class Eight88(db.Model):
     lead = db.Column(db.Integer)
     money_player = db.Column(db.Integer)
     balance = db.Column(db.Float)
+    imprwk = db.Column(db.Integer)
+    cliwk = db.Column(db.Integer)
+    regwk = db.Column(db.Integer)
+    leadwk = db.Column(db.Integer)
+    mpwk = db.Column(db.Integer)
+    imprpre = db.Column(db.Integer)
+    clipre = db.Column(db.Integer)
+    regpre = db.Column(db.Integer)
+    leadpre = db.Column(db.Integer)
+    mppre = db.Column(db.Integer)
+    imprto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    leadto = db.Column(db.Integer)
+    mpto = db.Column(db.Integer)
 
-    def __init__(self, impression, click, registration, lead, money_player, balance):
+
+    def __init__(self, impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto):
         self.impression = impression
         self.click = click
         self.registration = registration
         self.lead = lead
         self.money_player = money_player
         self.balance = balance
+        self.imprwk = imprwk
+        self.cliwk = cliwk
+        self.regwk = regwk
+        self.leadwk = leadwk
+        self.mpwk = mpwk
+        self.imprpre = imprpre
+        self.clipre = clipre
+        self.regpre = regpre
+        self.leadpre = leadpre
+        self.mppre = mppre
+        self.imprto = imprto
+        self.clito = clito
+        self.regto = regto
+        self.leadto = leadto
+        self.mpto = mpto
 
 
 class Bet10(db.Model):
@@ -253,19 +330,6 @@ class SkyBet(db.Model):
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
-
-
-class Bet365Other(db.Model):
-    __tablename__ = "bet365others"
-    id = db.Column(db.Integer, primary_key=True)
-    balance = db.Column(db.Integer)
-    fromdate = db.Column(db.String(10))
-    todate = db.Column(db.String(10))
-
-    def __init__(self, balance, fromdate, todate):
-        self.balance = balance
-        self.fromdate = fromdate
-        self.todate = todate
 
 
 def login_required(f):
@@ -546,7 +610,133 @@ def bet365():
         return jsonify(jsonData = jsonData)
 
 
-@app.route('/eight88/')
+@app.route('/bet365other/', methods = ['GET', 'POST'])
+def bet365other():
+    data = {}
+    if request.method == 'GET':
+        now = datetime.datetime.now()
+        today = now.date()
+        data = db.session.query(Bet365Other).filter(Bet365Other.dateto == today)
+        return render_template('pages/bet365other.html', data = data)
+
+    elif request.method == 'POST': 
+        period = request.json['period']
+        optVal = request.json['optVal']
+        print(period)
+        fromDate = datetime.datetime.strptime(period.split('-')[0].strip(), '%m/%d/%Y').date()
+        toDate = datetime.datetime.strptime(period.split('-')[1].strip(), '%m/%d/%Y').date()
+        
+        jsonData = []
+        if (optVal == '0') or (optVal == '1'):
+            data = db.session.execute("""SELECT 
+                *,
+                EXTRACT(YEAR FROM dateto)::text || '-' ||EXTRACT(MONTH FROM dateto)::text || '-' || EXTRACT(DAY FROM dateto)::text AS datefield 
+            FROM bet365others
+            WHERE dateto >= '%s' AND dateto <= '%s'
+            ORDER By datefield;""" % (fromDate, toDate))
+            
+            for perDay in data:
+                jsonData.append({
+                    "dateto" : perDay.datefield,
+                    "click" : perDay.click,
+                    "nSignup" : perDay.nsignup,
+                    "nDepo" : perDay.ndepo,
+                    "valDepo" : perDay.valdepo,
+                    "numDepo" : perDay.numdepo,
+                    "spotsTurn" : perDay.spotsturn,
+                    "numSptBet" : perDay.numsptbet,
+                    "acSptUsr" : perDay.acsptusr,
+                    "sptNetRev" : perDay.sptnetrev,
+                    "casinoNetRev" : perDay.casinonetrev,
+                    "pokerNetRev" : perDay.pokernetrev,
+                    "bingoNetRev" : perDay.bingonetrev,
+                    "netRev" : perDay.netrev,
+                    "afSpt" : perDay.afspt,
+                    "afCasino" : perDay.afcasino,
+                    "afPoker" : perDay.afpoker,
+                    "afBingo" : perDay.afbingo,
+                    "commission" : perDay.commission
+                    })
+            return jsonify(jsonData = jsonData)
+
+        elif optVal == '2':
+            data = db.session.execute("""SELECT 
+                SUM(click) as click,
+                SUM(nSignup) as nsignup,
+                SUM(nDepo) as ndepo,
+                SUM(valDepo) as valdepo,
+                SUM(numDepo) as numdepo,
+                SUM(spotsTurn) as spotsturn,
+                SUM(numsptbet) as numsptbet,
+                SUM(acsptusr) as acsptusr,
+                SUM(sptnetrev) as sptnetrev,
+                SUM(casinonetrev) as casinonetrev,
+                SUM(pokernetrev) as pokernetrev,
+                SUM(bingonetrev) as bingonetrev,
+                SUM(netrev) as netrev,
+                SUM(afspt) as afspt,
+                SUM(afcasino) as afcasino,
+                SUM(afpoker) as afpoker,
+                SUM(afbingo) as afbingo,
+                SUM(commission) as commission,
+                EXTRACT(YEAR FROM dateto)::text || '/' ||EXTRACT(MONTH FROM dateto)::text || '(' || EXTRACT(WEEK FROM dateto)::text || 'wk.' || ')' AS datefield 
+            FROM bet365others
+            WHERE dateto >= '%s' AND dateto <= '%s'
+            GROUP BY datefield
+            ORDER By datefield;""" % (fromDate, toDate))
+
+        elif optVal == '3':            
+            data = db.session.execute("""SELECT 
+                SUM(click) as click,
+                SUM(nSignup) as nsignup,
+                SUM(nDepo) as ndepo,
+                SUM(valDepo) as valdepo,
+                SUM(numDepo) as numdepo,
+                SUM(spotsTurn) as spotsturn,
+                SUM(numsptbet) as numsptbet,
+                SUM(acsptusr) as acsptusr,
+                SUM(sptnetrev) as sptnetrev,
+                SUM(casinonetrev) as casinonetrev,
+                SUM(pokernetrev) as pokernetrev,
+                SUM(bingonetrev) as bingonetrev,
+                SUM(netrev) as netrev,
+                SUM(afspt) as afspt,
+                SUM(afcasino) as afcasino,
+                SUM(afpoker) as afpoker,
+                SUM(afbingo) as afbingo,
+                SUM(commission) as commission,
+                EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+            FROM bet365others
+            WHERE dateto >= '%s' AND dateto <= '%s'
+            GROUP BY datefield
+            ORDER By datefield;""" % (fromDate, toDate))
+                    
+        for perDay in data:
+            jsonData.append({
+                "dateto" : perDay.datefield,
+                "click" : perDay.click,
+                "nSignup" : perDay.nsignup,
+                "nDepo" : perDay.ndepo,
+                "valDepo" : perDay.valdepo,
+                "numDepo" : perDay.numdepo,
+                "spotsTurn" : perDay.spotsturn,
+                "numSptBet" : perDay.numsptbet,
+                "acSptUsr" : perDay.acsptusr,
+                "sptNetRev" : perDay.sptnetrev,
+                "casinoNetRev" : perDay.casinonetrev,
+                "pokerNetRev" : perDay.pokernetrev,
+                "bingoNetRev" : perDay.bingonetrev,
+                "netRev" : perDay.netrev,
+                "afSpt" : perDay.afspt,
+                "afCasino" : perDay.afcasino,
+                "afPoker" : perDay.afpoker,
+                "afBingo" : perDay.afbingo,
+                "commission" : perDay.commission
+            })
+        return jsonify(jsonData = jsonData)
+
+
+@app.route('/eight88/', methods = ['GET', 'POST'])
 def eight88():
     data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
     return render_template('pages/eight88.html', data = data)
@@ -617,12 +807,6 @@ def skyBet():
 def william():
     data = db.session.query(William).order_by(William.id.desc()).first()
     return render_template('pages/william.html', data = data)
-
-
-@app.route('/bet365other')
-def bet365other():
-    data = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
-    return render_template('pages/bet365other.html', data = data)
 
 
 @app.route('/victor')
