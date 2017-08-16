@@ -191,14 +191,34 @@ class Bet10(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regytd = regytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
 
 
 class RealDeal(db.Model):
@@ -821,10 +841,33 @@ def eight88():
         })
         return jsonify(status = True, jsonData = jsonData)
 
-@app.route('/bet10/')
+@app.route('/bet10/', methods = ['GET', 'POST'])
 def bet10():
-    data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
-    return render_template('pages/bet10.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
+        return render_template('pages/bet10.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/realDeal/')
