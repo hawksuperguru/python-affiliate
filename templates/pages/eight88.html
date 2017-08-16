@@ -24,7 +24,7 @@
 
   <div class="panel panel-default" style="margin-top: 50px;">
     <div class="panel-heading">
-      <h1 class="panel-title alert alert-info alert-dismissible">Stats at a Glance |  This Month (1st - Today)</h1>
+      <h1 class="panel-title alert alert-info alert-dismissible" id="title">Stats at a Glance | This Month (1st - Today)</h1>
     </div>
     <div class="panel-body">
       <div class="panel-group">
@@ -51,7 +51,7 @@
             </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-            <div class="panel-body">
+            <div class="panel-body" id="impression">
               {{ data.impression }}
             </div>
           </div>
@@ -65,7 +65,7 @@
             </h4>
           </div>
           <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="panel-body">
+            <div class="panel-body" id="click">
               {{ data.click }}
             </div>
           </div>
@@ -79,7 +79,7 @@
             </h4>
           </div>
           <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
+            <div class="panel-body" id="registration">
               {{ data.registration }}
             </div>
           </div>
@@ -93,7 +93,7 @@
             </h4>
           </div>
           <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-            <div class="panel-body">
+            <div class="panel-body" id="lead">
               {{ data.lead }}
             </div>
           </div>
@@ -107,7 +107,7 @@
             </h4>
           </div>
           <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-            <div class="panel-body">
+            <div class="panel-body" id="money_player">
               {{ data.money_player }}
             </div>
           </div>
@@ -121,7 +121,7 @@
             </h4>
           </div>
           <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-            <div class="panel-body">
+            <div class="panel-body" id="balance">
               $ {{ data.balance }}
             </div>
           </div>
@@ -130,6 +130,8 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/pages_customize/eight88.js') }}"></script>
 {% endblock %}
 
 {% block aside %}

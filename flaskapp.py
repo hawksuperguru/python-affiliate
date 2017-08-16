@@ -6,13 +6,21 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func  
 from forex_python.converter import CurrencyRates, CurrencyCodes
 import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'super secret key'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
+
 
 class User(db.Model):
     __tablename__ = "users"
@@ -131,6 +139,7 @@ class Eight88(db.Model):
     lead = db.Column(db.Integer)
     money_player = db.Column(db.Integer)
     balance = db.Column(db.Float)
+    prebalance = db.Column(db.Float)
     imprwk = db.Column(db.Integer)
     cliwk = db.Column(db.Integer)
     regwk = db.Column(db.Integer)
@@ -148,13 +157,14 @@ class Eight88(db.Model):
     mpto = db.Column(db.Integer)
 
 
-    def __init__(self, impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto):
+    def __init__(self, impression, click, registration, lead, money_player, balance, prebalance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto):
         self.impression = impression
         self.click = click
         self.registration = registration
         self.lead = lead
         self.money_player = money_player
         self.balance = balance
+        self.prebalance = prebalance
         self.imprwk = imprwk
         self.cliwk = cliwk
         self.regwk = regwk
@@ -229,14 +239,34 @@ class BetFred(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regytd = regytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
 
 
 class Paddy(db.Model):
@@ -275,14 +305,34 @@ class Stan(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
+    imprytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    imprto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
+        self.imprytd = imprytd
+        self.cliytd = cliytd
+        self.regytd = regytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.imprto = imprto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
 
 
 class Coral(db.Model):
@@ -738,9 +788,38 @@ def bet365other():
 
 @app.route('/eight88/', methods = ['GET', 'POST'])
 def eight88():
-    data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
-    return render_template('pages/eight88.html', data = data)
-
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
+        return render_template('pages/eight88.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "lead" : data.lead,
+            "money_player" : data.money_player,
+            "balance" : data.balance,
+            "prebalance" : data.prebalance,
+            "imprwk" : data.imprwk,
+            "cliwk" : data.cliwk,
+            "regwk" : data.regwk,
+            "leadwk" : data.leadwk,
+            "mpwk" : data.mpwk,
+            "imprpre" : data.imprpre,
+            "clipre" : data.clipre,
+            "regpre" : data.regpre,
+            "leadpre" : data.leadpre,
+            "mppre" : data.mppre,
+            "imprto" : data.imprto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "leadto" : data.leadto,
+            "mpto" : data.mpto
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 @app.route('/bet10/')
 def bet10():
@@ -760,10 +839,33 @@ def ladBroke():
     return render_template('pages/ladBroke.html', data = data)
 
 
-@app.route('/betFred/')
+@app.route('/betFred/', methods = ['GET', 'POST'])
 def betFred():
-    data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
-    return render_template('pages/betFred.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
+        return render_template('pages/betFred.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/paddy/')
@@ -816,8 +918,6 @@ def victor():
 
 
 if __name__ == '__main__':
-#    app.secret_key = 'super secret key'
-#    app.config['SESSION_TYPE'] = 'filesystem'
-
+    # manager.run()
     app.debug = True
     app.run()

@@ -30,6 +30,7 @@ def eight88_scrapping():
 		bal = eight88.find_element_by_id("this-month").text
 		balCents = eight88.find_element_by_id("this-month-cents").text
 		netBal = bal + balCents
+		prebal = eight88.find_element_by_id("last-month").text
 		for summarise in eight88.find_elements_by_xpath('.//span[@class = "summariseTab"]'):
 		    balance_arr.append(summarise.text)
 		balance_arr.append(netBal)
@@ -48,6 +49,7 @@ def eight88_scrapping():
 		time.sleep(2)
 		for summarise in eight88.find_elements_by_xpath('.//span[@class = "summariseTab"]'):
 			balance_arr.append(summarise.text)
+		balance_arr.append(prebal)
 
 		return balance_arr
 		
@@ -78,6 +80,7 @@ clito = int(data[17])
 regto = int(data[18])
 leadto = int(data[19])
 mpto = int(data[20])
+prebal = int(data[21])
 
 engine = create_engine('postgresql://postgres:root@localhost/kyan')
-result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto)
+result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal)
