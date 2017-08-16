@@ -1,4 +1,4 @@
-let Bet10 = (() => {
+let Coral = (() => {
 	const _baseUrl = '/';
 	let $_selectPicker = $(".selectpicker");
 	let $_merchant = $("#merchant");
@@ -29,7 +29,7 @@ let Bet10 = (() => {
 	}
 
 	const selectPicker = (val) => {
-		sendRequest("bet10/", {"val" : val}, (results) => {
+		sendRequest("coral/", {"val" : val}, (results) => {
 			let val = $_selectPicker.val();
 			if (val == 1) {
 				$_impression.text(results[0].impression);
@@ -72,5 +72,5 @@ let Bet10 = (() => {
 })();
 
 ((window, $) => {
-	Bet10.init();
+	Coral.init();
 })(window, jQuery);
