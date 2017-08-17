@@ -230,14 +230,34 @@ class RealDeal(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regiytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regiytd = regiytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
 
 
 
@@ -890,10 +910,33 @@ def bet10():
         return jsonify(status = True, jsonData = jsonData)
 
 
-@app.route('/realDeal/')
+@app.route('/realDeal/', methods = ['GET', 'POST'])
 def realDeal():
-    data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
-    return render_template('pages/realDeal.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+        return render_template('pages/realDeal.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/ladBroke/')
@@ -950,10 +993,33 @@ def titanBet():
     return render_template('pages/titanBet.html', data = data)
 
 
-@app.route('/stan/')
+@app.route('/stan/', methods = ['GET', 'POST'])
 def stan():
-    data = db.session.query(Stan).order_by(Stan.id.desc()).first()
-    return render_template('pages/stan.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(Stan).order_by(Stan.id.desc()).first()
+        return render_template('pages/stan.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(Stan).order_by(Stan.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.imprytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.imprto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/coral/', methods = ['GET', 'POST'])

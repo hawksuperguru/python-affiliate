@@ -1,4 +1,4 @@
-let Betfred = (() => {
+let Real = (() => {
 	const _baseUrl = '/';
 	let $_selectPicker = $(".selectpicker");
 	let $_merchant = $("#merchant");
@@ -13,9 +13,9 @@ let Betfred = (() => {
 			url : _baseUrl + endPoint,
 			data : JSON.stringify(params),
 			contentType : "application/json",
-			type : 'POST',
+			type : "POST",
 			success : (response) => {
-				if (!response.status){
+				if (!response.status) {
 					alert(response.message);
 				}
 				else if (typeof callback === 'function') {
@@ -29,7 +29,7 @@ let Betfred = (() => {
 	}
 
 	const selectPicker = (val) => {
-		sendRequest("betFred/", {"val" : val}, (results) => {
+		sendRequest("realDeal/", {"val" : val}, (results) => {
 			let val = $_selectPicker.val();
 			if (val == 1) {
 				$_impression.text(results[0].impression);
@@ -47,7 +47,7 @@ let Betfred = (() => {
 				$_commission.text("£ " + results[0].commiytd);
 				$("#title").text("Quick Stats at a Glance | YTD");
 			}
-			else if (val == 3) {
+			else if (val == 3) {	
 				$_impression.text(results[0].impreto);
 				$_click.text(results[0].clito);
 				$_registration.text(results[0].regto);
@@ -55,7 +55,7 @@ let Betfred = (() => {
 				$_commission.text("£ " + results[0].commito);
 				$("#title").text("Quick Stats at a Glance | TODAY");
 			}
-		})
+		});
 	}
 
 	const init = () => {
@@ -72,5 +72,5 @@ let Betfred = (() => {
 })();
 
 ((window, $) => {
-	Betfred.init();
+	Real.init();
 })(window, jQuery);

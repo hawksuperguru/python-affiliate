@@ -24,10 +24,23 @@
 
   <div class="panel panel-default" style="margin-top: 50px;">
     <div class="panel-heading">
-      <h1 class="panel-title alert alert-info alert-dismissible">Quick Stats</h1>
+      <h1 class="panel-title alert alert-info alert-dismissible" id="title">Quick Stats | MTD</h1>
     </div>
 
     <div class="panel-body">
+    <div class="panel-group">
+          <label class="date_range"></label>
+          <div class="input-group col-sm-4">
+            <div class="input-group-addon bg-green color-palette">
+              <i class="fa fa-calendar-minus-o"></i>
+            </div>
+            <select class="selectpicker" title='Choose one of the following...'>
+              <option value="1" selected="">MTD</option>
+              <option value="2">YTD</option>
+              <option value="3">TODAY</option>
+            </select>
+          </div>
+        </div> 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
@@ -38,7 +51,7 @@
               </h4>
             </div>
             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-              <div class="panel-body">
+              <div class="panel-body" id="merchant">
                 {{ data.merchant }}
               </div>
             </div>
@@ -52,7 +65,7 @@
               </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-              <div class="panel-body">
+              <div class="panel-body" id="impression">
                 {{ data.impression }}
               </div>
             </div>
@@ -66,7 +79,7 @@
               </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-              <div class="panel-body">
+              <div class="panel-body" id="click">
                 {{ data.click }}
               </div>
             </div>
@@ -80,7 +93,7 @@
               </h4>
             </div>
             <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-              <div class="panel-body">
+              <div class="panel-body" id="registration">
                 {{ data.registration }}
               </div>
             </div>
@@ -94,7 +107,7 @@
               </h4>
             </div>
             <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-              <div class="panel-body">
+              <div class="panel-body" id="newDepo">
                 {{ data.new_deposit }}
               </div>
             </div>
@@ -108,8 +121,8 @@
               </h4>
             </div>
             <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-              <div class="panel-body">
-                € {{ data.commission }}
+              <div class="panel-body" id="commission">
+                £ {{ data.commission }}
               </div>
             </div>
           </div>
@@ -117,6 +130,8 @@
       </div>
     </div>
 </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/pages_customize/stan.js') }}"></script>
 {% endblock %}
 
 {% block aside %}

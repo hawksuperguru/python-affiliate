@@ -37,7 +37,7 @@ let Coral = (() => {
 				$_registration.text(results[0].registration);
 				$_depo.text(results[0].new_deposit);
 				$_commission.text("£ " + results[0].commission);
-				$("#title").text("Stats at a Glance | MTD");
+				$("#title").text("Quick Stats at a Glance | MTD");
 			}
 			else if (val == 2) {
 				$_impression.text(results[0].impreytd);
@@ -45,7 +45,7 @@ let Coral = (() => {
 				$_registration.text(results[0].regytd);
 				$_depo.text(results[0].ndytd);
 				$_commission.text("£ " + results[0].commiytd);
-				$("#title").text("Stats at a Glance | YTD");
+				$("#title").text("Quick Stats at a Glance | YTD");
 			}
 			else if (val == 3) {	
 				$_impression.text(results[0].impreto);
@@ -53,7 +53,7 @@ let Coral = (() => {
 				$_registration.text(results[0].regto);
 				$_depo.text(results[0].ndto);
 				$_commission.text("£ " + results[0].commito);
-				$("#title").text("Stats at a Glance | TODAY");
+				$("#title").text("Quick Stats at a Glance | TODAY");
 			}
 		});
 	}
