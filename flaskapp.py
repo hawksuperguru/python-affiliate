@@ -582,35 +582,36 @@ def dashboard():
 
 @app.route('/summary/')
 def summary():
-    bet365 = db.session.query(Bet365).order_by(Bet365.id.desc()).first()
-    eight88 = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
-    bet10 = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
-    realDeal = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
-    ladBroke = db.session.query(LadBroke).order_by(LadBroke.id.desc()).first()
-    betFred = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
-    paddy = db.session.query(Paddy).order_by(Paddy.id.desc()).first()
-    netBet = db.session.query(NetBet).order_by(NetBet.id.desc()).first()
-    titanBet = db.session.query(TitanBet).order_by(TitanBet.id.desc()).first()
-    stan = db.session.query(Stan).order_by(Stan.id.desc()).first()
-    coral = db.session.query(Coral).order_by(Coral.id.desc()).first()
-    william = db.session.query(William).order_by(William.id.desc()).first()
-    skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-    bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
+    # bet365 = db.session.query(Bet365).order_by(Bet365.id.desc()).first()
+    # eight88 = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
+    # bet10 = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
+    # realDeal = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+    # ladBroke = db.session.query(LadBroke).order_by(LadBroke.id.desc()).first()
+    # betFred = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
+    # paddy = db.session.query(Paddy).order_by(Paddy.id.desc()).first()
+    # netBet = db.session.query(NetBet).order_by(NetBet.id.desc()).first()
+    # titanBet = db.session.query(TitanBet).order_by(TitanBet.id.desc()).first()
+    # stan = db.session.query(Stan).order_by(Stan.id.desc()).first()
+    # coral = db.session.query(Coral).order_by(Coral.id.desc()).first()
+    # william = db.session.query(William).order_by(William.id.desc()).first()
+    # skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
+    # bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
 
-    currency = CurrencyRates()
-    sg_cur = CurrencyCodes()
-    eur = float(currency.get_rate('EUR', 'USD'))
-    gbp = float(currency.get_rate('GBP', 'USD'))
+    # currency = CurrencyRates()
+    # sg_cur = CurrencyCodes()
+    # eur = float(currency.get_rate('EUR', 'USD'))
+    # gbp = float(currency.get_rate('GBP', 'USD'))
 
-    sg_usd = sg_cur.get_symbol('USD')
-    sg_eur = sg_cur.get_symbol('EUR')
-    sg_gbp = sg_cur.get_symbol('GBP')
+    # sg_usd = sg_cur.get_symbol('USD')
+    # sg_eur = sg_cur.get_symbol('EUR')
+    # sg_gbp = sg_cur.get_symbol('GBP')
 
-    valSg = [sg_usd, sg_eur, sg_gbp]
+    # valSg = [sg_usd, sg_eur, sg_gbp]
 
-    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
+    # data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
 
-    return render_template('pages/summary.html', data = data)
+    # return render_template('pages/summary.html', data = data)
+    return render_template('pages/summary.html')
 
 
 
