@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
+
+<!-- <div class="content-wrapper"> -->
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for message in messages %}
@@ -21,7 +22,7 @@
     {% endif %}
   {% endwith %}
 
-  <section class="content-header">
+  <!-- <section class="content-header">
     <h1>
     <i class="fa fa-balance-scale"></i>
       WELCOME
@@ -504,7 +505,7 @@
         </div>
       </div>
   </section>
-</div>
+</div> -->
 {% endblock %}
 
 {% block aside %}
