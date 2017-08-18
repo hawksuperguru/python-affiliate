@@ -244,7 +244,47 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette">{{data[8].commito}}</td>
                     </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">CORAL</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[9].clito}}</td>
+                      <td>{{data[9].regto}}</td>
+                      <td></td>
+                      <td>{{data[9].commito}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[9].commito}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BETFRED</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[5].clito}}</td>
+                      <td>{{data[5].regto}}</td>
+                      <td></td>
+                      <td>{{data[5].commito}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[5].commito * data[11])|round(2, 'floor')}}</td>
+                    </tr>
                   </tbody>
+                  <tfoot>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">MTD Total:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">{{(data[5].commito * data[11])|round(2, 'floor') + data[9].commito + data[8].commito + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commito * data[11])|round(2, 'floor') + (data[3].commito * data[10])|round(2, 'floor') + (data[2].commito * data[10])|round(2, 'floor') + data[1].balance + data[0].ndepo + data[15].ndepo * 100}}</th>
+                  </tfoot>
                 </table>
                 </div>
               </div>
