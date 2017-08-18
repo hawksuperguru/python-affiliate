@@ -432,14 +432,34 @@ class SkyBet(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regiytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regito = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regiytd = regiytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regito = regito
+        self.ndto = ndto
+        self.commito = commito
 
 
 def login_required(f):
@@ -1051,19 +1071,42 @@ def coral():
         return jsonify(status = True, jsonData = jsonData)
 
 
-@app.route('/skyBet')
+@app.route('/skyBet/', methods = ['GET', 'POST'])
 def skyBet():
-    data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-    return render_template('pages/skyBet.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
+        return render_template('pages/skyBet.html', data = data)
+    if request.method == 'POST':
+        data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regiytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regito,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
-@app.route('/william')
+@app.route('/william/')
 def william():
     data = db.session.query(William).order_by(William.id.desc()).first()
     return render_template('pages/william.html', data = data)
 
 
-@app.route('/victor')
+@app.route('/victor/')
 def victor():
     data = "Woops, credential is not valid. Please tell me account info."
     return render_template('pages/error.html', data = data)
