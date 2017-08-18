@@ -78,28 +78,28 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365 OTHER</th>
-                      <td>{{data[15].dateto}}</td>
+                      <td id="tB3Odate">{{data[15].dateto}}</td>
                       <td></td>
                       <td></td>
-                      <td>{{data[15].click}}</td>
-                      <td>{{data[15].nsignup}}</td>
+                      <td id="tB3Oclick">{{data[15].click}}</td>
+                      <td id="tB3Osignup">{{data[15].nsignup}}</td>
                       <td></td>
-                      <td>{{data[15].ndepo}}</td>
+                      <td id="tB3Odepo">{{data[15].ndepo}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[15].ndepo * 100}}</td>
+                      <td class="bg-gray color-palette" id="tB3Odollar">{{data[15].ndepo * 100}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365</th>
-                      <td>{{data[0].dateto}}</td>
+                      <td id="tB3date">{{data[0].dateto}}</td>
                       <td></td>
                       <td></td>
-                      <td>{{data[0].click}}</td>
-                      <td>{{data[0].nsignup}}</td>
+                      <td id="tB3click">{{data[0].click}}</td>
+                      <td id="tB3signup">{{data[0].nsignup}}</td>
                       <td></td>
-                      <td>{{data[0].ndepo}}</td>
+                      <td id="tB3depo">{{data[0].ndepo}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[0].ndepo * 100}}</td>
+                      <td class="bg-gray color-palette" id="tB3dollar">{{data[0].ndepo * 100}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
@@ -107,12 +107,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[1].clito}}</td>
-                      <td>{{data[1].regto}}</td>
+                      <td id="t8click">{{data[1].clito}}</td>
+                      <td id="t8register">{{data[1].regto}}</td>
                       <td></td>
-                      <td>{{data[1].balance}}</td>
+                      <td id="t8balance">{{data[1].balance}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[1].balance}}</td>
+                      <td class="bg-gray color-palette" id="t8dollar">{{data[1].balance}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
@@ -120,12 +120,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[2].clito}}</td>
-                      <td>{{data[2].regto}}</td>
+                      <td id="tB10click">{{data[2].clito}}</td>
+                      <td id="tB10register">{{data[2].regto}}</td>
                       <td></td>
-                      <td>{{data[2].commito}}</td>
+                      <td id="tB10commission">{{data[2].commito}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[2].commito * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tB10dollar">{{(data[2].commito * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">5</th>
@@ -133,12 +133,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[3].clito}}</td>
-                      <td>{{data[3].regto}}</td>
+                      <td id="tRealclick">{{data[3].clito}}</td>
+                      <td id="tRealregister">{{data[3].regto}}</td>
                       <td></td>
-                      <td>{{data[3].commito}}</td>
+                      <td id="tRealcommission">{{data[3].commito}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[3].commito * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tRealdollar">{{(data[3].commito * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
@@ -146,12 +146,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[13].clito}}</td>
-                      <td>{{data[13].regito}}</td>
+                      <td id="tSkyclick">{{data[13].clito}}</td>
+                      <td id="tSkyregister">{{data[13].regito}}</td>
                       <td></td>
-                      <td>{{data[13].commito}}</td>
+                      <td id="tSkycommission">{{data[13].commito}}</td>
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[13].commito * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tSkydollar">{{(data[13].commito * data[11])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
@@ -237,12 +237,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[8].clito}}</td>
-                      <td>{{data[8].regto}}</td>
+                      <td id="tStanclick">{{data[8].clito}}</td>
+                      <td id="tStanregister">{{data[8].regto}}</td>
                       <td></td>
-                      <td>{{data[8].commito}}</td>
+                      <td id="tStancommission">{{data[8].commito}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[8].commito}}</td>
+                      <td class="bg-gray color-palette" id="tStandollar">{{data[8].commito}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
@@ -250,12 +250,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[9].clito}}</td>
-                      <td>{{data[9].regto}}</td>
+                      <td id="tCoralclick">{{data[9].clito}}</td>
+                      <td id="tCoralregister">{{data[9].regto}}</td>
                       <td></td>
-                      <td>{{data[9].commito}}</td>
+                      <td id="tCoralcommission">{{data[9].commito}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[9].commito}}</td>
+                      <td class="bg-gray color-palette" id="tCoraldollar">{{data[9].commito}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
@@ -263,12 +263,12 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[5].clito}}</td>
-                      <td>{{data[5].regto}}</td>
+                      <td id="tBFclick">{{data[5].clito}}</td>
+                      <td id="tBFregister">{{data[5].regto}}</td>
                       <td></td>
-                      <td>{{data[5].commito}}</td>
+                      <td id="tBFcommission">{{data[5].commito}}</td>
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[5].commito * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tBFdollar">{{(data[5].commito * data[11])|round(2, 'floor')}}</td>
                     </tr>
                   </tbody>
                   <tfoot>
