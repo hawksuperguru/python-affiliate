@@ -42,8 +42,7 @@
                     <tr>
                       <th style="text-align: center;" class="bg-maroon disabled color-palette">No</th>
                       <th style="text-align: center;" class="bg-yellow">Site</th>
-                      <th style="text-align: center;" class="bg-yellow">Start date</th>
-                      <th style="text-align: center;" class="bg-yellow">End date</th>
+                      <th style="text-align: center;" class="bg-yellow">Date</th>
                       <th style="text-align: center;" class="bg-yellow">Position on betfy</th>
                       <th style="text-align: center;" class="bg-yellow">Googel Analytics Clicks</th>
                       <th style="text-align: center;" class="bg-yellow">Clicks</th>
@@ -54,7 +53,216 @@
                       <th style="text-align: center;" class="bg-yellow">Dollars</th>
                     </tr>
                   </thead>
-                  
+                  <tbody>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET365 OTHER</th>
+                      <td>{{data[15].dateto}}</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[15].click}}</td>
+                      <td>{{data[15].nsignup}}</td>
+                      <td></td>
+                      <td>{{data[15].ndepo}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[15].ndepo * 100}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET365</th>
+                      <td>{{data[0].dateto}}</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[0].click}}</td>
+                      <td>{{data[0].nsignup}}</td>
+                      <td></td>
+                      <td>{{data[0].ndepo}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[0].ndepo * 100}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">888</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[1].clito}}</td>
+                      <td>{{data[1].regto}}</td>
+                      <td></td>
+                      <td>{{data[1].balance}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[1].balance}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">10BET</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[2].clito}}</td>
+                      <td>{{data[2].regto}}</td>
+                      <td></td>
+                      <td>{{data[2].commito}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[2].commito * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">5</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">REAL DEAL DATA</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[3].clito}}</td>
+                      <td>{{data[3].regto}}</td>
+                      <td></td>
+                      <td>{{data[3].commito}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[3].commito * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">SYEBET</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[13].clito}}</td>
+                      <td>{{data[13].regito}}</td>
+                      <td></td>
+                      <td>{{data[13].commito}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[13].commito * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[12].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">LADBROKES</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[4].balance}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td class="bg-gray color-palette"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">PADDY POWER</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[6].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[14].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[14].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">TITANBET</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[7].balance}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[7].balance}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">13</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">STAN JAMES</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[8].clito}}</td>
+                      <td>{{data[8].regto}}</td>
+                      <td></td>
+                      <td>{{data[8].commito}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[8].commito}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">CORAL</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[9].clito}}</td>
+                      <td>{{data[9].regto}}</td>
+                      <td></td>
+                      <td>{{data[9].commito}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[9].commito}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BETFRED</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[5].clito}}</td>
+                      <td>{{data[5].regto}}</td>
+                      <td></td>
+                      <td>{{data[5].commito}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[5].commito * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">MTD Total:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">{{(data[5].commito * data[11])|round(2, 'floor') + data[9].commito + data[8].commito + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commito * data[11])|round(2, 'floor') + (data[3].commito * data[10])|round(2, 'floor') + (data[2].commito * data[10])|round(2, 'floor') + data[1].balance + data[0].ndepo + data[15].ndepo * 100}}</th>
+                  </tfoot>
                 </table>
               </div>
             </div>
