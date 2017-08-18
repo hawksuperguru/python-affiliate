@@ -54,6 +54,232 @@
                       <th style="text-align: center;" class="bg-yellow">Dollars</th>
                     </tr>
                   </thead>
+                  <tbody>
+                  <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET365 STATUS</td>
+                      <td>{{data[15].fromdate}}</td>
+                      <td>{{data[15].todate}}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[15].commission * 100}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[15].commission * 100}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">2</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET365</td>
+                      <td>{{data[0].dateto}}</td>
+                      <td>{{data[0].dateto}}</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[0].click}}</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[0].commission}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[0].commission}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">888</td>
+                      <td>5/31/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[1].click}}</td>
+                      <td>{{data[1].registration}}</td>
+                      <td></td>
+                      <td>{{data[1].balance}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[1].balance}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">10BET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[2].click}}</td>
+                      <td>{{data[2].registration}}</td>
+                      <td></td>
+                      <td>{{data[2].commission}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">5</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">REAL DEAL DATA</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[3].click}}</td>
+                      <td>{{data[3].registration}}</td>
+                      <td></td>
+                      <td>{{data[3].commission}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">SYEBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[13].click}}</td>
+                      <td>{{data[13].registration}}</td>
+                      <td></td>
+                      <td>{{data[13].commission}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[12].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">LADBROKES</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[4].balance}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td class="bg-gray color-palette"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">PADDY POWER</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[6].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[14].balance}}</td>
+                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[14].balance * data[10])|round(2, 'floor')}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">TITANBET</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[7].balance}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[7].balance}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">13</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">STAN JAMES</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[8].click}}</td>
+                      <td>{{data[8].registration}}</td>
+                      <td></td>
+                      <td>{{data[8].commission}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[8].commission}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">CORAL</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[9].click}}</td>
+                      <td>{{data[9].registration}}</td>
+                      <td></td>
+                      <td>{{data[9].commission}}</td>
+                      <td>{{data[16][0]}}</td>
+                      <td class="bg-gray color-palette">{{data[9].commission}}</td>
+                    </tr>
+                    <tr style="text-align: center;">
+                      <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">BETFRED</td>
+                      <td>6/1/2017</td>
+                      <td>6/30/2017</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{data[5].click}}</td>
+                      <td>{{data[5].registration}}</td>
+                      <td></td>
+                      <td>{{data[5].commission}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette">{{(data[5].commission * data[11])|round(2, 'floor')}}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">MTD Total:</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="text-align: center;" class="bg-green">{{(data[5].commission * data[11])|round(2, 'floor') + data[9].commission + data[8].commission + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commission * data[11])|round(2, 'floor') + (data[3].commission * data[10])|round(2, 'floor') + (data[2].commission * data[10])|round(2, 'floor') + data[1].balance + data[0].commission + data[15].commission * 100}}</th>
+                  </tfoot>
                 </table>
               </div>
             </div>
