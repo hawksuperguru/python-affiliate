@@ -39,7 +39,7 @@ def netbet_scrapping():
             # tmp = pattern.search(balance)
             # balance = tmp.group(0)
             # print(balance)
-            time.sleep(5)
+            time.sleep(10)
             assert "Live Partners - Dashboard" in Netbet.title
             print(Netbet.title)
             header = Netbet.find_element_by_class_name('dshb_icoNav')
