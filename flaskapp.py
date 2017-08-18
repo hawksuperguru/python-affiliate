@@ -577,6 +577,7 @@ def dashboard():
 
     data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
     return render_template('home.html', data = data)
+    # return render_template('home.html')
 
 
 
