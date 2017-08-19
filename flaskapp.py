@@ -546,7 +546,7 @@ def landing():
     return render_template('/pages/user_sys/login.html')
 
 
-@app.route('/dashboard/')
+@app.route('/dashboard/', methods = ['GET', 'POST'])
 @login_required
 def dashboard():
     bet365 = db.session.query(Bet365).order_by(Bet365.id.desc()).first()
@@ -580,7 +580,7 @@ def dashboard():
 
 
 
-@app.route('/summary/')
+@app.route('/summary/', methods = ['GET', 'POST'])
 def summary():
     bet365 = db.session.query(Bet365).order_by(Bet365.id.desc()).first()
     eight88 = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
@@ -608,10 +608,32 @@ def summary():
 
     valSg = [sg_usd, sg_eur, sg_gbp]
 
-    data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
+    if request.method == 'GET':
+        data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
 
-    return render_template('pages/summary.html', data = data)
+        return render_template('pages/summary.html', data = data)
 
+    if request.method == 'POST':
+        data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/bet365/', methods = ['GET', 'POST'])
@@ -947,7 +969,7 @@ def realDeal():
             "commission" : data.commission,
             "impreytd" : data.impreytd,
             "cliytd" : data.cliytd,
-            "regytd" : data.regytd,
+            "regytd" : data.regiytd,
             "ndytd" : data.ndytd,
             "commiytd" : data.commiytd,
             "impreto" : data.impreto,
