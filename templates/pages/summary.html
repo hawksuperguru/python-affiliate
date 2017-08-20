@@ -89,9 +89,9 @@
                       <td id="t8click">{{data[1].clito}}</td>
                       <td id="t8register">{{data[1].regto}}</td>
                       <td></td>
-                      <td id="t8balance">{{data[1].balance}}</td>
+                      <td id="t8balance">0.00</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette" id="t8dollar">{{data[1].balance}}</td>
+                      <td class="bg-gray color-palette" id="t8dollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
@@ -121,7 +121,7 @@
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
-                      <th style="text-align: center;" class="bg-teal-active color-palette">SYEBET</td>
+                      <th style="text-align: center;" class="bg-teal-active color-palette">SKYBET</td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -142,8 +142,8 @@
                       <td></td>
                       <td></td>
                       <td>{{data[12].balance}}</td>
-                      <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                      <td>0.00</td>
+                      <td class="bg-gray color-palette" id="tWildollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
@@ -154,9 +154,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[4].balance}}</td>
+                      <td>0.00</td>
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[4].balance * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tLadollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
@@ -180,9 +180,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[6].balance}}</td>
+                      <td>0.00</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tPadollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
@@ -193,9 +193,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[14].balance}}</td>
+                      <td>0.00</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette">{{(data[14].balance * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tNetdollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
@@ -206,9 +206,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[7].balance}}</td>
+                      <td>0.00</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette">{{data[7].balance}}</td>
+                      <td class="bg-gray color-palette" id="tTidollar">0.00</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">13</th>
@@ -261,7 +261,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th style="text-align: center;" class="bg-green">{{(data[5].commito * data[11])|round(2, 'floor') + data[9].commito + data[8].commito + data[7].balance + (data[14].balance * data[10])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[12].balance * data[10])|round(2, 'floor') + (data[13].commito * data[11])|round(2, 'floor') + (data[3].commito * data[10])|round(2, 'floor') + (data[2].commito * data[10])|round(2, 'floor') + data[1].balance + data[0].ndepo + data[15].ndepo * 100}}</th>
+                    <th style="text-align: center;" class="bg-green" id="total">{{(data[5].commito * data[11])|round(2, 'floor') + data[9].commito + data[8].commito + (data[13].commito * data[11])|round(2, 'floor') + (data[3].commito * data[10])|round(2, 'floor') + (data[2].commito * data[10])|round(2, 'floor') + data[0].ndepo + data[15].ndepo * 100}}</th>
                   </tfoot>
                 </table>
               </div>
@@ -272,4 +272,6 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/pages_customize/summary.js') }}"></script>
 {% endblock %}
