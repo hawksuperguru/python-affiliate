@@ -622,7 +622,7 @@ def dashboard():
     valSg = [sg_usd, sg_eur, sg_gbp]
 
     if request.method == 'GET':
-        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg]
+        data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg, bet365Data, bet365otherData]
 
         return render_template('home.html', data = data)
 
