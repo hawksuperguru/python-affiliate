@@ -34,8 +34,8 @@ def bet10_scrapping():
 		for mtd_val in mtds_val.find_elements_by_tag_name("td"):
 			if mtd_val.text != 'Total -':
 				mtd_valArr.append(mtd_val.text)
-		bet10.find_element_by_xpath('//*[@id="dashboard"]/div[1]/div[1]/div/div[1]/div/div/select[1]/option[3]').click()
-		time.sleep(65)
+		bet10.find_element_by_xpath('//*[@id="dashboard"]/div[1]/div[1]/div/div[1]/div/div/select[1]/option[4]').click()
+		time.sleep(60)
 		table = bet10.find_element(by=By.ID, value = "dashboard_quick_stats")
 		mtds_val = table.find_element(by=By.CLASS_NAME, value = "row_light_color")
 		for mtd_val in mtds_val.find_elements_by_tag_name("td"):
