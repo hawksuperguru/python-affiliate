@@ -32,7 +32,7 @@ def william_scrapping():
                 pwd.send_keys("dontfuckwithme")
                 pwd.send_keys(Keys.RETURN)
                 
-                waiter = wait(William, 30)
+                waiter = wait(William, 60)
                 uniSign = unicode("€", encoding='utf-8')
                 waiter.until(EC.text_to_be_present_in_element((By.XPATH, "//*[@id='ebContainer_latest']/div[1]/a/div/span[1]"), uniSign))
                 balance = William.find_element_by_xpath("//*[@id='ebContainer_latest']/div[1]/a/div/span[1]").text
