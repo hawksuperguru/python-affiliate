@@ -21,20 +21,26 @@
       </div>
       <section class="content">
         <div class="panel-body">
+          <div class="panel-group">
+            <div class="input-group date col-sm-4">
+              <div class="input-group-addon bg-green color-palette">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" class="form-control pull-right" id="datepicker" placeholder="Please select your date...">
+            </div>
+            <label class="date_range"></label>
+            <div class="input-group col-sm-4">
+              <div class="input-group-addon bg-green color-palette">
+                <i class="fa fa-calendar-minus-o"></i>
+              </div>
+              <select class="form-control periodpicker">
+                <option value="1" selected="">MTD</option>
+                <option value="2">YTD</option>
+              </select>
+            </div>          
+          </div>
           <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="panel-group">
-              <label class="date_range"></label>
-              <div class="input-group col-sm-4">
-                <div class="input-group-addon bg-green color-palette">
-                  <i class="fa fa-calendar-minus-o"></i>
-                </div>
-                <select class="selectpicker" title="Choose one of the following...">
-                  <option value="1" selected="">TODAY</option>
-                  <option value="2">MTD</option>
-                  <option value="3">YTD</option>
-                </select>
-              </div>
-            </div>
             <div class="row">
               <div class="col-sm-12">
                 <table id="example1" class="table table-bordered table-striped" role="grid" aria-describedby="example1_info">
@@ -57,7 +63,7 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365 OTHER</th>
-                      <td id="tB3Odate">{{data[15].dateto}}</td>
+                      <td id="tB3Odate">{{data[15].datefield}}</td>
                       <td></td>
                       <td></td>
                       <td id="tB3Oclick">{{data[15].click}}</td>
@@ -70,7 +76,7 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365</th>
-                      <td id="tB3date">{{data[0].dateto}}</td>
+                      <td id="tB3date">{{data[0].datefield}}</td>
                       <td></td>
                       <td></td>
                       <td id="tB3click">{{data[0].click}}</td>
@@ -86,21 +92,21 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td id="t8click">{{data[1].clito}}</td>
-                      <td id="t8register">{{data[1].regto}}</td>
+                      <td id="t8click">{{data[1].click}}</td>
+                      <td id="t8register">{{data[1].registration}}</td>
                       <td></td>
-                      <td id="t8balance">0.00</td>
+                      <td id="t8balance">{{data[1].balance}}</td>
                       <td>{{data[16][0]}}</td>
-                      <td class="bg-gray color-palette" id="t8dollar">0.00</td>
+                      <td class="bg-gray color-palette" id="t8dollar">{{data[1].balance}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">10BET</td>
+                      <td>{{ data[2].dateto }}</td>
                       <td></td>
                       <td></td>
-                      <td></td>
-                      <td id="tB10click">{{data[2].clito}}</td>
-                      <td id="tB10register">{{data[2].regto}}</td>
+                      <td id="tB10click">{{data[2].click}}</td>
+                      <td id="tB10register">{{data[2].registration}}</td>
                       <td></td>
                       <td id="tB10commission">{{data[2].commito}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>

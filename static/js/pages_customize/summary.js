@@ -1,6 +1,6 @@
 let Summary = (() => {
 	const _baseUrl = "/";
-	let $_selectPicker = $(".selectpicker");
+	let $_periodpicker = $(".periodpicker");
 	let $tB3Odate = $("#tB3Odate");
 	let $tB3Oclick = $("#tB3Oclick");
 	let $tB3Osignup = $("#tB3Osignup");
@@ -48,28 +48,71 @@ let Summary = (() => {
 
 	const sendRequest = (endPoint, params, callback) => {
 		$.ajax({
-			url: _baseUrl + endPoint,
-			data: JSON.stringify(params),
-			contentType: "application/json",
-			type: 'POST',
-			success: (response) => {
+			url : _baseUrl + endPoint,
+			data : JSON.stringify(params),
+			contentType : "application/json",
+			type : "POST",
+			success : (response) => {
 				if (!response.status) {
 					alert(response.message);
+					$tB3Odate.text("");
+					$tB3Oclick.text("");
+					$tB3Osignup.text("");
+					$tB3Odepo.text("");
+					$tB3Odollar.text("");
+					$tB3date.text("");
+					$tB3click.text("");
+					$tB3signup.text("");
+					$tB3depo.text("");
+					$tB3dollar.text("");
+					$t8click.text("");
+					$t8register.text("");
+					$t8balance.text("");
+					$t8dollar.text("");
+					$tB10click.text("");
+					$tB10register.text("");
+					$tB10commission.text("");
+					$tB10dollar.text("");
+					$tRealclick.text("");
+					$tRealregister.text("");
+					$tRealcommission.text("");
+					$tRealdollar.text("");
+					$tSkyclick.text("");
+					$tSkyregister.text("");
+					$tSkycommission.text("");
+					$tSkydollar.text("");
+					$tWildollar.text("");
+					$tLadollar.text("");
+					$tPadollar.text("");
+					$tNetdollar.text("");
+					$tTidollar.text("");
+					$tStanclick.text("");
+					$tStanregister.text("");
+					$tStancommission.text("");
+					$tStandollar.text("");
+					$tCoralclick.text("");
+					$tCoralregister.text("");
+					$tCoralcommission.text("");
+					$tCoraldollar.text("");
+					$tBFclick.text("");
+					$tBFregister.text("");
+					$tBFcommission.text("");
+					$tBFdollar.text("");
+					$total.text("");
 				}
 				else if (typeof callback === 'function') {
 					callback(response.jsonData);
 				}
 			},
-			error: (error) => {
-				alert("failure");
-				
+			error : (error) => {
+				alert("Something went wrong....");
 			},
 		});
 	}
 
 	const selectPicker = (val) => {
 		sendRequest("summary/", {"val" : val}, (results) => {
-			let val = $_selectPicker.val();
+			let val = $_periodpicker.val();
 			$tB3Odate.text(results[0].tB3Odate);
 			$tB3Oclick.text(results[0].tB3Oclick);
 			$tB3Osignup.text(results[0].tB3Osignup);
@@ -133,8 +176,8 @@ let Summary = (() => {
 
 	const init = () => {
 		$(document)
-		.on("change", ".selectpicker", (event) => {
-			let val = $_selectPicker.val();
+		.on("change", ".periodpicker", (event) => {
+			let val = $_periodpicker.val();
 			selectPicker(val);
 		})
 	}

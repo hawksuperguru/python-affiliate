@@ -28,19 +28,26 @@
     </div>
 
     <div class="panel-body">
-    <div class="panel-group">
-          <label class="date_range"></label>
-          <div class="input-group col-sm-4">
+      <div class="panel-group">
+        <div class="panel-group">
+      <div class="input-group date col-sm-3">
             <div class="input-group-addon bg-green color-palette">
-              <i class="fa fa-calendar-minus-o"></i>
+              <i class="fa fa-calendar"></i>
             </div>
-            <select class="selectpicker" title='Choose one of the following...'>
-              <option value="1" selected="">MTD</option>
-              <option value="2">YTD</option>
-              <option value="3">TODAY</option>
-            </select>
+            <input type="text" class="form-control pull-right" id="datepicker" placeholder="Please select your date...">
           </div>
+        <label class="date_range"></label>
+        <div class="input-group col-sm-3">
+          <div class="input-group-addon bg-green color-palette">
+            <i class="fa fa-calendar-minus-o"></i>
+          </div>
+          <select class="form-control periodpicker">
+            <option value="1" selected="">MTD</option>
+            <option value="2">YTD</option>
+          </select>
+        </div>          
         </div> 
+      </div> 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">

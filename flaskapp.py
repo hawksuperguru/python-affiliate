@@ -84,7 +84,6 @@ class Bet365(db.Model):
         self.commission = commission
 
 
-
 class Bet365Other(db.Model):
     __tablename__ = "bet365others"
     id = db.Column(db.Integer, primary_key=True)
@@ -201,8 +200,9 @@ class Bet10(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -219,6 +219,7 @@ class Bet10(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class RealDeal(db.Model):
@@ -240,8 +241,9 @@ class RealDeal(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -258,6 +260,7 @@ class RealDeal(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 
@@ -289,8 +292,9 @@ class BetFred(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -307,6 +311,7 @@ class BetFred(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class Paddy(db.Model):
@@ -355,8 +360,9 @@ class Stan(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -373,6 +379,7 @@ class Stan(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class Coral(db.Model):
@@ -394,8 +401,9 @@ class Coral(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -412,6 +420,7 @@ class Coral(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class William(db.Model):
@@ -442,8 +451,9 @@ class SkyBet(db.Model):
     regito = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -460,6 +470,7 @@ class SkyBet(db.Model):
         self.regito = regito
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 def login_required(f):
@@ -889,89 +900,62 @@ def summary():
     valSg = [sg_usd, sg_eur, sg_gbp]
 
     if request.method == 'GET':
-        data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
+        bet365Data = db.session.execute("""SELECT 
+                    SUM(click)::int as click,
+                    SUM(nSignup)::int as nsignup,
+                    SUM(nDepo)::int as ndepo,
+                    SUM(valDepo)::int as valdepo,
+                    SUM(numDepo)::int as numdepo,
+                    SUM(spotsTurn)::int as spotsturn,
+                    SUM(numsptbet)::int as numsptbet,
+                    SUM(acsptusr)::int as acsptusr,
+                    SUM(sptnetrev)::int as sptnetrev,
+                    SUM(casinonetrev)::int as casinonetrev,
+                    SUM(pokernetrev)::int as pokernetrev,
+                    SUM(bingonetrev)::int as bingonetrev,
+                    SUM(netrev)::int as netrev,
+                    SUM(afspt)::int as afspt,
+                    SUM(afcasino)::int as afcasino,
+                    SUM(afpoker)::int as afpoker,
+                    SUM(afbingo)::int as afbingo,
+                    SUM(commission)::int as commission,
+                    EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+                FROM bet365s
+                GROUP BY datefield
+                ORDER By datefield DESC LIMIT 1;""").first()
 
+        bet365otherData = db.session.execute("""SELECT 
+                SUM(click)::int as click,
+                SUM(nSignup)::int as nsignup,
+                SUM(nDepo)::int as ndepo,
+                SUM(valDepo)::int as valdepo,
+                SUM(numDepo)::int as numdepo,
+                SUM(spotsTurn)::int as spotsturn,
+                SUM(numsptbet)::int as numsptbet,
+                SUM(acsptusr)::int as acsptusr,
+                SUM(sptnetrev)::int as sptnetrev,
+                SUM(casinonetrev)::int as casinonetrev,
+                SUM(pokernetrev)::int as pokernetrev,
+                SUM(bingonetrev)::int as bingonetrev,
+                SUM(netrev)::int as netrev,
+                SUM(afspt)::int as afspt,
+                SUM(afcasino)::int as afcasino,
+                SUM(afpoker)::int as afpoker,
+                SUM(afbingo)::int as afbingo,
+                SUM(commission)::int as commission,
+                EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+            FROM bet365others
+            GROUP BY datefield
+            ORDER By datefield DESC LIMIT 1;""").first()
+
+        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg]
+     
         return render_template('pages/summary.html', data = data)
 
     if request.method == 'POST':
         val = request.json['val']
+
         if val == "1":
-            bet365Date = (bet365.dateto).strftime('%Y-%m-%d')
-            bet365OtherDate = (bet365other.dateto).strftime('%Y-%m-%d')
-            tB3Odollar = bet365other.ndepo * 100
-            tB3dollar = bet365.ndepo * 100
-            tB10dollar = "%.2f" % round(bet10.commito * eur, 2)
-            tRealdollar = "%.2f" % round(realDeal.commito * eur, 2)
-            tSkydollar = "%.2f" % round(skyBet.commito * gbp, 2)
-            tStandollar = stan.commito
-            tBFdollar = "%.2f" % round(betFred.commito * gbp, 2)
-
-            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commito) + float(tBFdollar)
-            total = "%.2f" % round(totalVal, 2)
-
-            jsonData = []
-            jsonData.append({
-                "tB3Odate" : bet365OtherDate,
-                "tB3Oclick" : bet365other.click,
-                "tB3Osignup" : bet365other.nsignup,
-                "tB3Odepo" : bet365other.ndepo,
-                "tB3Odollar" : tB3Odollar,
-
-                "tB3date" : bet365Date,
-                "tB3click" : bet365.click,
-                "tB3signup" : bet365.nsignup, 
-                "tB3depo" : bet365.ndepo,
-                "tB3dollar" : tB3dollar,
-
-                "t8click" : eight88.clito,
-                "t8register" : eight88.regto,
-                "t8balance" : "0",
-                "t8dollar" : "0",
-
-                "tB10click" : bet10.clito,
-                "tB10register" : bet10.regto,
-                "tB10commission" : bet10.commito,
-                "tB10dollar" : tB10dollar,
-
-                "tRealclick" : realDeal.clito,
-                "tRealregister" : realDeal.regto,
-                "tRealcommission" : realDeal.commito,
-                "tRealdollar" : tRealdollar,
-
-                "tSkyclick" : skyBet.clito,
-                "tSkyregister" : skyBet.regito,
-                "tSkycommission" : skyBet.commito,
-                "tSkydollar": tSkydollar,
-
-                "tWildollar" : "0",
-                
-                "tLadollar" : "0",
-                
-                "tPadollar" : "0",
-                
-                "tNetdollar" : "0",
-                
-                "tTidollar" : "0",
-
-                "tStanclick" : stan.clito,
-                "tStanregister" : stan.regto,
-                "tStancommission" : stan.commito,
-                "tStandollar" : tStandollar,
-
-                "tCoralclick" : coral.clito,
-                "tCoralregister" : coral.regto,
-                "tCoralcommission" : coral.commito,
-                "tCoraldollar" : coral.commito,
-
-                "tBFclick" : betFred.clito,
-                "tBFregister" : betFred.regto,
-                "tBFcommission" : betFred.commito,
-                "tBFdollar" : tBFdollar,
-
-                "total" : total
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif val == "2":
             bet365Data = db.session.execute("""SELECT 
                     SUM(click)::int as click,
                     SUM(nSignup)::int as nsignup,
@@ -1095,7 +1079,7 @@ def summary():
                 "total" : total
             })
             return jsonify(status = True, jsonData = jsonData)
-        elif val == "3":
+        elif val == "2":
             bet365Data = db.session.execute("""SELECT 
                     SUM(click)::int as click,
                     SUM(nSignup)::int as nsignup,
@@ -1515,26 +1499,41 @@ def bet10():
         data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
         return render_template('pages/bet10.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.impreytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
-            "clito" : data.clito,
-            "regto" : data.regto,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(Bet10).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/realDeal/', methods = ['GET', 'POST'])
@@ -1544,26 +1543,41 @@ def realDeal():
         data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
         return render_template('pages/realDeal.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.impreytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regiytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
-            "clito" : data.clito,
-            "regto" : data.regto,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regiytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(RealDeal).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/ladBroke/')
@@ -1579,26 +1593,41 @@ def betFred():
         data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
         return render_template('pages/betFred.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.impreytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
-            "clito" : data.clito,
-            "regto" : data.regto,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(BetFred).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/paddy/')
@@ -1627,26 +1656,41 @@ def stan():
         data = db.session.query(Stan).order_by(Stan.id.desc()).first()
         return render_template('pages/stan.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(Stan).order_by(Stan.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.imprytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.imprto,
-            "clito" : data.clito,
-            "regto" : data.regto,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(Stan).order_by(Stan.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.imprytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(Stan).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.imprto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/coral/', methods = ['GET', 'POST'])
@@ -1656,26 +1700,41 @@ def coral():
         data = db.session.query(Coral).order_by(Coral.id.desc()).first()
         return render_template('pages/coral.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(Coral).order_by(Coral.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.impreytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
-            "clito" : data.clito,
-            "regto" : data.regto,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(Coral).order_by(Coral.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(Coral).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/skyBet/', methods = ['GET', 'POST'])
@@ -1685,26 +1744,41 @@ def skyBet():
         data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
         return render_template('pages/skyBet.html', data = data)
     if request.method == 'POST':
-        data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-        jsonData = []
-        jsonData.append({
-            "impression" : data.impression,
-            "click" : data.click,
-            "registration" : data.registration,
-            "new_deposit" : data.new_deposit,
-            "commission" : data.commission,
-            "impreytd" : data.impreytd,
-            "cliytd" : data.cliytd,
-            "regytd" : data.regiytd,
-            "ndytd" : data.ndytd,
-            "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
-            "clito" : data.clito,
-            "regto" : data.regito,
-            "ndto" : data.ndto,
-            "commito" : data.commito
-        })
-        return jsonify(status = True, jsonData = jsonData)
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regiytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(SkyBet).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regito,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/william/')
