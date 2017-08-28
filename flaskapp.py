@@ -658,7 +658,7 @@ def dashboard():
        
         data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg]
 
-        return render_template('pages/summary.html', data = data)
+        return render_template('home.html', data = data)
 
     if request.method == 'POST':
         val = request.json['val']
