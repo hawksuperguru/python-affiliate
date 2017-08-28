@@ -292,7 +292,7 @@ let Summary = (() => {
 			}else{
 				$(this).attr({"style" : "color : red;"})
 			}
-			$total.text(totalVal);
+			$total.text(Math.round(totalVal * 100) / 100);
 		});
 
 		$(document)
