@@ -167,15 +167,15 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</th>
-                      <td class="datefield"></td>
+                      <td class="datefield">{{ data[17].dateto|datetimeformat }}</td>
                       <td></td>
                       <td></td>
+                      <td id="tViclick">{{data[17].click}}</td>
+                      <td id="tViregister">{{data[17].registration}}</td>
                       <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td class="bg-gray color-palette"></td>
+                      <td id="tVicommission">{{data[17].commission}}</td>
+                      <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tVidollar">{{(data[17].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>

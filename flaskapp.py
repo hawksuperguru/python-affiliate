@@ -480,6 +480,47 @@ class SkyBet(db.Model):
         self.dateto = dateto
 
 
+class Victor(db.Model):
+    __tablename__ = "victors"
+    id = db.Column(db.Integer, primary_key=True)
+    merchant = db.Column(db.String(80))
+    impression = db.Column(db.Integer)
+    click = db.Column(db.Integer)
+    registration = db.Column(db.Integer)
+    new_deposit = db.Column(db.Integer)
+    commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
+    dateto = db.Column(db.Date, unique = True)
+
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+        self.merchant = merchant
+        self.impression = impression
+        self.click = click
+        self.registration = registration
+        self.new_deposit = new_deposit
+        self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regytd = regytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
+        self.dateto = dateto
+
+
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -580,6 +621,7 @@ def dashboard():
     william = db.session.query(William).order_by(William.id.desc()).first()
     skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
+    victor = db.session.query(Victor).order_by(Victor.id.desc()).first()
 
     currency = CurrencyRates()
     sg_cur = CurrencyCodes()
@@ -652,11 +694,7 @@ def dashboard():
             GROUP BY datefield
             ORDER By datefield DESC LIMIT 1;""").first()
 
-        # (data[5].commission * data[11])|round(2, 'floor') + data[9].commission + data[8].commission + (data[13].commission * data[11])|round(2, 'floor') + (data[3].commission * data[10])|round(2, 'floor') + (data[2].commission * data[10])|round(2, 'floor') + data[0].ndepo + data[15].ndepo * 100 + data[1].balance + (data[12].balance * data[10])|round(2, 'floor') + (data[4].balance * data[11])|round(2, 'floor') + (data[6].balance * data[10])|round(2, 'floor') + (data[14].balance * data[10])|round(2, 'floor') + data[7].balance
-
-        # totalSum = betFred.commission * gbp + coral.commission + stan.commission + skyBet.commission * gbp + realDeal.commission * eur + bet10.commission * eur + bet365Data.ndepo * 100 + bet365otherData.ndepo * 100 + eight88.balance + william.balance * eur + ladBroke.balance * gbp + paddy.balance * eur + netBet.balance * eur + titanBet.balance
-       
-        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg]
+        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
 
         return render_template('home.html', data = data)
 
@@ -675,9 +713,7 @@ def dashboard():
             coral = db.session.query(Coral).filter_by(dateto = dateVal).first()
             skyBet = db.session.query(SkyBet).filter_by(dateto = dateVal).first()
             bet365other = db.session.query(Bet365Other).filter_by(dateto = dateVal).first()
-            # if not (betFred) or (bet10) or (realDeal) or (betFred) or (stan) or (coral) or (skyBet) or (bet365other):
-            #     return jsonify(status = False, message = "There is no data in your database...?")
-
+            victor = db.session.query(Victor).filter_by(dateto = dateVal).first()
 
             tB3Odollar = bet365other.ndepo * 100
             tB3dollar = bet365.ndepo * 100
@@ -690,6 +726,7 @@ def dashboard():
             tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
             tPadollar = "%.2f" % round(paddy.balance * eur, 2)
             tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+            tVidollar = "%.2f" % round(victor.commito * eur, 2)
 
             jsonData = []
             jsonData.append({
@@ -747,6 +784,11 @@ def dashboard():
                 "tBFregister" : betFred.regto,
                 "tBFcommission" : betFred.commito,
                 "tBFdollar" : tBFdollar,
+
+                "tViclick" : victor.clito,
+                "tViregister" : victor.regto,
+                "tVicommission" : victor.commito,
+                "tVidollar" : tVidollar,
 
                 # "total" : total
             })
@@ -815,6 +857,7 @@ def dashboard():
                 tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
                 tPadollar = "%.2f" % round(paddy.balance * eur, 2)
                 tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+                tVidollar = "%.2f" % round(victor.commission * eur, 2)
 
                 jsonData = []
                 jsonData.append({
@@ -874,6 +917,11 @@ def dashboard():
                     "tBFregister" : betFred.registration,
                     "tBFcommission" : betFred.commission,
                     "tBFdollar" : tBFdollar,
+
+                    "tViclick" : victor.click,
+                    "tViregister" : victor.registration,
+                    "tVicommission" : victor.commission,
+                    "tVidollar" : tVidollar,
 
                     # "total" : total
                 })
@@ -940,9 +988,8 @@ def dashboard():
                 tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
                 tPadollar = "%.2f" % round(paddy.balance * eur, 2)
                 tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+                tVidollar = "%.2f" % round(victor.commiytd * eur, 2)
 
-                # totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commiytd) + float(tBFdollar)
-                # total = "%.2f" % round(totalVal, 2)
 
                 jsonData = []
                 jsonData.append({
@@ -1002,6 +1049,11 @@ def dashboard():
                     "tBFregister" : betFred.regytd,
                     "tBFcommission" : betFred.commiytd,
                     "tBFdollar" : tBFdollar,
+
+                    "tViclick" : victor.cliytd,
+                    "tViregister" : victor.regytd,
+                    "tVicommission" : victor.commiytd,
+                    "tVidollar" : tVidollar,
 
                     # "total" : total
                 })
@@ -1025,6 +1077,7 @@ def summary():
     william = db.session.query(William).order_by(William.id.desc()).first()
     skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
+    victor = db.session.query(Victor).order_by(Victor.id.desc()).first()
 
     currency = CurrencyRates()
     sg_cur = CurrencyCodes()
@@ -1090,7 +1143,7 @@ def summary():
 
         # totalSum = betFred.commission * gbp + coral.commission + stan.commission + skyBet.commission * gbp + realDeal.commission * eur + bet10.commission * eur + bet365Data.ndepo * 100 + bet365otherData.ndepo * 100 + eight88.balance + william.balance * eur + ladBroke.balance * gbp + paddy.balance * eur + netBet.balance * eur + titanBet.balance
        
-        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg]
+        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
 
         return render_template('pages/summary.html', data = data)
 
@@ -1109,6 +1162,7 @@ def summary():
             coral = db.session.query(Coral).filter_by(dateto = dateVal).first()
             skyBet = db.session.query(SkyBet).filter_by(dateto = dateVal).first()
             bet365other = db.session.query(Bet365Other).filter_by(dateto = dateVal).first()
+            victor = db.session.query(Victor).filter_by(dateto = dateVal).first()
             # if not (betFred) or (bet10) or (realDeal) or (betFred) or (stan) or (coral) or (skyBet) or (bet365other):
             #     return jsonify(status = False, message = "There is no data in your database...?")
 
@@ -1124,6 +1178,7 @@ def summary():
             tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
             tPadollar = "%.2f" % round(paddy.balance * eur, 2)
             tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+            tVidollar = "%.2f" % round(victor.commito * gbp, 2)
 
             jsonData = []
             jsonData.append({
@@ -1182,7 +1237,11 @@ def summary():
                 "tBFcommission" : betFred.commito,
                 "tBFdollar" : tBFdollar,
 
-                # "total" : total
+                "tViclick" : victor.clito,
+                "tViregister" : victor.regto,
+                "tVicommission" : victor.commito,
+                "tVidollar" : tVidollar,
+
             })
             return jsonify(status = True, jsonData = jsonData)
 
@@ -1249,6 +1308,7 @@ def summary():
                 tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
                 tPadollar = "%.2f" % round(paddy.balance * eur, 2)
                 tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+                tVidollar = "%.2f" % round(victor.commission * gbp, 2)
 
                 jsonData = []
                 jsonData.append({
@@ -1308,6 +1368,11 @@ def summary():
                     "tBFregister" : betFred.registration,
                     "tBFcommission" : betFred.commission,
                     "tBFdollar" : tBFdollar,
+
+                    "tViclick" : victor.click,
+                    "tViregister" : victor.registration,
+                    "tVicommission" : victor.commission,
+                    "tVidollar" : tVidollar,
 
                     # "total" : total
                 })
@@ -1374,6 +1439,7 @@ def summary():
                 tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
                 tPadollar = "%.2f" % round(paddy.balance * eur, 2)
                 tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
+                tVidollar = "%.2f" % round(victor.commiytd * gbp, 2)
 
                 # totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commiytd) + float(tBFdollar)
                 # total = "%.2f" % round(totalVal, 2)
@@ -1436,6 +1502,11 @@ def summary():
                     "tBFregister" : betFred.regytd,
                     "tBFcommission" : betFred.commiytd,
                     "tBFdollar" : tBFdollar,
+
+                    "tViclick" : victor.cliytd,
+                    "tViregister" : victor.regytd,
+                    "tVicommission" : victor.commiytd,
+                    "tVidollar" : tVidollar,
 
                     # "total" : total
                 })
@@ -2025,10 +2096,49 @@ def william():
     return render_template('pages/william.html', data = data)
 
 
-@app.route('/victor/')
+@app.route('/victor/', methods = ['GET', 'POST'])
 def victor():
-    data = "Woops, credential is not valid. Please tell me account info."
-    return render_template('pages/error.html', data = data)
+    data = {}
+    if request.method == 'GET':
+        data = db.session.query(Victor).order_by(Victor.id.desc()).first()
+        return render_template('pages/victor.html', data = data)
+    if request.method == 'POST':
+        state = request.json["state"]
+        if state == "1":
+            data = db.session.query(Victor).order_by(Victor.id.desc()).first()
+            jsonData = []
+            jsonData.append({
+                "merchant" : data.merchant,
+                "impression" : data.impression,
+                "click" : data.click,
+                "registration" : data.registration,
+                "new_deposit" : data.new_deposit,
+                "commission" : data.commission,
+                "impreytd" : data.impreytd,
+                "cliytd" : data.cliytd,
+                "regytd" : data.regytd,
+                "ndytd" : data.ndytd,
+                "commiytd" : data.commiytd
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif state == "2":
+            dateStr = request.json['val']
+            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
+            data = db.session.query(Victor).filter_by(dateto = dateVal).first()
+            if not data:
+                return jsonify(status = False, message = "There is no data in your database...?")
+            else:
+                jsonData = []
+                jsonData.append({
+                    "merchant" : data.merchant,
+                    "impreto" : data.impreto,
+                    "clito" : data.clito,
+                    "regto" : data.regto,
+                    "ndto" : data.ndto,
+                    "commito" : data.commito
+                })
+                return jsonify(status = True, jsonData = jsonData)
+
 
 
 if __name__ == '__main__':

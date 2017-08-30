@@ -44,6 +44,10 @@ let Summary = (() => {
 	let $tBFregister = $("#tBFregister");
 	let $tBFcommission = $("#tBFcommission");
 	let $tBFdollar = $("#tBFdollar");
+	let $tViclick = $("#tViclick");
+	let $tViregister = $("#tViregister");
+	let $tVicommission = $("#tVicommission");
+	let $tVidollar = $("#tVidollar");
 	let $total = $("#total");
 
 	const sendRequest = (endPoint, params, callback) => {
@@ -99,6 +103,10 @@ let Summary = (() => {
 					$tBFcommission.text("");
 					$tBFdollar.text("");
 					$total.text("");
+					$tViclick.text("");
+					$tViregister.text("");
+					$tVicommission.text("");
+					$tVidollar.text("");
 				}
 				else if (typeof callback === 'function') {
 					callback(response.jsonData);
@@ -170,6 +178,11 @@ let Summary = (() => {
 			$tBFcommission.text(results[0].tBFcommission);
 			$tBFdollar.text(results[0].tBFdollar);
 
+			$tViclick.text(results[0].tViclick);
+			$tViregister.text(results[0].tViregister);
+			$tVicommission.text(results[0].tVicommission);
+			$tVidollar.text(results[0].tVidollar);
+
 			// $total.text(results[0].total)
 			let totalVal = 0;
 			$_selector = $("tbody tr").find(".bg-gray");
@@ -177,6 +190,7 @@ let Summary = (() => {
 				indiVal = parseFloat($(this).html());
 				if (indiVal >= 0){
 					totalVal += indiVal;
+					$(this).attr({"style" : "color : black;"});
 				}else{
 					$(this).attr({"style" : "color : red;"})
 				}
@@ -249,6 +263,13 @@ let Summary = (() => {
 			$tBFregister.text(results[0].tBFregister);
 			$tBFcommission.text(results[0].tBFcommission);
 			$tBFdollar.text(results[0].tBFdollar);
+
+			$tViclick.text(results[0].tViclick);
+			$tViregister.text(results[0].tViregister);
+			$tVicommission.text(results[0].tVicommission);
+			$tVidollar.text(results[0].tVidollar);
+
+
 			$(".periodpicker").children().remove();
 			$(".periodpicker").append(
 				$("<option/>")
@@ -271,8 +292,9 @@ let Summary = (() => {
 				indiVal = parseFloat($(this).html());
 				if (indiVal >= 0){
 					totalVal += indiVal;
+					$(this).attr({"style" : "color : black;"});
 				}else{
-					$(this).attr({"style" : "color : red;"})
+					$(this).attr({"style" : "color : red;"});
 				}
 				$total.text(Math.round(totalVal * 100) / 100);
 			});
@@ -289,6 +311,7 @@ let Summary = (() => {
 			indiVal = parseFloat($(this).html());
 			if (indiVal >= 0){
 				totalVal += indiVal;
+				$(this).attr({"style" : "color : black;"});
 			}else{
 				$(this).attr({"style" : "color : red;"})
 			}
