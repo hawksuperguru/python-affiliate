@@ -39,7 +39,7 @@ def bet365_other_scrapping():
 
 		toDate = bet365.find_element_by_id('m_mainPlaceholder_ToDate').get_attribute('value')
 		toDateObj = datetime.datetime.strptime(toDate, '%d/%m/%Y').date()
-		delta = datetime.timedelta(days = 5)
+		delta = datetime.timedelta(days = 2)
 		aDayAgo = toDateObj - delta
 		aDayAgoObj = aDayAgo.strftime("%d/%m/%Y")
 
