@@ -41,14 +41,20 @@
     <section class="content">
       <div class="panel-body">
         <div class="panel-group">
-            <div class="input-group date col-sm-4">
+          <!-- <div class="input-group date col-sm-4">
             <div class="input-group-addon bg-green color-palette">
               <i class="fa fa-calendar"></i>
             </div>
             <input type="text" class="form-control pull-right" id="datepicker" placeholder="Please select your date...">
+          </div> -->
+          <div class="input-group col-sm-6">
+            <div class="input-group-addon bg-green color-palette">
+              <i class="fa fa-calendar"></i>
+            </div>
+            <input type="text" class="form-control pull-right" id="reservation" placeholder="Please select your date range...">
           </div>
           <label class="date_range"></label>
-          <div class="input-group col-sm-4">
+          <div class="input-group col-sm-6">
             <div class="input-group-addon bg-green color-palette">
               <i class="fa fa-calendar-minus-o"></i>
             </div>
@@ -68,7 +74,6 @@
                     <tr>
                       <th style="text-align: center;" class="bg-maroon disabled color-palette">No</th>
                       <th style="text-align: center;" class="bg-yellow">Site</th>
-                      <th style="text-align: center;" class="bg-yellow">Date</th>
                       <th style="text-align: center;" class="bg-yellow">Position on betfy</th>
                       <th style="text-align: center;" class="bg-yellow">Googel Analytics Clicks</th>
                       <th style="text-align: center;" class="bg-yellow">Clicks</th>
@@ -83,7 +88,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365 OTHER</th>
-                      <td id="tB3Odate">{{data[15].datefield}}</td>
                       <td></td>
                       <td></td>
                       <td id="tB3Oclick">{{data[15].click}}</td>
@@ -96,7 +100,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365</th>
-                      <td id="tB3date">{{data[0].datefield}}</td>
                       <td></td>
                       <td></td>
                       <td id="tB3click">{{data[0].click}}</td>
@@ -109,7 +112,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">888</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td id="t8click">{{data[1].click}}</td>
@@ -122,7 +124,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">10BET</th>
-                      <td class="datefield">{{ data[2].dateto|datetimeformat }}</td>
                       <td></td>
                       <td></td>
                       <td id="tB10click">{{data[2].click}}</td>
@@ -135,7 +136,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">5</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">REAL DEAL DATA</th>
-                      <td class="datefield">{{ data[3].dateto|datetimeformat }}</td>
                       <td></td>
                       <td></td>
                       <td id="tRealclick">{{data[3].click}}</td>
@@ -148,7 +148,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">SKYBET</th>
-                      <td class="datefield">{{ data[13].dateto|datetimeformat }}</td>
                       <td></td>
                       <td></td>
                       <td id="tSkyclick">{{data[13].click}}</td>
@@ -161,7 +160,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -174,7 +172,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">LADBROKES</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -187,7 +184,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</th>
-                      <td class="datefield">{{ data[17].dateto|datetimeformat }}</td>
                       <td></td>
                       <td></td>
                       <td id="tViclick">{{data[17].click}}</td>
@@ -200,7 +196,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">PADDY POWER</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -213,7 +208,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -226,7 +220,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">TITANBET</th>
-                      <td class="datefield"></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -239,7 +232,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">13</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">STAN JAMES</th>
-                      <td class="datefield">{{data[8].dateto|datetimeformat}}</td>
                       <td></td>
                       <td></td>
                       <td id="tStanclick">{{data[8].click}}</td>
@@ -252,7 +244,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">CORAL</th>
-                      <td class="datefield">{{data[9].dateto|datetimeformat}}</td>
                       <td></td>
                       <td></td>
                       <td id="tCoralclick">{{data[9].click}}</td>
@@ -265,7 +256,6 @@
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BETFRED</th>
-                      <td class="datefield">{{data[5].dateto|datetimeformat}}</td>
                       <td></td>
                       <td></td>
                       <td id="tBFclick">{{data[5].click}}</td>
@@ -279,7 +269,6 @@
                   <tfoot>
                     <th></th>
                     <th style="text-align: center;" class="bg-green">MTD Total:</th>
-                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>

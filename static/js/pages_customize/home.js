@@ -1,12 +1,10 @@
 let Summary = (() => {
 	const _baseUrl = "/";
 	let $_periodpicker = $(".periodpicker");
-	let $tB3Odate = $("#tB3Odate");
 	let $tB3Oclick = $("#tB3Oclick");
 	let $tB3Osignup = $("#tB3Osignup");
 	let $tB3Odepo = $("#tB3Odepo");
 	let $tB3Odollar = $("#tB3Odollar");
-	let $tB3date = $("#tB3date");
 	let $tB3click = $("#tB3click");
 	let $tB3signup = $("#tB3signup");
 	let $tB3depo = $("#tB3depo");
@@ -59,12 +57,10 @@ let Summary = (() => {
 			success : (response) => {
 				if (!response.status) {
 					alert(response.message);
-					$tB3Odate.text("");
 					$tB3Oclick.text("");
 					$tB3Osignup.text("");
 					$tB3Odepo.text("");
 					$tB3Odollar.text("");
-					$tB3date.text("");
 					$tB3click.text("");
 					$tB3signup.text("");
 					$tB3depo.text("");
@@ -121,13 +117,11 @@ let Summary = (() => {
 	const selectPicker = (val) => {
 		sendRequest("dashboard/", {"val" : val, "state" : "2"}, (results) => {
 			let val = $_periodpicker.val();
-			$tB3Odate.text(results[0].tB3Odate);
 			$tB3Oclick.text(results[0].tB3Oclick);
 			$tB3Osignup.text(results[0].tB3Osignup);
 			$tB3Odepo.text(results[0].tB3Odepo);
 			$tB3Odollar.text(results[0].tB3Odollar);
 
-			$tB3date.text(results[0].tB3date);
 			$tB3click.text(results[0].tB3click);
 			$tB3signup.text(results[0].tB3signup);
 			$tB3depo.text(results[0].tB3depo);
@@ -196,19 +190,14 @@ let Summary = (() => {
 				}
 				$total.text(Math.round(totalVal * 100) / 100);
 			});
-			dateCheck = $tB3Odate.html();
-			$(".datefield").html(dateCheck);
-			$("#datepicker").datepicker({ dateFormat: "m/d/Y", changeMonth: true,
-            changeYear: true, yearRange: '1900:2020', defaultDate: ''}).val("");
-			// if (dateCheck.indexOf("/") != -1){
-			// 	// $(".date").html(dateCheck);			
-			// }
+			$("#reservation").datepicker({ dateFormat: "m/d/Y", changeMonth: true,
+            changeYear: true, yearRange: '1900:2020', defaultDate: ''}).val("");			
 		});
 	}
 
 	const datePicker = (val) => {
 		sendRequest("dashboard/", {"val" : val, "state" : "1"}, (results) => {
-			let val = $("#datepicker").val();
+			let val = $("#reservation").val();
 			$tB3Oclick.text(results[0].tB3Oclick);
 			$tB3Osignup.text(results[0].tB3Osignup);
 			$tB3Odepo.text(results[0].tB3Odepo);
@@ -298,9 +287,6 @@ let Summary = (() => {
 				}
 				$total.text(Math.round(totalVal * 100) / 100);
 			});
-			$tB3Odate.html(val);
-			$tB3date.html(val);
-			$(".datefield").html(val);
 		});
 	}
 
@@ -324,8 +310,8 @@ let Summary = (() => {
 			selectPicker(val);
 		})
 
-		.on("change", "#datepicker", (event) => {
-			let val = $("#datepicker").val();
+		.on("click", ".applyBtn", (event) => {
+			let val = $("#reservation").val();
 			datePicker(val);
 		})
 	}
@@ -340,31 +326,6 @@ let Summary = (() => {
 })(window, jQuery);
 
 $(function () {
-  $('#reservation').daterangepicker()
-  //Date range picker with time picker
-  $('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' })
-  //Date range as a button
-  $('#daterange-btn').daterangepicker(
-    {
-      ranges   : {
-        'Today'       : [moment(), moment()],
-        'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month'  : [moment().startOf('month'), moment().endOf('month')],
-        'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      },
-      startDate: moment().subtract(29, 'days'),
-      endDate  : moment()
-    },
-    function (start, end) {
-      $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-    }
-  )
-
-  //Date picker
-  $('#datepicker').datepicker({
-    autoclose: true
-  })
-
+  $("#reservation").daterangepicker({ dateFormat: "m/d/Y", changeMonth: true,
+            changeYear: true, yearRange: '1900:2020', defaultDate: ''}).val("");
 })
