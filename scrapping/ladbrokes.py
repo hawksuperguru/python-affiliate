@@ -14,32 +14,32 @@ import os, re, time
 
 
 def ladbrokes_scrapping():
-        display = Display(visible = 0, size = (1200, 900))
-        display.start()
-        try:
-                Ladbrokes = webdriver.Chrome(executable_path=os.path.abspath("/usr/bin/chromedriver"))
-                Ladbrokes.set_window_size(1120, 550)
-                Ladbrokes.get("http://www.ladbrokespartners.com")
-                Ladbrokes.find_element_by_class_name("top-login-link").click()
-                Ladbrokes.implicitly_wait(10)
-                time.sleep(5)
-                Ladbrokes.find_element_by_id("loginusername").send_keys("betfyuk")
-                time.sleep(2)
-                Ladbrokes.find_element_by_id("loginPassword").send_keys("WjewEEUV")
-                time.sleep(1)
-                pwd = Ladbrokes.find_element_by_id("loginPassword")
-                pwd.send_keys(Keys.RETURN)
-                waiter = wait(Ladbrokes, 15)
-                time.sleep(4)
-                currentEaring = Ladbrokes.find_element_by_xpath('//div[@ng-bind="currentEarning"]').text
-                pattern = re.compile(r'[\d\.\d]+')
-                tmp = pattern.search(currentEaring)
-                currentEaring = tmp.group(0)
-                print(currentEaring)
-                return currentEaring
-        finally:
-                Ladbrokes.quit()
-                display.stop()
+    display = Display(visible = 0, size = (1200, 900))
+    display.start()
+    try:
+        Ladbrokes = webdriver.Chrome(executable_path=os.path.abspath("/usr/bin/chromedriver"))
+        Ladbrokes.set_window_size(1120, 550)
+        Ladbrokes.get("http://www.ladbrokespartners.com")
+        Ladbrokes.find_element_by_class_name("top-login-link").click()
+        Ladbrokes.implicitly_wait(10)
+        time.sleep(5)
+        Ladbrokes.find_element_by_id("loginusername").send_keys("betfyuk")
+        time.sleep(2)
+        Ladbrokes.find_element_by_id("loginPassword").send_keys("WjewEEUV")
+        time.sleep(1)
+        pwd = Ladbrokes.find_element_by_id("loginPassword")
+        pwd.send_keys(Keys.RETURN)
+        waiter = wait(Ladbrokes, 15)
+        time.sleep(4)
+        currentEaring = Ladbrokes.find_element_by_xpath('//div[@ng-bind="currentEarning"]').text
+        pattern = re.compile(r'[\d\.\d]+')
+        tmp = pattern.search(currentEaring)
+        currentEaring = tmp.group(0)
+        print(currentEaring)
+        return currentEaring
+    finally:
+        Ladbrokes.quit()
+        display.stop()
 
 data = ladbrokes_scrapping()
 balance = data
