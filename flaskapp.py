@@ -12,10 +12,11 @@ from flask_migrate import Migrate, MigrateCommand
 import jinja2
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SECRET_KEY'] = 'super secret key'
+app.config.from_object('config')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SESSION_TYPE'] = 'filesystem'
+# app.config['SECRET_KEY'] = 'super secret key'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
