@@ -12,6 +12,7 @@ from pyvirtualdisplay import Display
 from sqlalchemy import create_engine
 import psycopg2, time
 import os, datetime, re
+from settings.config import *
 
 class Bet10Spider():
     """docstring for Bet10Spider"""
@@ -115,8 +116,7 @@ class Bet10Spider():
         commito = float(self.table_values[16])
         dateto = datetime.datetime.strptime(self.get_delta_date(), '%Y/%m/%d').date()
 
-        engine = create_engine('postgresql://postgres:postgres@localhost/kyan')
-        # engine = create_engine('mysql+pymysql://root:@localhost/kyan')
+        engine = create_engine(get_database_connection_string())
         result = engine.execute("INSERT INTO bet10s (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
 
     def parse(self):

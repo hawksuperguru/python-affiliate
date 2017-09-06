@@ -5,6 +5,7 @@ from selenium_browser import UBrowse
 from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
+from settings.config import *
 
 import psycopg2
 import datetime
@@ -77,8 +78,7 @@ class Bet365Spider(object):
         # val = [param_date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission]
 
         date = datetime.datetime.strptime(self.client.get_delta_date(1, "%d/%m/%Y"), '%d/%m/%Y').date()
-        # engine = create_engine('postgresql://postgres:root@localhost/kyan')
-        engine = create_engine('postgresql://postgres:postgres@localhost/kyan')
+        engine = create_engine(get_database_connection_string())
         
         if table_name == "bet365s":
             result = engine.execute("INSERT INTO bet365s (dateto, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission)
