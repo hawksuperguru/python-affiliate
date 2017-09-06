@@ -175,8 +175,6 @@ class BetFred(object):
         regytd = int(self.items[9])
         ndytd = int(self.items[10])
         commiytdStr = str(self.items[11]).replace(',', '')
-
-        pattern = re.compile(r'[\-\d.\d]+')
         commiytd = float(pattern.search(commiytdStr).group(0))
         impreto = int(self.items[12])
         clito = int(self.items[13])
