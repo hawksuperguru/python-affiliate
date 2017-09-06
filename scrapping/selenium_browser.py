@@ -6,6 +6,7 @@ from pyvirtualdisplay import Display
 
 import datetime
 import time
+from settings.config import *
 
 
 class UBrowse(object):
@@ -15,11 +16,11 @@ class UBrowse(object):
         prefs = {"profile.managed_default_content_settings.images":2}
         chrome_option.add_experimental_option("prefs",prefs)
 
-        # self.display = Display(visible=0, size=(1200, 900))
-        # self.display.start()
+        if ENV != 'dev':
+            self.display = Display(visible=0, size=(1200, 900))
+            self.display.start()
 
-        # self.driver = webdriver.Chrome(executable_path = "./chrome/chromedriver", chrome_options=chrome_option)
-        self.driver = webdriver.Chrome(executable_path = "../chrome/chromedriver.exe", chrome_options=chrome_option)
+        self.driver = webdriver.Chrome(executable_path = CHROME_DRIVER_PATH, chrome_options=chrome_option)
 
     def create_screenshot(self, action):
         stime = datetime.datetime.now()
@@ -43,7 +44,9 @@ class UBrowse(object):
         return (today - diff).strftime(formatString)
 
     def close(self):
-        # self.display.stop()
+        if ENV != 'dev':
+            self.display.stop()
+
         self.driver.quit()
         # print("Browser client closed...")
 

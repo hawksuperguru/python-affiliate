@@ -10,6 +10,7 @@ if ENV == 'dev':
     DB_USERNAME = 'postgres'
     DB_PASSWORD = 'postgres'
     DB_HOST = 'localhost'
+    CHROME_DRIVER_PATH = "../chrome/chromedriver.exe"
 elif ENV == 'staging':
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
@@ -17,6 +18,7 @@ elif ENV == 'staging':
     DB_USERNAME = 'postgres'
     DB_PASSWORD = 'postgres'
     DB_HOST = 'localhost'
+    CHROME_DRIVER_PATH = "./chrome/chromedriver"
 else:
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
@@ -24,6 +26,7 @@ else:
     DB_USERNAME = 'postgres'
     DB_PASSWORD = 'postgres'
     DB_HOST = 'localhost'
+    CHROME_DRIVER_PATH = "./chrome/chromedriver"
 
 def get_database_connection_string():
     if DB_PROVIDER == 'mysql':
