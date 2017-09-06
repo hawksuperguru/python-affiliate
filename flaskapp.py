@@ -14,8 +14,6 @@ import jinja2
 app = Flask(__name__)
 app.config.from_object('config')
 
-from scrapping.test import test_app
-app.register_blueprint(test_app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SESSION_TYPE'] = 'filesystem'
@@ -302,6 +300,7 @@ class LadBroke(db.Model):
 class BetFred(db.Model):
     __tablename__ = "betfreds"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -319,7 +318,7 @@ class BetFred(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -336,6 +335,7 @@ class BetFred(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class Paddy(db.Model):
