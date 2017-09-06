@@ -115,8 +115,8 @@ class Bet10Spider():
         commito = float(self.table_values[16])
         dateto = datetime.datetime.strptime(self.get_delta_date(), '%Y/%m/%d').date()
 
-        # engine = create_engine('postgresql://postgres:root@localhost/kyan')
-        engine = create_engine('mysql+pymysql://root:@localhost/kyan')
+        engine = create_engine('postgresql://postgres:postgres@localhost/kyan')
+        # engine = create_engine('mysql+pymysql://root:@localhost/kyan')
         result = engine.execute("INSERT INTO bet10s (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
 
     def parse(self):
