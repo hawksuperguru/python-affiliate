@@ -13,6 +13,9 @@ import jinja2
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+from scrapping.test import test_app
+app.register_blueprint(test_app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SESSION_TYPE'] = 'filesystem'
@@ -22,12 +25,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
-
-def datetimeformat(value, format='%Y/%m'):
-    return value.strftime(format)
-
-jinja2.filters.FILTERS['datetimeformat'] = datetimeformat
 
 
 class User(db.Model):
@@ -90,6 +87,7 @@ class Bet365(db.Model):
         self.afpoker = afpoker
         self.afbingo = afbingo
         self.commission = commission
+
 
 
 class Bet365Other(db.Model):
@@ -208,9 +206,8 @@ class Bet10(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -227,7 +224,6 @@ class Bet10(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
 
 
 class RealDeal(db.Model):
@@ -249,9 +245,8 @@ class RealDeal(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -268,17 +263,40 @@ class RealDeal(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
 
 
 
 class LadBroke(db.Model):
     __tablename__ = "ladbrokes"
     id = db.Column(db.Integer, primary_key=True)
-    balance = db.Column(db.Float)
+    STAT_DATE =db.Column(db.Date)
+    REAL_IMPS = db.Column(db.Float)
+    RAW_IMPS = db.Column(db.Float)
+    REAL_CLICKS = db.Column(db.Integer)
+    RAW_CLICKS = db.Column(db.Integer)
+    SPORTS_SIGNUPS = db.Column(db.Integer)
+    SPORTS_ACQUIRED_COUNT = db.Column(db.Float)
+    ACQUIRED_COUNT = db.Column(db.Float)
+    WITHDRAWS_CNT = db.Column(db.Float)
+    SPORTS_NET_GAMING_REVENUE = db.Column(db.Float)
+    CPA_COMMISSION = db.Column(db.Float)
+    NG_COMMISSION = db.Column(db.Float)
+    TLR_AMOUNT = db.Column(db.Float)
 
-    def __init__(self, balance):
-        self.balance = balance
+    def __init__(self, STAT_DATE, REAL_IMPS, RAW_IMPS, REAL_CLICKS, RAW_CLICKS, SPORTS_SIGNUPS, SPORTS_ACQUIRED_COUNT, ACQUIRED_COUNT, WITHDRAWS_CNT, SPORTS_NET_GAMING_REVENUE, CPA_COMMISSION, NG_COMMISSION, TLR_AMOUNT):
+        self.STAT_DATE = STAT_DATE
+        self.REAL_IMPS = REAL_IMPS
+        self.RAW_IMPS = RAW_IMPS
+        self.REAL_CLICKS = REAL_CLICKS
+        self.RAW_CLICKS = RAW_CLICKS
+        self.SPORTS_SIGNUPS = SPORTS_SIGNUPS
+        self.SPORTS_ACQUIRED_COUNT = SPORTS_ACQUIRED_COUNT
+        self.ACQUIRED_COUNT = ACQUIRED_COUNT
+        self.WITHDRAWS_CNT = WITHDRAWS_CNT
+        self.SPORTS_NET_GAMING_REVENUE = SPORTS_NET_GAMING_REVENUE
+        self.CPA_COMMISSION = CPA_COMMISSION
+        self.NG_COMMISSION = NG_COMMISSION
+        self.TLR_AMOUNT = TLR_AMOUNT
 
 
 class BetFred(db.Model):
@@ -300,9 +318,8 @@ class BetFred(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -319,34 +336,127 @@ class BetFred(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
 
 
 class Paddy(db.Model):
     __tablename__ = "paddyies"
     id = db.Column(db.Integer, primary_key=True)
     balance = db.Column(db.Float)
+    views = db.Column(db.Integer)
+    uniqueviews = db.Column(db.Integer)
+    clicks = db.Column(db.Integer)
+    uniqueclicks = db.Column(db.Float)
+    signups = db.Column(db.Integer)
+    depositingcustomers = db.Column(db.Float)
+    activecustomers = db.Column(db.Float)
+    newdepositingcustomers = db.Column(db.Float)
+    newactivecustomers = db.Column(db.Float)
+    firsttimedepositingcustomers = db.Column(db.Float)
+    firsttimeactivecustomers = db.Column(db.Float)
+    netrevenue = db.Column(db.Float)
 
-    def __init__(self, balance):
+    def __init__(self, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue):
         self.balance = balance
-
+        self.views = views
+        self.uniqueviews = uniqueviews
+        self.clicks = clicks
+        self.uniqueclicks = uniqueclicks
+        self.signups = signups
+        self.depositingcustomers = depositingcustomers
+        self.activecustomers = activecustomers
+        self.newdepositingcustomers = newdepositingcustomers
+        self.newactivecustomers = newactivecustomers
+        self.firsttimedepositingcustomers = firsttimedepositingcustomers
+        self.firsttimeactivecustomers = firsttimeactivecustomers
+        self.netrevenue = netrevenue
 
 class NetBet(db.Model):
     __tablename__ = "netbets"
     id = db.Column(db.Integer, primary_key=True)
-    balance = db.Column(db.Float)
+    withdraw_amount = db.Column(db.Float)
+    withdraw_count = db.Column(db.Float)
+    impressions_count = db.Column(db.Float)
+    bonus_bets_amount = db.Column(db.Float)
+    first_deposits_count = db.Column(db.Float)
+    rakes_amount = db.Column(db.Float)
+    bonus_count = db.Column(db.Float)
+    net_revenue = db.Column(db.Float)
+    downloads_count = db.Column(db.Integer)
+    bonus_amount = db.Column(db.Float)
+    commission = db.Column(db.Float)
+    first_deposits_amount = db.Column(db.Float)
+    bonus_wins_amount = db.Column(db.Float)
+    deposits_count = db.Column(db.Float)
+    invalid_cpa = db.Column(db.Float)
+    gross_revenue =db.Column(db.Float)
+    valid_cpa = db.Column(db.Float)
+    affiliate_website_id = db.Column(db.Float)
+    pending_cpa = db.Column(db.Float)
+    cash_wins_amount = db.Column(db.Float)
+    fees_amount = db.Column(db.Float)
+    clicks_count = db.Column(db.Integer)
+    url = db.Column(db.String)
+    deposits_amount = db.Column(db.Float)
+    registrations = db.Column(db.Integer)
+    cash_bets_amount = db.Column(db.Float)
 
-    def __init__(self, balance):
-        self.balance = balance
+    def __init__(self, withdraw_amount, withdraw_count, impressions_count, bonus_bets_amount, first_deposits_count, rakes_amount, bonus_count, net_revenue, downloads_count, bonus_amount, commission, first_deposits_amount, bonus_wins_amount, deposits_count, invalid_cpa, gross_revenue, valid_cpa, affiliate_website_id, pending_cpa, cash_wins_amount, fees_amount, clicks_count, url, deposits_amount, registrations, cash_bets_amount):
+        self.withdraw_amount = withdraw_amount
+        self.withdraw_count = withdraw_count
+        self.impressions_count = impressions_count
+        self.bonus_bets_amount = bonus_bets_amount
+        self.first_deposits_count = first_deposits_count
+        self.rakes_amount = rakes_amount
+        self.bonus_count = bonus_count
+        self.net_revenue = net_revenue
+        self.downloads_count = downloads_count
+        self.bonus_amount = bonus_amount
+        self.commission = commission
+        self.first_deposits_amount = first_deposits_amount
+        self.bonus_wins_amount = bonus_wins_amount
+        self.deposits_count = deposits_count
+        self.invalid_cpa = invalid_cpa
+        self.gross_revenue =gross_revenue
+        self.valid_cpa = valid_cpa
+        self.affiliate_website_id = affiliate_website_id
+        self.pending_cpa = pending_cpa
+        self.cash_wins_amount = cash_wins_amount
+        self.fees_amount = fees_amount
+        self.clicks_count = clicks_count
+        self.url = url
+        self.deposits_amount = deposits_amount
+        self.registrations = registrations
+        self.cash_bets_amount = cash_bets_amount
+
 
 
 class TitanBet(db.Model):
     __tablename__ = "titanbets"
     id = db.Column(db.Integer, primary_key=True)
     balance = db.Column(db.Float)
+    tlr_amount = db.Column(db.Float)
+    real_clicks = db.Column(db.Integer)
+    casino_u_real_count = db.Column(db.Float)
+    casino_d_rf_count  = db.Column(db.Float)
+    casino_net_gaming = db.Column(db.Float)
+    poker_u_real_count = db.Column(db.Float)
+    poker_d_rf_count = db.Column(db.Float)
+    poker_net_gaming = db.Column(db.Float)
+    sport_u_real_count = db.Column(db.Float)
+    sport_d_rf_count = db.Column(db.Float)
 
-    def __init__(self, balance):
+    def __init__(self, balance, tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count):
         self.balance = balance
+        self.tlr_amount = tlr_amount
+        self.real_clicks = real_clicks
+        self.casino_u_real_count = casino_u_real_count
+        self.casino_d_rf_count = casino_d_rf_count
+        self.casino_net_gaming = casino_net_gaming
+        self.poker_u_real_count = poker_u_real_count
+        self.poker_d_rf_count = poker_d_rf_count
+        self.poker_net_gaming = poker_net_gaming
+        self.sport_u_real_count = sport_u_real_count
+        self.sport_d_rf_count = sport_d_rf_count
 
 
 class Stan(db.Model):
@@ -368,9 +478,8 @@ class Stan(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -387,7 +496,6 @@ class Stan(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
 
 
 class Coral(db.Model):
@@ -409,9 +517,8 @@ class Coral(db.Model):
     regto = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -428,16 +535,33 @@ class Coral(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
 
 
 class William(db.Model):
     __tablename__ = "williams"
     id = db.Column(db.Integer, primary_key=True)
     balance = db.Column(db.Float)
+    views = db.Column(db.Integer)
+    unique_views = db.Column(db.Integer)
+    clicks = db.Column(db.Integer)
+    unique_clicks = db.Column(db.Integer)
+    signups = db.Column(db.Integer)
+    depositing_customers = db.Column(db.Integer)
+    active_customers = db.Column(db.Integer)
+    chargebacks = db.Column(db.Float)
+    net_revenue = db.Column(db.Float)
 
-    def __init__(self, balance):
+    def __init__(self, balance, views, unique_views, clicks, unique_clicks, signups, depositing_customers, active_customers, chargebacks, net_revenue):
         self.balance = balance
+        self.views = views
+        self.unique_views = unique_views
+        self.clicks = clicks
+        self.unique_clicks = unique_clicks
+        self.signups = signups
+        self.depositing_customers = depositing_customers
+        self.chargebacks = chargebacks
+        self.net_revenue = net_revenue
+
 
 
 class SkyBet(db.Model):
@@ -459,9 +583,8 @@ class SkyBet(db.Model):
     regito = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito, dateto):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -478,48 +601,6 @@ class SkyBet(db.Model):
         self.regito = regito
         self.ndto = ndto
         self.commito = commito
-        self.dateto = dateto
-
-
-class Victor(db.Model):
-    __tablename__ = "victors"
-    id = db.Column(db.Integer, primary_key=True)
-    merchant = db.Column(db.String(80))
-    impression = db.Column(db.Integer)
-    click = db.Column(db.Integer)
-    registration = db.Column(db.Integer)
-    new_deposit = db.Column(db.Integer)
-    commission = db.Column(db.Float)
-    impreytd = db.Column(db.Integer)
-    cliytd = db.Column(db.Integer)
-    regytd = db.Column(db.Integer)
-    ndytd = db.Column(db.Integer)
-    commiytd = db.Column(db.Float)
-    impreto = db.Column(db.Integer)
-    clito = db.Column(db.Integer)
-    regto = db.Column(db.Integer)
-    ndto = db.Column(db.Integer)
-    commito = db.Column(db.Float)
-    dateto = db.Column(db.Date, unique = True)
-
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
-        self.merchant = merchant
-        self.impression = impression
-        self.click = click
-        self.registration = registration
-        self.new_deposit = new_deposit
-        self.commission = commission
-        self.impreytd = impreytd
-        self.cliytd = cliytd
-        self.regytd = regytd
-        self.ndytd = ndytd
-        self.commiytd = commiytd
-        self.impreto = impreto
-        self.clito = clito
-        self.regto = regto
-        self.ndto = ndto
-        self.commito = commito
-        self.dateto = dateto
 
 
 def login_required(f):
@@ -548,6 +629,7 @@ def login():
     error = ''
     try:
         username = request.form['username']
+        print(username)
         if request.method == 'POST':
             data = db.session.query(User).filter_by(username = username).first()
             if not data:
@@ -622,32 +704,7 @@ def dashboard():
     william = db.session.query(William).order_by(William.id.desc()).first()
     skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
-    victor = db.session.query(Victor).order_by(Victor.id.desc()).first()
-
-    currency = CurrencyRates()
-    sg_cur = CurrencyCodes()
-    eur = float(currency.get_rate('EUR', 'USD'))
-    gbp = float(currency.get_rate('GBP', 'USD'))
-
-    sg_usd = sg_cur.get_symbol('USD')
-    sg_eur = sg_cur.get_symbol('EUR')
-    sg_gbp = sg_cur.get_symbol('GBP')
-
-    valSg = [sg_usd, sg_eur, sg_gbp]
-
-    currency = CurrencyRates()
-    sg_cur = CurrencyCodes()
-    eur = float(currency.get_rate('EUR', 'USD'))
-    gbp = float(currency.get_rate('GBP', 'USD'))
-
-    sg_usd = sg_cur.get_symbol('USD')
-    sg_eur = sg_cur.get_symbol('EUR')
-    sg_gbp = sg_cur.get_symbol('GBP')
-
-    valSg = [sg_usd, sg_eur, sg_gbp]
-
-    if request.method == 'GET':
-        bet365Data = db.session.execute("""SELECT 
+    bet365Data = db.session.execute("""SELECT 
                     SUM(click)::int as click,
                     SUM(nSignup)::int as nsignup,
                     SUM(nDepo)::int as ndepo,
@@ -670,130 +727,71 @@ def dashboard():
                 FROM bet365s
                 GROUP BY datefield
                 ORDER By datefield DESC LIMIT 1;""").first()
+    bet365otherData = db.session.execute("""SELECT 
+                    SUM(click)::int as click,
+                    SUM(nSignup)::int as nsignup,
+                    SUM(nDepo)::int as ndepo,
+                    SUM(valDepo)::int as valdepo,
+                    SUM(numDepo)::int as numdepo,
+                    SUM(spotsTurn)::int as spotsturn,
+                    SUM(numsptbet)::int as numsptbet,
+                    SUM(acsptusr)::int as acsptusr,
+                    SUM(sptnetrev)::int as sptnetrev,
+                    SUM(casinonetrev)::int as casinonetrev,
+                    SUM(pokernetrev)::int as pokernetrev,
+                    SUM(bingonetrev)::int as bingonetrev,
+                    SUM(netrev)::int as netrev,
+                    SUM(afspt)::int as afspt,
+                    SUM(afcasino)::int as afcasino,
+                    SUM(afpoker)::int as afpoker,
+                    SUM(afbingo)::int as afbingo,
+                    SUM(commission)::int as commission,
+                    EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+                FROM bet365others
+                GROUP BY datefield
+                ORDER By datefield DESC LIMIT 1;""").first()
 
-        bet365otherData = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo,
-                SUM(valDepo)::int as valdepo,
-                SUM(numDepo)::int as numdepo,
-                SUM(spotsTurn)::int as spotsturn,
-                SUM(numsptbet)::int as numsptbet,
-                SUM(acsptusr)::int as acsptusr,
-                SUM(sptnetrev)::int as sptnetrev,
-                SUM(casinonetrev)::int as casinonetrev,
-                SUM(pokernetrev)::int as pokernetrev,
-                SUM(bingonetrev)::int as bingonetrev,
-                SUM(netrev)::int as netrev,
-                SUM(afspt)::int as afspt,
-                SUM(afcasino)::int as afcasino,
-                SUM(afpoker)::int as afpoker,
-                SUM(afbingo)::int as afbingo,
-                SUM(commission)::int as commission,
-                EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-            FROM bet365others
-            GROUP BY datefield
-            ORDER By datefield DESC LIMIT 1;""").first()
+    currency = CurrencyRates()
+    sg_cur = CurrencyCodes()
+    eur = float(currency.get_rate('EUR', 'USD'))
+    gbp = float(currency.get_rate('GBP', 'USD'))
 
-        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
+    sg_usd = sg_cur.get_symbol('USD')
+    sg_eur = sg_cur.get_symbol('EUR')
+    sg_gbp = sg_cur.get_symbol('GBP')
+
+    valSg = [sg_usd, sg_eur, sg_gbp]
+
+    if request.method == 'GET':
+        data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg, bet365Data, bet365otherData]
 
         return render_template('home.html', data = data)
 
     if request.method == 'POST':
         val = request.json['val']
-        state = request.json['state']
-        if state == "1":
-            dateStr = request.json['val']
-            fromDate = dateStr.split("-")[0].strip(" ")
-            toDate = dateStr.split("-")[1].strip(" ")
-
-            startDate = datetime.datetime.strptime(fromDate, '%m/%d/%Y').date()
-            endDate = datetime.datetime.strptime(toDate, '%m/%d/%Y').date()
-
-            bet365 = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo
-            FROM bet365s
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-            
-            bet10 = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM bet10s
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            realDeal = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM realdeals
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            betFred = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM betfreds
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            stan = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM stans
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            coral = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM corals
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            skyBet = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regito)::int as registration,
-                SUM(commito)::float as commission
-            FROM skybets
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            bet365other = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo
-            FROM bet365others
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            victor = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM victors
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-            
-
+        if val == "1":
+            bet365Date = (bet365.dateto).strftime('%Y-%m-%d')
+            bet365OtherDate = (bet365other.dateto).strftime('%Y-%m-%d')
             tB3Odollar = bet365other.ndepo * 100
             tB3dollar = bet365.ndepo * 100
-            tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
-            tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
-            tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
-            tStandollar = stan.commission
-            tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
-            tWildollar = "%.2f" % round(william.balance * eur, 2)
-            tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-            tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-            tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-            tVidollar = "%.2f" % round(victor.commission * gbp, 2)
+            tB10dollar = "%.2f" % round(bet10.commito * eur, 2)
+            tRealdollar = "%.2f" % round(realDeal.commito * eur, 2)
+            tSkydollar = "%.2f" % round(skyBet.commito * gbp, 2)
+            tStandollar = stan.commito
+            tBFdollar = "%.2f" % round(betFred.commito * gbp, 2)
+
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commito) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
 
             jsonData = []
             jsonData.append({
+                "tB3Odate" : bet365OtherDate,
                 "tB3Oclick" : bet365other.click,
                 "tB3Osignup" : bet365other.nsignup,
                 "tB3Odepo" : bet365other.ndepo,
                 "tB3Odollar" : tB3Odollar,
 
+                "tB3date" : bet365Date,
                 "tB3click" : bet365.click,
                 "tB3signup" : bet365.nsignup, 
                 "tB3depo" : bet365.ndepo,
@@ -801,6 +799,82 @@ def dashboard():
 
                 "t8click" : eight88.clito,
                 "t8register" : eight88.regto,
+                "t8balance" : "0",
+                "t8dollar" : "0",
+
+                "tB10click" : bet10.clito,
+                "tB10register" : bet10.regto,
+                "tB10commission" : bet10.commito,
+                "tB10dollar" : tB10dollar,
+
+                "tRealclick" : realDeal.clito,
+                "tRealregister" : realDeal.regto,
+                "tRealcommission" : realDeal.commito,
+                "tRealdollar" : tRealdollar,
+
+                "tSkyclick" : skyBet.clito,
+                "tSkyregister" : skyBet.regito,
+                "tSkycommission" : skyBet.commito,
+                "tSkydollar": tSkydollar,
+
+                "tWildollar" : "0",
+                
+                "tLadollar" : "0",
+                
+                "tPadollar" : "0",
+                
+                "tNetdollar" : "0",
+                
+                "tTidollar" : "0",
+
+                "tStanclick" : stan.clito,
+                "tStanregister" : stan.regto,
+                "tStancommission" : stan.commito,
+                "tStandollar" : tStandollar,
+
+                "tCoralclick" : coral.clito,
+                "tCoralregister" : coral.regto,
+                "tCoralcommission" : coral.commito,
+                "tCoraldollar" : coral.commito,
+
+                "tBFclick" : betFred.clito,
+                "tBFregister" : betFred.regto,
+                "tBFcommission" : betFred.commito,
+                "tBFdollar" : tBFdollar,
+
+                "total" : total
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif val == "2":
+            bet365Date = bet365Data.datefield
+            bet365OtherDate = bet365otherData.datefield
+            tB3Odollar = bet365otherData.ndepo * 100
+            tB3dollar = bet365Data.ndepo * 100
+            tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
+            tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
+            tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
+            tStandollar = stan.commission
+            tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
+
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commission) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
+
+            jsonData = []
+            jsonData.append({
+                "tB3Odate" : bet365OtherDate,
+                "tB3Oclick" : bet365otherData.click,
+                "tB3Osignup" : bet365otherData.nsignup,
+                "tB3Odepo" : bet365otherData.ndepo,
+                "tB3Odollar" : tB3Odollar,
+
+                "tB3date" : bet365Date,
+                "tB3click" : bet365Data.click,
+                "tB3signup" : bet365Data.nsignup, 
+                "tB3depo" : bet365Data.ndepo,
+                "tB3dollar" : tB3dollar,
+
+                "t8click" : eight88.click,
+                "t8register" : eight88.registration,
                 "t8balance" : eight88.balance,
                 "t8dollar" : eight88.balance,
 
@@ -819,13 +893,13 @@ def dashboard():
                 "tSkycommission" : skyBet.commission,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : tWildollar,
+                "tWildollar" : william.balance,
                 
-                "tLadollar" : tLadollar,
+                "tLadollar" : ladBroke.balance,
                 
-                "tPadollar" : tPadollar,
+                "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : tNetdollar,
+                "tNetdollar" : netBet.balance,
                 
                 "tTidollar" : titanBet.balance,
 
@@ -844,278 +918,86 @@ def dashboard():
                 "tBFcommission" : betFred.commission,
                 "tBFdollar" : tBFdollar,
 
-                "tViclick" : victor.click,
-                "tViregister" : victor.registration,
-                "tVicommission" : victor.commission,
-                "tVidollar" : tVidollar,
-
+                "total" : total
             })
             return jsonify(status = True, jsonData = jsonData)
+        elif val == "3":            
 
-        if state == "2":
-            if val == "1":
-                bet365Data = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-                    FROM bet365s
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
+            bet365Date = bet365Data.datefield
+            bet365OtherDate = bet365otherData.datefield
+            tB3Odollar = bet365otherData.ndepo * 100
+            tB3dollar = bet365Data.ndepo * 100
+            tB10dollar = "%.2f" % round(bet10.commiytd * eur, 2)
+            tRealdollar = "%.2f" % round(realDeal.commiytd * eur, 2)
+            tSkydollar = "%.2f" % round(skyBet.commiytd * gbp, 2)
+            tStandollar = stan.commiytd
+            tBFdollar = "%.2f" % round(betFred.commiytd * gbp, 2)
 
-                bet365otherData = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-                    FROM bet365others
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commiytd) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
 
-                bet365Date = bet365Data.datefield
-                bet365OtherDate = bet365otherData.datefield
-                tB3Odollar = bet365otherData.ndepo * 100
-                tB3dollar = bet365Data.ndepo * 100
-                tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
-                tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
-                tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
-                tStandollar = stan.commission
-                tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
-                tWildollar = "%.2f" % round(william.balance * eur, 2)
-                tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-                tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-                tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-                tVidollar = "%.2f" % round(victor.commission * eur, 2)
+            jsonData = []
+            jsonData.append({
+                "tB3Odate" : bet365OtherDate,
+                "tB3Oclick" : bet365otherData.click,
+                "tB3Osignup" : bet365otherData.nsignup,
+                "tB3Odepo" : bet365otherData.ndepo,
+                "tB3Odollar" : tB3Odollar,
 
-                jsonData = []
-                jsonData.append({
-                    "tB3Odate" : bet365OtherDate,
-                    "tB3Oclick" : bet365otherData.click,
-                    "tB3Osignup" : bet365otherData.nsignup,
-                    "tB3Odepo" : bet365otherData.ndepo,
-                    "tB3Odollar" : tB3Odollar,
+                "tB3date" : bet365Date,
+                "tB3click" : bet365Data.click,
+                "tB3signup" : bet365Data.nsignup, 
+                "tB3depo" : bet365Data.ndepo,
+                "tB3dollar" : tB3dollar,
 
-                    "tB3date" : bet365Date,
-                    "tB3click" : bet365Data.click,
-                    "tB3signup" : bet365Data.nsignup, 
-                    "tB3depo" : bet365Data.ndepo,
-                    "tB3dollar" : tB3dollar,
+                "t8click" : eight88.click,
+                "t8register" : eight88.registration,
+                "t8balance" : eight88.balance,
+                "t8dollar" : eight88.balance,
 
-                    "t8click" : eight88.click,
-                    "t8register" : eight88.registration,
-                    "t8balance" : eight88.balance,
-                    "t8dollar" : eight88.balance,
+                "tB10click" : bet10.cliytd,
+                "tB10register" : bet10.regytd,
+                "tB10commission" : bet10.commiytd,
+                "tB10dollar" : tB10dollar,
 
-                    "tB10click" : bet10.click,
-                    "tB10register" : bet10.registration,
-                    "tB10commission" : bet10.commission,
-                    "tB10dollar" : tB10dollar,
+                "tRealclick" : realDeal.cliytd,
+                "tRealregister" : realDeal.regiytd,
+                "tRealcommission" : realDeal.commiytd,
+                "tRealdollar" : tRealdollar,
 
-                    "tRealclick" : realDeal.click,
-                    "tRealregister" : realDeal.registration,
-                    "tRealcommission" : realDeal.commission,
-                    "tRealdollar" : tRealdollar,
+                "tSkyclick" : skyBet.cliytd,
+                "tSkyregister" : skyBet.regiytd,
+                "tSkycommission" : skyBet.commiytd,
+                "tSkydollar": tSkydollar,
 
-                    "tSkyclick" : skyBet.click,
-                    "tSkyregister" : skyBet.registration,
-                    "tSkycommission" : skyBet.commission,
-                    "tSkydollar": tSkydollar,
+                "tWildollar" : william.balance,
+                
+                "tLadollar" : ladBroke.balance,
+                
+                "tPadollar" : paddy.balance,
+                
+                "tNetdollar" : netBet.balance,
+                
+                "tTidollar" : titanBet.balance,
 
-                    "tWildollar" : tWildollar,
-                    
-                    "tLadollar" : tLadollar,
-                    
-                    "tPadollar" : tPadollar,
-                    
-                    "tNetdollar" : tNetdollar,
-                    
-                    "tTidollar" : titanBet.balance,
+                "tStanclick" : stan.cliytd,
+                "tStanregister" : stan.regytd,
+                "tStancommission" : stan.commiytd,
+                "tStandollar" : tStandollar,
 
-                    "tStanclick" : stan.click,
-                    "tStanregister" : stan.registration,
-                    "tStancommission" : stan.commission,
-                    "tStandollar" : tStandollar,
+                "tCoralclick" : coral.cliytd,
+                "tCoralregister" : coral.regytd,
+                "tCoralcommission" : coral.commiytd,
+                "tCoraldollar" : coral.commiytd,
 
-                    "tCoralclick" : coral.click,
-                    "tCoralregister" : coral.registration,
-                    "tCoralcommission" : coral.commission,
-                    "tCoraldollar" : coral.commission,
+                "tBFclick" : betFred.cliytd,
+                "tBFregister" : betFred.regytd,
+                "tBFcommission" : betFred.commiytd,
+                "tBFdollar" : tBFdollar,
 
-                    "tBFclick" : betFred.click,
-                    "tBFregister" : betFred.registration,
-                    "tBFcommission" : betFred.commission,
-                    "tBFdollar" : tBFdollar,
-
-                    "tViclick" : victor.click,
-                    "tViregister" : victor.registration,
-                    "tVicommission" : victor.commission,
-                    "tVidollar" : tVidollar,
-
-                    # "total" : total
-                })
-                return jsonify(status = True, jsonData = jsonData)
-            elif val == "2":
-                bet365Data = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text AS datefield 
-                    FROM bet365s
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
-
-                bet365otherData = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text AS datefield 
-                    FROM bet365others
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
-
-                bet365Date = bet365Data.datefield
-                bet365OtherDate = bet365otherData.datefield
-                tB3Odollar = bet365otherData.ndepo * 100
-                tB3dollar = bet365Data.ndepo * 100
-                tB10dollar = "%.2f" % round(bet10.commiytd * eur, 2)
-                tRealdollar = "%.2f" % round(realDeal.commiytd * eur, 2)
-                tSkydollar = "%.2f" % round(skyBet.commiytd * gbp, 2)
-                tStandollar = stan.commiytd
-                tBFdollar = "%.2f" % round(betFred.commiytd * gbp, 2)
-                tWildollar = "%.2f" % round(william.balance * eur, 2)
-                tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-                tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-                tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-                tVidollar = "%.2f" % round(victor.commiytd * eur, 2)
-
-
-                jsonData = []
-                jsonData.append({
-                    "tB3Odate" : bet365OtherDate,
-                    "tB3Oclick" : bet365otherData.click,
-                    "tB3Osignup" : bet365otherData.nsignup,
-                    "tB3Odepo" : bet365otherData.ndepo,
-                    "tB3Odollar" : tB3Odollar,
-
-                    "tB3date" : bet365Date,
-                    "tB3click" : bet365Data.click,
-                    "tB3signup" : bet365Data.nsignup, 
-                    "tB3depo" : bet365Data.ndepo,
-                    "tB3dollar" : tB3dollar,
-
-                    "t8click" : eight88.click,
-                    "t8register" : eight88.registration,
-                    "t8balance" : eight88.balance,
-                    "t8dollar" : eight88.balance,
-
-                    "tB10click" : bet10.cliytd,
-                    "tB10register" : bet10.regytd,
-                    "tB10commission" : bet10.commiytd,
-                    "tB10dollar" : tB10dollar,
-
-                    "tRealclick" : realDeal.cliytd,
-                    "tRealregister" : realDeal.regiytd,
-                    "tRealcommission" : realDeal.commiytd,
-                    "tRealdollar" : tRealdollar,
-
-                    "tSkyclick" : skyBet.cliytd,
-                    "tSkyregister" : skyBet.regiytd,
-                    "tSkycommission" : skyBet.commiytd,
-                    "tSkydollar": tSkydollar,
-
-                    "tWildollar" : tWildollar,
-                    
-                    "tLadollar" : tLadollar,
-                    
-                    "tPadollar" : tPadollar,
-                    
-                    "tNetdollar" : tNetdollar,
-                    
-                    "tTidollar" : titanBet.balance,
-
-                    "tStanclick" : stan.cliytd,
-                    "tStanregister" : stan.regytd,
-                    "tStancommission" : stan.commiytd,
-                    "tStandollar" : tStandollar,
-
-                    "tCoralclick" : coral.cliytd,
-                    "tCoralregister" : coral.regytd,
-                    "tCoralcommission" : coral.commiytd,
-                    "tCoraldollar" : coral.commiytd,
-
-                    "tBFclick" : betFred.cliytd,
-                    "tBFregister" : betFred.regytd,
-                    "tBFcommission" : betFred.commiytd,
-                    "tBFdollar" : tBFdollar,
-
-                    "tViclick" : victor.cliytd,
-                    "tViregister" : victor.regytd,
-                    "tVicommission" : victor.commiytd,
-                    "tVidollar" : tVidollar,
-
-                    # "total" : total
-                })
-                return jsonify(status = True, jsonData = jsonData)
+                "total" : total
+            })
+            return jsonify(status = True, jsonData = jsonData)
 
 
 
@@ -1135,7 +1017,6 @@ def summary():
     william = db.session.query(William).order_by(William.id.desc()).first()
     skyBet = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
     bet365other = db.session.query(Bet365Other).order_by(Bet365Other.id.desc()).first()
-    victor = db.session.query(Victor).order_by(Victor.id.desc()).first()
 
     currency = CurrencyRates()
     sg_cur = CurrencyCodes()
@@ -1149,7 +1030,90 @@ def summary():
     valSg = [sg_usd, sg_eur, sg_gbp]
 
     if request.method == 'GET':
-        bet365Data = db.session.execute("""SELECT 
+        data = [bet365, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365other, valSg]
+
+        return render_template('pages/summary.html', data = data)
+
+    if request.method == 'POST':
+        val = request.json['val']
+        if val == "1":
+            bet365Date = (bet365.dateto).strftime('%Y-%m-%d')
+            bet365OtherDate = (bet365other.dateto).strftime('%Y-%m-%d')
+            tB3Odollar = bet365other.ndepo * 100
+            tB3dollar = bet365.ndepo * 100
+            tB10dollar = "%.2f" % round(bet10.commito * eur, 2)
+            tRealdollar = "%.2f" % round(realDeal.commito * eur, 2)
+            tSkydollar = "%.2f" % round(skyBet.commito * gbp, 2)
+            tStandollar = stan.commito
+            tBFdollar = "%.2f" % round(betFred.commito * gbp, 2)
+
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commito) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
+
+            jsonData = []
+            jsonData.append({
+                "tB3Odate" : bet365OtherDate,
+                "tB3Oclick" : bet365other.click,
+                "tB3Osignup" : bet365other.nsignup,
+                "tB3Odepo" : bet365other.ndepo,
+                "tB3Odollar" : tB3Odollar,
+
+                "tB3date" : bet365Date,
+                "tB3click" : bet365.click,
+                "tB3signup" : bet365.nsignup, 
+                "tB3depo" : bet365.ndepo,
+                "tB3dollar" : tB3dollar,
+
+                "t8click" : eight88.clito,
+                "t8register" : eight88.regto,
+                "t8balance" : "0",
+                "t8dollar" : "0",
+
+                "tB10click" : bet10.clito,
+                "tB10register" : bet10.regto,
+                "tB10commission" : bet10.commito,
+                "tB10dollar" : tB10dollar,
+
+                "tRealclick" : realDeal.clito,
+                "tRealregister" : realDeal.regto,
+                "tRealcommission" : realDeal.commito,
+                "tRealdollar" : tRealdollar,
+
+                "tSkyclick" : skyBet.clito,
+                "tSkyregister" : skyBet.regito,
+                "tSkycommission" : skyBet.commito,
+                "tSkydollar": tSkydollar,
+
+                "tWildollar" : "0",
+                
+                "tLadollar" : "0",
+                
+                "tPadollar" : "0",
+                
+                "tNetdollar" : "0",
+                
+                "tTidollar" : "0",
+
+                "tStanclick" : stan.clito,
+                "tStanregister" : stan.regto,
+                "tStancommission" : stan.commito,
+                "tStandollar" : tStandollar,
+
+                "tCoralclick" : coral.clito,
+                "tCoralregister" : coral.regto,
+                "tCoralcommission" : coral.commito,
+                "tCoraldollar" : coral.commito,
+
+                "tBFclick" : betFred.clito,
+                "tBFregister" : betFred.regto,
+                "tBFcommission" : betFred.commito,
+                "tBFdollar" : tBFdollar,
+
+                "total" : total
+            })
+            return jsonify(status = True, jsonData = jsonData)
+        elif val == "2":
+            bet365Data = db.session.execute("""SELECT 
                     SUM(click)::int as click,
                     SUM(nSignup)::int as nsignup,
                     SUM(nDepo)::int as ndepo,
@@ -1173,135 +1137,59 @@ def summary():
                 GROUP BY datefield
                 ORDER By datefield DESC LIMIT 1;""").first()
 
-        bet365otherData = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo,
-                SUM(valDepo)::int as valdepo,
-                SUM(numDepo)::int as numdepo,
-                SUM(spotsTurn)::int as spotsturn,
-                SUM(numsptbet)::int as numsptbet,
-                SUM(acsptusr)::int as acsptusr,
-                SUM(sptnetrev)::int as sptnetrev,
-                SUM(casinonetrev)::int as casinonetrev,
-                SUM(pokernetrev)::int as pokernetrev,
-                SUM(bingonetrev)::int as bingonetrev,
-                SUM(netrev)::int as netrev,
-                SUM(afspt)::int as afspt,
-                SUM(afcasino)::int as afcasino,
-                SUM(afpoker)::int as afpoker,
-                SUM(afbingo)::int as afbingo,
-                SUM(commission)::int as commission,
-                EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-            FROM bet365others
-            GROUP BY datefield
-            ORDER By datefield DESC LIMIT 1;""").first()
-       
-        data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
+            bet365otherData = db.session.execute("""SELECT 
+                    SUM(click)::int as click,
+                    SUM(nSignup)::int as nsignup,
+                    SUM(nDepo)::int as ndepo,
+                    SUM(valDepo)::int as valdepo,
+                    SUM(numDepo)::int as numdepo,
+                    SUM(spotsTurn)::int as spotsturn,
+                    SUM(numsptbet)::int as numsptbet,
+                    SUM(acsptusr)::int as acsptusr,
+                    SUM(sptnetrev)::int as sptnetrev,
+                    SUM(casinonetrev)::int as casinonetrev,
+                    SUM(pokernetrev)::int as pokernetrev,
+                    SUM(bingonetrev)::int as bingonetrev,
+                    SUM(netrev)::int as netrev,
+                    SUM(afspt)::int as afspt,
+                    SUM(afcasino)::int as afcasino,
+                    SUM(afpoker)::int as afpoker,
+                    SUM(afbingo)::int as afbingo,
+                    SUM(commission)::int as commission,
+                    EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
+                FROM bet365others
+                GROUP BY datefield
+                ORDER By datefield DESC LIMIT 1;""").first()
 
-        return render_template('pages/summary.html', data = data)
-
-    if request.method == 'POST':
-        val = request.json['val']
-        state = request.json['state']
-        if state == "1":
-            dateStr = request.json['val']
-            fromDate = dateStr.split("-")[0].strip(" ")
-            toDate = dateStr.split("-")[1].strip(" ")
-
-            startDate = datetime.datetime.strptime(fromDate, '%m/%d/%Y').date()
-            endDate = datetime.datetime.strptime(toDate, '%m/%d/%Y').date()
-
-            bet365 = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo
-            FROM bet365s
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-            
-            bet10 = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM bet10s
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            realDeal = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM realdeals
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            betFred = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM betfreds
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            stan = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM stans
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            coral = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM corals
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            skyBet = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regito)::int as registration,
-                SUM(commito)::float as commission
-            FROM skybets
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            bet365other = db.session.execute("""SELECT 
-                SUM(click)::int as click,
-                SUM(nSignup)::int as nsignup,
-                SUM(nDepo)::int as ndepo
-            FROM bet365others
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-
-            victor = db.session.execute("""SELECT 
-                SUM(clito)::int as click,
-                SUM(regto)::int as registration,
-                SUM(commito)::float as commission
-            FROM victors
-            WHERE dateto >='%s' AND dateto <= '%s'""" % (startDate, toDate)).first()
-            
-            tB3Odollar = bet365other.ndepo * 100
-            tB3dollar = bet365.ndepo * 100
+            bet365Date = bet365Data.datefield
+            bet365OtherDate = bet365otherData.datefield
+            tB3Odollar = bet365otherData.ndepo * 100
+            tB3dollar = bet365Data.ndepo * 100
             tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
             tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
             tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
             tStandollar = stan.commission
             tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
-            tWildollar = "%.2f" % round(william.balance * eur, 2)
-            tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-            tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-            tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-            tVidollar = "%.2f" % round(victor.commission * gbp, 2)
+
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commission) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
 
             jsonData = []
             jsonData.append({
-                "tB3Oclick" : bet365other.click,
-                "tB3Osignup" : bet365other.nsignup,
-                "tB3Odepo" : bet365other.ndepo,
+                "tB3Odate" : bet365OtherDate,
+                "tB3Oclick" : bet365otherData.click,
+                "tB3Osignup" : bet365otherData.nsignup,
+                "tB3Odepo" : bet365otherData.ndepo,
                 "tB3Odollar" : tB3Odollar,
 
-                "tB3click" : bet365.click,
-                "tB3signup" : bet365.nsignup, 
-                "tB3depo" : bet365.ndepo,
+                "tB3date" : bet365Date,
+                "tB3click" : bet365Data.click,
+                "tB3signup" : bet365Data.nsignup, 
+                "tB3depo" : bet365Data.ndepo,
                 "tB3dollar" : tB3dollar,
 
-                "t8click" : eight88.clito,
-                "t8register" : eight88.regto,
+                "t8click" : eight88.click,
+                "t8register" : eight88.registration,
                 "t8balance" : eight88.balance,
                 "t8dollar" : eight88.balance,
 
@@ -1320,13 +1208,13 @@ def summary():
                 "tSkycommission" : skyBet.commission,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : tWildollar,
+                "tWildollar" : william.balance,
                 
-                "tLadollar" : tLadollar,
+                "tLadollar" : ladBroke.balance,
                 
-                "tPadollar" : tPadollar,
+                "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : tNetdollar,
+                "tNetdollar" : netBet.balance,
                 
                 "tTidollar" : titanBet.balance,
 
@@ -1345,281 +1233,133 @@ def summary():
                 "tBFcommission" : betFred.commission,
                 "tBFdollar" : tBFdollar,
 
-                "tViclick" : victor.click,
-                "tViregister" : victor.registration,
-                "tVicommission" : victor.commission,
-                "tVidollar" : tVidollar,
-
+                "total" : total
             })
             return jsonify(status = True, jsonData = jsonData)
+        elif val == "3":
+            bet365Data = db.session.execute("""SELECT 
+                    SUM(click)::int as click,
+                    SUM(nSignup)::int as nsignup,
+                    SUM(nDepo)::int as ndepo,
+                    SUM(valDepo)::int as valdepo,
+                    SUM(numDepo)::int as numdepo,
+                    SUM(spotsTurn)::int as spotsturn,
+                    SUM(numsptbet)::int as numsptbet,
+                    SUM(acsptusr)::int as acsptusr,
+                    SUM(sptnetrev)::int as sptnetrev,
+                    SUM(casinonetrev)::int as casinonetrev,
+                    SUM(pokernetrev)::int as pokernetrev,
+                    SUM(bingonetrev)::int as bingonetrev,
+                    SUM(netrev)::int as netrev,
+                    SUM(afspt)::int as afspt,
+                    SUM(afcasino)::int as afcasino,
+                    SUM(afpoker)::int as afpoker,
+                    SUM(afbingo)::int as afbingo,
+                    SUM(commission)::int as commission,
+                    EXTRACT(YEAR FROM dateto)::text AS datefield 
+                FROM bet365s
+                GROUP BY datefield
+                ORDER By datefield DESC LIMIT 1;""").first()
 
-        if state == "2":
-            if val == "1":
-                bet365Data = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-                    FROM bet365s
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
+            bet365otherData = db.session.execute("""SELECT 
+                    SUM(click)::int as click,
+                    SUM(nSignup)::int as nsignup,
+                    SUM(nDepo)::int as ndepo,
+                    SUM(valDepo)::int as valdepo,
+                    SUM(numDepo)::int as numdepo,
+                    SUM(spotsTurn)::int as spotsturn,
+                    SUM(numsptbet)::int as numsptbet,
+                    SUM(acsptusr)::int as acsptusr,
+                    SUM(sptnetrev)::int as sptnetrev,
+                    SUM(casinonetrev)::int as casinonetrev,
+                    SUM(pokernetrev)::int as pokernetrev,
+                    SUM(bingonetrev)::int as bingonetrev,
+                    SUM(netrev)::int as netrev,
+                    SUM(afspt)::int as afspt,
+                    SUM(afcasino)::int as afcasino,
+                    SUM(afpoker)::int as afpoker,
+                    SUM(afbingo)::int as afbingo,
+                    SUM(commission)::int as commission,
+                    EXTRACT(YEAR FROM dateto)::text AS datefield 
+                FROM bet365others
+                GROUP BY datefield
+                ORDER By datefield DESC LIMIT 1;""").first()
 
-                bet365otherData = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text || '/' || EXTRACT(MONTH FROM dateto)::text AS datefield 
-                    FROM bet365others
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
+            bet365Date = bet365Data.datefield
+            bet365OtherDate = bet365otherData.datefield
+            tB3Odollar = bet365otherData.ndepo * 100
+            tB3dollar = bet365Data.ndepo * 100
+            tB10dollar = "%.2f" % round(bet10.commiytd * eur, 2)
+            tRealdollar = "%.2f" % round(realDeal.commiytd * eur, 2)
+            tSkydollar = "%.2f" % round(skyBet.commiytd * gbp, 2)
+            tStandollar = stan.commiytd
+            tBFdollar = "%.2f" % round(betFred.commiytd * gbp, 2)
 
-                bet365Date = bet365Data.datefield
-                bet365OtherDate = bet365otherData.datefield
-                tB3Odollar = bet365otherData.ndepo * 100
-                tB3dollar = bet365Data.ndepo * 100
-                tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
-                tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
-                tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
-                tStandollar = stan.commission
-                tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
-                tWildollar = "%.2f" % round(william.balance * eur, 2)
-                tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-                tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-                tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-                tVidollar = "%.2f" % round(victor.commission * gbp, 2)
+            totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commiytd) + float(tBFdollar)
+            total = "%.2f" % round(totalVal, 2)
 
-                jsonData = []
-                jsonData.append({
-                    "tB3Odate" : bet365OtherDate,
-                    "tB3Oclick" : bet365otherData.click,
-                    "tB3Osignup" : bet365otherData.nsignup,
-                    "tB3Odepo" : bet365otherData.ndepo,
-                    "tB3Odollar" : tB3Odollar,
+            jsonData = []
+            jsonData.append({
+                "tB3Odate" : bet365OtherDate,
+                "tB3Oclick" : bet365otherData.click,
+                "tB3Osignup" : bet365otherData.nsignup,
+                "tB3Odepo" : bet365otherData.ndepo,
+                "tB3Odollar" : tB3Odollar,
 
-                    "tB3date" : bet365Date,
-                    "tB3click" : bet365Data.click,
-                    "tB3signup" : bet365Data.nsignup, 
-                    "tB3depo" : bet365Data.ndepo,
-                    "tB3dollar" : tB3dollar,
+                "tB3date" : bet365Date,
+                "tB3click" : bet365Data.click,
+                "tB3signup" : bet365Data.nsignup, 
+                "tB3depo" : bet365Data.ndepo,
+                "tB3dollar" : tB3dollar,
 
-                    "t8click" : eight88.click,
-                    "t8register" : eight88.registration,
-                    "t8balance" : eight88.balance,
-                    "t8dollar" : eight88.balance,
+                "t8click" : eight88.click,
+                "t8register" : eight88.registration,
+                "t8balance" : eight88.balance,
+                "t8dollar" : eight88.balance,
 
-                    "tB10click" : bet10.click,
-                    "tB10register" : bet10.registration,
-                    "tB10commission" : bet10.commission,
-                    "tB10dollar" : tB10dollar,
+                "tB10click" : bet10.cliytd,
+                "tB10register" : bet10.regytd,
+                "tB10commission" : bet10.commiytd,
+                "tB10dollar" : tB10dollar,
 
-                    "tRealclick" : realDeal.click,
-                    "tRealregister" : realDeal.registration,
-                    "tRealcommission" : realDeal.commission,
-                    "tRealdollar" : tRealdollar,
+                "tRealclick" : realDeal.cliytd,
+                "tRealregister" : realDeal.regiytd,
+                "tRealcommission" : realDeal.commiytd,
+                "tRealdollar" : tRealdollar,
 
-                    "tSkyclick" : skyBet.click,
-                    "tSkyregister" : skyBet.registration,
-                    "tSkycommission" : skyBet.commission,
-                    "tSkydollar": tSkydollar,
+                "tSkyclick" : skyBet.cliytd,
+                "tSkyregister" : skyBet.regiytd,
+                "tSkycommission" : skyBet.commiytd,
+                "tSkydollar": tSkydollar,
 
-                    "tWildollar" : tWildollar,
-                    
-                    "tLadollar" : tLadollar,
-                    
-                    "tPadollar" : tPadollar,
-                    
-                    "tNetdollar" : tNetdollar,
-                    
-                    "tTidollar" : titanBet.balance,
+                "tWildollar" : william.balance,
+                
+                "tLadollar" : ladBroke.balance,
+                
+                "tPadollar" : paddy.balance,
+                
+                "tNetdollar" : netBet.balance,
+                
+                "tTidollar" : titanBet.balance,
 
-                    "tStanclick" : stan.click,
-                    "tStanregister" : stan.registration,
-                    "tStancommission" : stan.commission,
-                    "tStandollar" : tStandollar,
+                "tStanclick" : stan.cliytd,
+                "tStanregister" : stan.regytd,
+                "tStancommission" : stan.commiytd,
+                "tStandollar" : tStandollar,
 
-                    "tCoralclick" : coral.click,
-                    "tCoralregister" : coral.registration,
-                    "tCoralcommission" : coral.commission,
-                    "tCoraldollar" : coral.commission,
+                "tCoralclick" : coral.cliytd,
+                "tCoralregister" : coral.regytd,
+                "tCoralcommission" : coral.commiytd,
+                "tCoraldollar" : coral.commiytd,
 
-                    "tBFclick" : betFred.click,
-                    "tBFregister" : betFred.registration,
-                    "tBFcommission" : betFred.commission,
-                    "tBFdollar" : tBFdollar,
+                "tBFclick" : betFred.cliytd,
+                "tBFregister" : betFred.regytd,
+                "tBFcommission" : betFred.commiytd,
+                "tBFdollar" : tBFdollar,
 
-                    "tViclick" : victor.click,
-                    "tViregister" : victor.registration,
-                    "tVicommission" : victor.commission,
-                    "tVidollar" : tVidollar,
-
-                    # "total" : total
-                })
-                return jsonify(status = True, jsonData = jsonData)
-            elif val == "2":
-                bet365Data = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text AS datefield 
-                    FROM bet365s
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
-
-                bet365otherData = db.session.execute("""SELECT 
-                        SUM(click)::int as click,
-                        SUM(nSignup)::int as nsignup,
-                        SUM(nDepo)::int as ndepo,
-                        SUM(valDepo)::int as valdepo,
-                        SUM(numDepo)::int as numdepo,
-                        SUM(spotsTurn)::int as spotsturn,
-                        SUM(numsptbet)::int as numsptbet,
-                        SUM(acsptusr)::int as acsptusr,
-                        SUM(sptnetrev)::int as sptnetrev,
-                        SUM(casinonetrev)::int as casinonetrev,
-                        SUM(pokernetrev)::int as pokernetrev,
-                        SUM(bingonetrev)::int as bingonetrev,
-                        SUM(netrev)::int as netrev,
-                        SUM(afspt)::int as afspt,
-                        SUM(afcasino)::int as afcasino,
-                        SUM(afpoker)::int as afpoker,
-                        SUM(afbingo)::int as afbingo,
-                        SUM(commission)::int as commission,
-                        EXTRACT(YEAR FROM dateto)::text AS datefield 
-                    FROM bet365others
-                    GROUP BY datefield
-                    ORDER By datefield DESC LIMIT 1;""").first()
-
-                bet365Date = bet365Data.datefield
-                bet365OtherDate = bet365otherData.datefield
-                tB3Odollar = bet365otherData.ndepo * 100
-                tB3dollar = bet365Data.ndepo * 100
-                tB10dollar = "%.2f" % round(bet10.commiytd * eur, 2)
-                tRealdollar = "%.2f" % round(realDeal.commiytd * eur, 2)
-                tSkydollar = "%.2f" % round(skyBet.commiytd * gbp, 2)
-                tStandollar = stan.commiytd
-                tBFdollar = "%.2f" % round(betFred.commiytd * gbp, 2)
-                tWildollar = "%.2f" % round(william.balance * eur, 2)
-                tLadollar = "%.2f" % round(ladBroke.balance * gbp, 2)
-                tPadollar = "%.2f" % round(paddy.balance * eur, 2)
-                tNetdollar = "%.2f" % round(netBet.balance * eur, 2)
-                tVidollar = "%.2f" % round(victor.commiytd * gbp, 2)
-
-                # totalVal = float(tB3Odollar) + float(tB3dollar) + float(tB10dollar) + float(tRealdollar) + float(tSkydollar) + float(tStandollar) + float(coral.commiytd) + float(tBFdollar)
-                # total = "%.2f" % round(totalVal, 2)
-
-                jsonData = []
-                jsonData.append({
-                    "tB3Odate" : bet365OtherDate,
-                    "tB3Oclick" : bet365otherData.click,
-                    "tB3Osignup" : bet365otherData.nsignup,
-                    "tB3Odepo" : bet365otherData.ndepo,
-                    "tB3Odollar" : tB3Odollar,
-
-                    "tB3date" : bet365Date,
-                    "tB3click" : bet365Data.click,
-                    "tB3signup" : bet365Data.nsignup, 
-                    "tB3depo" : bet365Data.ndepo,
-                    "tB3dollar" : tB3dollar,
-
-                    "t8click" : eight88.click,
-                    "t8register" : eight88.registration,
-                    "t8balance" : eight88.balance,
-                    "t8dollar" : eight88.balance,
-
-                    "tB10click" : bet10.cliytd,
-                    "tB10register" : bet10.regytd,
-                    "tB10commission" : bet10.commiytd,
-                    "tB10dollar" : tB10dollar,
-
-                    "tRealclick" : realDeal.cliytd,
-                    "tRealregister" : realDeal.regiytd,
-                    "tRealcommission" : realDeal.commiytd,
-                    "tRealdollar" : tRealdollar,
-
-                    "tSkyclick" : skyBet.cliytd,
-                    "tSkyregister" : skyBet.regiytd,
-                    "tSkycommission" : skyBet.commiytd,
-                    "tSkydollar": tSkydollar,
-
-                    "tWildollar" : tWildollar,
-                    
-                    "tLadollar" : tLadollar,
-                    
-                    "tPadollar" : tPadollar,
-                    
-                    "tNetdollar" : tNetdollar,
-                    
-                    "tTidollar" : titanBet.balance,
-
-                    "tStanclick" : stan.cliytd,
-                    "tStanregister" : stan.regytd,
-                    "tStancommission" : stan.commiytd,
-                    "tStandollar" : tStandollar,
-
-                    "tCoralclick" : coral.cliytd,
-                    "tCoralregister" : coral.regytd,
-                    "tCoralcommission" : coral.commiytd,
-                    "tCoraldollar" : coral.commiytd,
-
-                    "tBFclick" : betFred.cliytd,
-                    "tBFregister" : betFred.regytd,
-                    "tBFcommission" : betFred.commiytd,
-                    "tBFdollar" : tBFdollar,
-
-                    "tViclick" : victor.cliytd,
-                    "tViregister" : victor.regytd,
-                    "tVicommission" : victor.commiytd,
-                    "tVidollar" : tVidollar,
-
-                    # "total" : total
-                })
-                return jsonify(status = True, jsonData = jsonData)
-
+                "total" : total
+            })
+            return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/bet365/', methods = ['GET', 'POST'])
@@ -1634,7 +1374,7 @@ def bet365():
     elif request.method == 'POST': 
         period = request.json['period']
         optVal = request.json['optVal']
-        
+        print(period)
         fromDate = datetime.datetime.strptime(period.split('-')[0].strip(), '%m/%d/%Y').date()
         toDate = datetime.datetime.strptime(period.split('-')[1].strip(), '%m/%d/%Y').date()
         
@@ -1760,7 +1500,7 @@ def bet365other():
     elif request.method == 'POST': 
         period = request.json['period']
         optVal = request.json['optVal']
-        
+        print(period)
         fromDate = datetime.datetime.strptime(period.split('-')[0].strip(), '%m/%d/%Y').date()
         toDate = datetime.datetime.strptime(period.split('-')[1].strip(), '%m/%d/%Y').date()
         
@@ -1916,41 +1656,26 @@ def bet10():
         data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
         return render_template('pages/bet10.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(Bet10).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/realDeal/', methods = ['GET', 'POST'])
@@ -1960,41 +1685,26 @@ def realDeal():
         data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
         return render_template('pages/realDeal.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regiytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(RealDeal).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regiytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/ladBroke/')
@@ -2010,41 +1720,26 @@ def betFred():
         data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
         return render_template('pages/betFred.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(BetFred).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/paddy/')
@@ -2073,41 +1768,26 @@ def stan():
         data = db.session.query(Stan).order_by(Stan.id.desc()).first()
         return render_template('pages/stan.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(Stan).order_by(Stan.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.imprytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(Stan).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.imprto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(Stan).order_by(Stan.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.imprytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.imprto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/coral/', methods = ['GET', 'POST'])
@@ -2117,41 +1797,26 @@ def coral():
         data = db.session.query(Coral).order_by(Coral.id.desc()).first()
         return render_template('pages/coral.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(Coral).order_by(Coral.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(Coral).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(Coral).order_by(Coral.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regto,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/skyBet/', methods = ['GET', 'POST'])
@@ -2161,41 +1826,26 @@ def skyBet():
         data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
         return render_template('pages/skyBet.html', data = data)
     if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regiytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(SkyBet).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regito,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
+        data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
+        jsonData = []
+        jsonData.append({
+            "impression" : data.impression,
+            "click" : data.click,
+            "registration" : data.registration,
+            "new_deposit" : data.new_deposit,
+            "commission" : data.commission,
+            "impreytd" : data.impreytd,
+            "cliytd" : data.cliytd,
+            "regytd" : data.regiytd,
+            "ndytd" : data.ndytd,
+            "commiytd" : data.commiytd,
+            "impreto" : data.impreto,
+            "clito" : data.clito,
+            "regto" : data.regito,
+            "ndto" : data.ndto,
+            "commito" : data.commito
+        })
+        return jsonify(status = True, jsonData = jsonData)
 
 
 @app.route('/william/')
@@ -2204,49 +1854,10 @@ def william():
     return render_template('pages/william.html', data = data)
 
 
-@app.route('/victor/', methods = ['GET', 'POST'])
+@app.route('/victor/')
 def victor():
-    data = {}
-    if request.method == 'GET':
-        data = db.session.query(Victor).order_by(Victor.id.desc()).first()
-        return render_template('pages/victor.html', data = data)
-    if request.method == 'POST':
-        state = request.json["state"]
-        if state == "1":
-            data = db.session.query(Victor).order_by(Victor.id.desc()).first()
-            jsonData = []
-            jsonData.append({
-                "merchant" : data.merchant,
-                "impression" : data.impression,
-                "click" : data.click,
-                "registration" : data.registration,
-                "new_deposit" : data.new_deposit,
-                "commission" : data.commission,
-                "impreytd" : data.impreytd,
-                "cliytd" : data.cliytd,
-                "regytd" : data.regytd,
-                "ndytd" : data.ndytd,
-                "commiytd" : data.commiytd
-            })
-            return jsonify(status = True, jsonData = jsonData)
-        elif state == "2":
-            dateStr = request.json['val']
-            dateVal = datetime.datetime.strptime(dateStr, '%m/%d/%Y').date()
-            data = db.session.query(Victor).filter_by(dateto = dateVal).first()
-            if not data:
-                return jsonify(status = False, message = "There is no data in your database...?")
-            else:
-                jsonData = []
-                jsonData.append({
-                    "merchant" : data.merchant,
-                    "impreto" : data.impreto,
-                    "clito" : data.clito,
-                    "regto" : data.regto,
-                    "ndto" : data.ndto,
-                    "commito" : data.commito
-                })
-                return jsonify(status = True, jsonData = jsonData)
-
+    data = "Woops, credential is not valid. Please tell me account info."
+    return render_template('pages/error.html', data = data)
 
 
 if __name__ == '__main__':
