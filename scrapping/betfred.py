@@ -80,7 +80,7 @@ class BetFred(object):
             return False
 
     def get_YTD_stats(self):
-        time.sleep(2)
+        time.sleep(5)
         try:
             table = self.client.driver.find_element_by_xpath('//*[@id="dashboard_quick_stats"]//tr[@class="row_light_color"]')
             for td in table.find_elements_by_tag_name('td'):
@@ -114,7 +114,7 @@ class BetFred(object):
         except:
             print("Element not found.")
             self.quick_stats_timer += 1
-            if self.quick_stats_timer < 4:
+            if self.quick_stats_timer < 6:
                 return self.get_quick_stats()
             else:
                 return False
@@ -154,6 +154,8 @@ class BetFred(object):
     def get_stats_report(self):
         self.client.open_url(self.report_url)
         time.sleep(10)
+        merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
+        merchant.select_by_value('0')
         param_date = self.get_delta_date()
         self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
         self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
