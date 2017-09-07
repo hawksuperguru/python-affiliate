@@ -136,6 +136,7 @@ class Bet365Other(db.Model):
 class Eight88(db.Model):
     __tablename__ = "eight88s"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
     registration = db.Column(db.Integer)
@@ -160,7 +161,7 @@ class Eight88(db.Model):
     mpto = db.Column(db.Integer)
 
 
-    def __init__(self, impression, click, registration, lead, money_player, balance, prebalance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto):
+    def __init__(self, impression, click, registration, lead, money_player, balance, prebalance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, dateto):
         self.impression = impression
         self.click = click
         self.registration = registration
@@ -183,11 +184,13 @@ class Eight88(db.Model):
         self.regto = regto
         self.leadto = leadto
         self.mpto = mpto
+        self.dateto = dateto
 
 
 class Bet10(db.Model):
     __tablename__ = "bet10s"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -205,7 +208,7 @@ class Bet10(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -222,11 +225,13 @@ class Bet10(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
+        self.dateto = dateto
 
 
 class RealDeal(db.Model):
     __tablename__ = "realdeals"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -244,7 +249,7 @@ class RealDeal(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -261,12 +266,13 @@ class RealDeal(db.Model):
         self.regto = regto
         self.ndto = ndto
         self.commito = commito
-
+        self.dateto = dateto
 
 
 class LadBroke(db.Model):
     __tablename__ = "ladbrokes"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     STAT_DATE =db.Column(db.Date)
     REAL_IMPS = db.Column(db.Float)
     RAW_IMPS = db.Column(db.Float)
@@ -281,7 +287,8 @@ class LadBroke(db.Model):
     NG_COMMISSION = db.Column(db.Float)
     TLR_AMOUNT = db.Column(db.Float)
 
-    def __init__(self, STAT_DATE, REAL_IMPS, RAW_IMPS, REAL_CLICKS, RAW_CLICKS, SPORTS_SIGNUPS, SPORTS_ACQUIRED_COUNT, ACQUIRED_COUNT, WITHDRAWS_CNT, SPORTS_NET_GAMING_REVENUE, CPA_COMMISSION, NG_COMMISSION, TLR_AMOUNT):
+    def __init__(self, dateto, STAT_DATE, REAL_IMPS, RAW_IMPS, REAL_CLICKS, RAW_CLICKS, SPORTS_SIGNUPS, SPORTS_ACQUIRED_COUNT, ACQUIRED_COUNT, WITHDRAWS_CNT, SPORTS_NET_GAMING_REVENUE, CPA_COMMISSION, NG_COMMISSION, TLR_AMOUNT):
+        self.dateto = dateto
         self.STAT_DATE = STAT_DATE
         self.REAL_IMPS = REAL_IMPS
         self.RAW_IMPS = RAW_IMPS
@@ -341,6 +348,7 @@ class BetFred(db.Model):
 class Paddy(db.Model):
     __tablename__ = "paddyies"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     balance = db.Column(db.Float)
     views = db.Column(db.Integer)
     uniqueviews = db.Column(db.Integer)
@@ -355,7 +363,8 @@ class Paddy(db.Model):
     firsttimeactivecustomers = db.Column(db.Float)
     netrevenue = db.Column(db.Float)
 
-    def __init__(self, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue):
+    def __init__(self, dateto, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue):
+        self.dateto = dateto
         self.balance = balance
         self.views = views
         self.uniqueviews = uniqueviews
@@ -373,6 +382,7 @@ class Paddy(db.Model):
 class NetBet(db.Model):
     __tablename__ = "netbets"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     withdraw_amount = db.Column(db.Float)
     withdraw_count = db.Column(db.Float)
     impressions_count = db.Column(db.Float)
@@ -400,7 +410,8 @@ class NetBet(db.Model):
     registrations = db.Column(db.Integer)
     cash_bets_amount = db.Column(db.Float)
 
-    def __init__(self, withdraw_amount, withdraw_count, impressions_count, bonus_bets_amount, first_deposits_count, rakes_amount, bonus_count, net_revenue, downloads_count, bonus_amount, commission, first_deposits_amount, bonus_wins_amount, deposits_count, invalid_cpa, gross_revenue, valid_cpa, affiliate_website_id, pending_cpa, cash_wins_amount, fees_amount, clicks_count, url, deposits_amount, registrations, cash_bets_amount):
+    def __init__(self, dateto, withdraw_amount, withdraw_count, impressions_count, bonus_bets_amount, first_deposits_count, rakes_amount, bonus_count, net_revenue, downloads_count, bonus_amount, commission, first_deposits_amount, bonus_wins_amount, deposits_count, invalid_cpa, gross_revenue, valid_cpa, affiliate_website_id, pending_cpa, cash_wins_amount, fees_amount, clicks_count, url, deposits_amount, registrations, cash_bets_amount):
+        self.dateto = dateto
         self.withdraw_amount = withdraw_amount
         self.withdraw_count = withdraw_count
         self.impressions_count = impressions_count
@@ -433,6 +444,7 @@ class NetBet(db.Model):
 class TitanBet(db.Model):
     __tablename__ = "titanbets"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     balance = db.Column(db.Float)
     tlr_amount = db.Column(db.Float)
     real_clicks = db.Column(db.Integer)
@@ -445,7 +457,8 @@ class TitanBet(db.Model):
     sport_u_real_count = db.Column(db.Float)
     sport_d_rf_count = db.Column(db.Float)
 
-    def __init__(self, balance, tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count):
+    def __init__(self, dateto, balance, tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count):
+        self.dateto = dateto
         self.balance = balance
         self.tlr_amount = tlr_amount
         self.real_clicks = real_clicks
@@ -462,6 +475,7 @@ class TitanBet(db.Model):
 class Stan(db.Model):
     __tablename__ = "stans"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -479,7 +493,8 @@ class Stan(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
+    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
+        self.dateto = dateto
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -501,6 +516,7 @@ class Stan(db.Model):
 class Coral(db.Model):
     __tablename__ = "corals"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -518,7 +534,8 @@ class Coral(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito):
+        self.dateto = dateto
         self.merchant = merchant
         self.impression = impression
         self.click = click
@@ -540,6 +557,7 @@ class Coral(db.Model):
 class William(db.Model):
     __tablename__ = "williams"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     balance = db.Column(db.Float)
     views = db.Column(db.Integer)
     unique_views = db.Column(db.Integer)
@@ -551,7 +569,8 @@ class William(db.Model):
     chargebacks = db.Column(db.Float)
     net_revenue = db.Column(db.Float)
 
-    def __init__(self, balance, views, unique_views, clicks, unique_clicks, signups, depositing_customers, active_customers, chargebacks, net_revenue):
+    def __init__(self, dateto, balance, views, unique_views, clicks, unique_clicks, signups, depositing_customers, active_customers, chargebacks, net_revenue):
+        self.dateto = dateto
         self.balance = balance
         self.views = views
         self.unique_views = unique_views
@@ -567,6 +586,7 @@ class William(db.Model):
 class SkyBet(db.Model):
     __tablename__ = "skybets"
     id = db.Column(db.Integer, primary_key=True)
+    dateto = db.Column(db.Date, unique = True)
     merchant = db.Column(db.String(80))
     impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
@@ -584,7 +604,8 @@ class SkyBet(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
+    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
+        self.dateto = dateto
         self.merchant = merchant
         self.impression = impression
         self.click = click
