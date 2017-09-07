@@ -197,6 +197,8 @@ if __name__ == "__main__":
     if coral.login() is True:
         print("Successfully logged in. Parsing quick stats.")
         coral.get_quick_stats()
+
+        print("pulling YTD stats data...")
         coral.select_YTD_option()
         coral.get_YTD_stats()
 
