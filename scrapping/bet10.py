@@ -1,69 +1,98 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as wait, Select
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options
-from pyvirtualdisplay import Display
+from selenium_browser import UBrowse
 from sqlalchemy import create_engine
-import psycopg2, time
-import os, datetime, re
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
 from settings.config import *
 
-class Bet10Spider():
-    """docstring for Bet10Spider"""
+import psycopg2
+import datetime
+import json
+import requests
+import time
+import re
+
+class Bet10(object):
+    """docstring for Bet10"""
     def __init__(self):
-        self.url_to_crawl = 'http://partners.10bet.com/'
-        self.summary_url = 'https://partners.10bet.com/reporting/quick_summary_report.asp'
-        self.table_values = []
+        self.client = UBrowse()
+        self.login_url = 'https://partners.10bet.com/login.asp'
+        self.report_url = 'https://partners.10bet.com/reporting/quick_summary_report.asp'
+        self.username = 'betfyuk'
+        self.password = 'dontfuckwithme'
+        self.timer = 0
         self.items = []
+        
+        self.headers = {
+            'Host': 'www.bet365affiliates.com',
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Referer': 'https://www.bet365affiliates.com/Members/Members/Statistics/',
+            }
 
-    def start_driver(self):
-        print('starting driver...')
-        # self.display = Display(visible=0, size=(800, 600))
-        # self.display.start()
-        # self.driver = webdriver.Chrome("/usr/bin/chromedriver")
-        self.driver = webdriver.Chrome("../chrome/chromedriver.exe")
+    def _create_params(self, from_date, to_date, media=False):
 
-    def close_driver(self):
-        print('closing driver...')
-        # self.display.stop()
-        self.driver.quit()
-        print('closed!')
+        if media:
+            self.params = (
+                ('key', 'value'),
+                )
+        else:
+            self.params = (
+                ('operatorID', '1'),
+                )
 
-    def get_page(self, url):
-        print('getting page...')
-        self.driver.get(url)
-        time.sleep(10)
+    def _get_cookies(self):
+        self.cookies = dict()
+        cookies = self.client.driver.get_cookies()
+        for i in cookies:
+            self.cookies[i['name']] = i['value']
+
+    def close(self):
+        self.client.close()
+
+    def get_page(self, url, timer = 10):
+        self.client.open_url(url)
+        time.sleep(timer)
 
     def login(self):
-        print('getting pass the gate page...')
-        try:
-            form = self.driver.find_element_by_id('FMlogins')
-            form.find_element_by_id('username').send_keys('betfyuk')
-            form.find_element_by_id('password').send_keys('dontfuckwithme')
-            form.find_element_by_id('password').send_keys(Keys.RETURN)
-            # form.find_element_by_xpath('//button[@class="btn btn-primary btn-lg", @type="submit"]').click()
-            time.sleep(10)
-        except Exception:
-            print("Exception found in login process...")
-            pass
+        self.client.set_loginform('//*[@id="username"]')
+        self.client.set_passform('//*[@id="password"]')
+        self.client.set_loginbutton('//button[@type="submit"]')
+
+        if self.client.login(self.username, self.password) is True:
+            self._get_cookies()
+            return True
+        else:
+            print("Failed to log in.")
+            return False
 
     def extract_table_values(self):
-        print('Extracting row_light_color record values...')
-        for tr in self.driver.find_elements_by_xpath('//table[@id="dashboard_quick_stats"]//tr[@class="row_light_color"]'):
-            for td in tr.find_elements_by_tag_name('td'):
-                self.table_values.append(td.text)
+        time.sleep(3)
+        try:
+            for tr in self.client.driver.find_elements_by_xpath('//table[@id="dashboard_quick_stats"]//tr[@class="row_light_color"]'):
+                for td in tr.find_elements_by_tag_name('td'):
+                    if td.text == '':
+                        raise ValueError("Element Not found. Trying later...")
+                    self.items.append(td.text)
+        except:
+            if (self.timer < 10):
+                return self.extract_table_values()
+            else:
+                print("Failed to get table values")
+                return False
 
     def parse_stats_tables(self):
+        self.timer = 0
         self.extract_table_values()
-        select = Select(self.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
+        select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
         select.select_by_value('YTD')
-        time.sleep(10)
+        
+        self.timer = 0
         self.extract_table_values()
 
     def get_delta_date(self, delta = 1):
@@ -72,65 +101,78 @@ class Bet10Spider():
         return (today - diff).strftime("%Y/%m/%d")
 
     def set_params_for_daily_report(self):
-        merchant = Select(self.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
-        paramDate = self.get_delta_date()
-        self.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(paramDate))
-        self.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(paramDate))
-        merchant.select_by_value('0')
-        self.driver.find_element_by_class_name("button").click()
-        time.sleep(10)
+        time.sleep(3)
+        try:
+            merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
+            paramDate = self.get_delta_date()
+            self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(paramDate))
+            self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(paramDate))
+            merchant.select_by_value('0')
+            self.client.driver.find_element_by_class_name("button").click()
+        except:
+            print("Failed to set params for daily report.")
 
     def parse_daily_data(self):
+        self.timer = 0
         self.set_params_for_daily_report()
+
         temp_array = []
-        for tr in self.driver.find_elements_by_xpath('//*[@id="internalreportdata"]//tr'):
+        for tr in self.client.driver.find_elements_by_xpath('//*[@id="internalreportdata"]//tr'):
             for td in tr.find_elements_by_tag_name('td'):
                 temp_array.append(td.text)
         
         pattern = re.compile(r'[\-\d.\d]+')
-        self.table_values.append(pattern.search(temp_array[1]).group(0))
-        self.table_values.append(pattern.search(temp_array[2]).group(0))
-        self.table_values.append(pattern.search(temp_array[4]).group(0))
-        self.table_values.append(pattern.search(temp_array[7]).group(0))
-        self.table_values.append(pattern.search(temp_array[-1]).group(0))
-        print(self.table_values)
-        pass
-
+        self.items.append(pattern.search(temp_array[1]).group(0))
+        self.items.append(pattern.search(temp_array[2]).group(0))
+        self.items.append(pattern.search(temp_array[4]).group(0))
+        self.items.append(pattern.search(temp_array[7]).group(0))
+        self.items.append(pattern.search(temp_array[-1]).group(0))
 
     def save(self):
-        merchant = str(self.table_values[0])
-        impression = int(self.table_values[1])
-        click = int(self.table_values[2])
-        registration = int(self.table_values[3])
-        new_deposit = int(self.table_values[4])
-        commission = float(self.table_values[5])
-        impreytd = int(self.table_values[7])
-        cliytd = int(self.table_values[8])
-        regytd = int(self.table_values[9])
-        ndytd = int(self.table_values[10])
-        commiytd = float((self.table_values[11]).replace(",", ""))
-        impreto = int(self.table_values[12])
-        clito = int(self.table_values[13])
-        regto = int(self.table_values[14])
-        ndto = int(self.table_values[15])
-        commito = float(self.table_values[16])
+        merchant = str(self.items[0])
+        impression = int(self.items[1])
+        click = int(self.items[2])
+        registration = int(self.items[3])
+        new_deposit = int(self.items[4])
+        commission = float(self.items[5])
+        impreytd = int(self.items[7])
+        cliytd = int(self.items[8])
+        regytd = int(self.items[9])
+        ndytd = int(self.items[10])
+        commiytd = float((self.items[11]).replace(",", ""))
+        impreto = int(self.items[12])
+        clito = int(self.items[13])
+        regto = int(self.items[14])
+        ndto = int(self.items[15])
+        commito = float(self.items[16])
         dateto = datetime.datetime.strptime(self.get_delta_date(), '%Y/%m/%d').date()
 
         engine = create_engine(get_database_connection_string())
         result = engine.execute("INSERT INTO bet10s (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+        
+        return result
 
     def parse(self):
-        self.start_driver()
-        self.get_page(self.url_to_crawl)
+        print('getting page...')
+        self.get_page(self.login_url, 5)
+
+        print('getting pass the gate page...')
+        # time.sleep(5)
         self.login()
+
+        print('getting quick stats table...')
         self.parse_stats_tables()
-        self.get_page(self.summary_url)
+
+        print('getting summary page content')
+        self.get_page(self.report_url, 1)
         self.parse_daily_data()
 
-        self.close_driver()
+        print("Saving to Database...")
         self.save()
+        self.close()
+
 
 # Run spider
 if __name__ == '__main__':
-    Bet10 = Bet10Spider()
-    items_list = Bet10.parse()
+    bet10 = Bet10()
+    items_list = bet10.parse()
