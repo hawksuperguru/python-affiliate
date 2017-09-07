@@ -144,7 +144,8 @@ if __name__ == '__main__':
     mediadata_pre_month = json.loads(affil.get_data(pre_month=True, media=True).content)
     mediadata_year = json.loads(affil.get_data(year=True, media=True).content)
 
-    affil.client.driver.close()
+    # affil.client.driver.close()
+    affil.client.close()
 
     userdata_to = data_to['userdata']
     userdata_week = data_week['userdata']
