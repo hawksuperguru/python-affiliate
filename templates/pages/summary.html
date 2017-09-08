@@ -126,6 +126,7 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tRealdollar">{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% if data[16] and data[16].commission %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">SKYBET</th>
@@ -138,6 +139,7 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tSkydollar">{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</th>
@@ -146,9 +148,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[12].balance}}</td>
+                      <td>{{data[12].monthly_commission}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette" id="tWildollar">{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tWildollar">{{(data[12].monthly_commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
@@ -162,6 +164,7 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tLadollar">{{(data[4].monthly_commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% if data[17] and data[17].click %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</th>
@@ -174,6 +177,8 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tVidollar">{{(data[17].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[6] and data[6].balance %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">PADDY POWER</th>
@@ -186,6 +191,7 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tPadollar">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</th>
