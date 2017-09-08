@@ -273,35 +273,41 @@ class LadBroke(db.Model):
     __tablename__ = "ladbrokes"
     id = db.Column(db.Integer, primary_key=True)
     dateto = db.Column(db.Date, unique = True)
-    STAT_DATE =db.Column(db.Date)
-    REAL_IMPS = db.Column(db.Float)
-    RAW_IMPS = db.Column(db.Float)
-    REAL_CLICKS = db.Column(db.Integer)
-    RAW_CLICKS = db.Column(db.Integer)
-    SPORTS_SIGNUPS = db.Column(db.Integer)
-    SPORTS_ACQUIRED_COUNT = db.Column(db.Float)
-    ACQUIRED_COUNT = db.Column(db.Float)
-    WITHDRAWS_CNT = db.Column(db.Float)
-    SPORTS_NET_GAMING_REVENUE = db.Column(db.Float)
-    CPA_COMMISSION = db.Column(db.Float)
-    NG_COMMISSION = db.Column(db.Float)
-    TLR_AMOUNT = db.Column(db.Float)
+    merchant = db.Column(db.String(80))
+    impression = db.Column(db.Integer)
+    click = db.Column(db.Integer)
+    registration = db.Column(db.Integer)
+    new_deposit = db.Column(db.Integer)
+    commission = db.Column(db.Float)
+    impreytd = db.Column(db.Integer)
+    cliytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
+    ndytd = db.Column(db.Integer)
+    commiytd = db.Column(db.Float)
+    impreto = db.Column(db.Integer)
+    clito = db.Column(db.Integer)
+    regto = db.Column(db.Integer)
+    ndto = db.Column(db.Integer)
+    commito = db.Column(db.Float)
 
-    def __init__(self, dateto, STAT_DATE, REAL_IMPS, RAW_IMPS, REAL_CLICKS, RAW_CLICKS, SPORTS_SIGNUPS, SPORTS_ACQUIRED_COUNT, ACQUIRED_COUNT, WITHDRAWS_CNT, SPORTS_NET_GAMING_REVENUE, CPA_COMMISSION, NG_COMMISSION, TLR_AMOUNT):
+    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
+        self.merchant = merchant
+        self.impression = impression
+        self.click = click
+        self.registration = registration
+        self.new_deposit = new_deposit
+        self.commission = commission
+        self.impreytd = impreytd
+        self.cliytd = cliytd
+        self.regytd = regytd
+        self.ndytd = ndytd
+        self.commiytd = commiytd
+        self.impreto = impreto
+        self.clito = clito
+        self.regto = regto
+        self.ndto = ndto
+        self.commito = commito
         self.dateto = dateto
-        self.STAT_DATE = STAT_DATE
-        self.REAL_IMPS = REAL_IMPS
-        self.RAW_IMPS = RAW_IMPS
-        self.REAL_CLICKS = REAL_CLICKS
-        self.RAW_CLICKS = RAW_CLICKS
-        self.SPORTS_SIGNUPS = SPORTS_SIGNUPS
-        self.SPORTS_ACQUIRED_COUNT = SPORTS_ACQUIRED_COUNT
-        self.ACQUIRED_COUNT = ACQUIRED_COUNT
-        self.WITHDRAWS_CNT = WITHDRAWS_CNT
-        self.SPORTS_NET_GAMING_REVENUE = SPORTS_NET_GAMING_REVENUE
-        self.CPA_COMMISSION = CPA_COMMISSION
-        self.NG_COMMISSION = NG_COMMISSION
-        self.TLR_AMOUNT = TLR_AMOUNT
 
 
 class BetFred(db.Model):
