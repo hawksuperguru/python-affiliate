@@ -1,6 +1,6 @@
 from selenium_browser import UBrowse
-# from flaskapp import Eight88
 from sqlalchemy import create_engine
+from settings.config import *
 
 import psycopg2
 import datetime
@@ -183,7 +183,6 @@ if __name__ == '__main__':
     prebal = userdata_pre_month['CommissionPerformance']
 
 
-    engine = create_engine('postgresql://postgres:root@localhost/kyan')
-    # engine = create_engine('mysql+pymysql://root:@localhost/kyan')
+    engine = create_engine(get_database_connection_string())
     print ("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal)
     # result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal)
