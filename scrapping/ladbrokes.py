@@ -1,6 +1,7 @@
 from selenium_browser import UBrowse
 from sqlalchemy import create_engine
 from settings.config import *
+from reporter import *
 
 import psycopg2
 import datetime
@@ -13,6 +14,7 @@ class LadBrokes(object):
     """docstring for LadBrokes"""
     def __init__(self):
         self.client = UBrowse()
+        self.report = SpiderReporter()
         self.report_url = 'https://portal.ladbrokespartners.com/portal/#/statistics'
         self.ajax_url = 'https://portal.ladbrokespartners.com/portal/rest/reports/run/atOnce'
         self.data = {}
@@ -64,7 +66,7 @@ class LadBrokes(object):
             self.cookies[i['name']] = i['value']
     
     def log(self, message, type = 'info'):
-        self.client.write_log(message, type)
+        self.report.write_log(message, type)
 
     def get_yearly_data(self):
         self._create_params('yearly')
