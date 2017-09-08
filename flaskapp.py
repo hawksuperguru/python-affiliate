@@ -917,7 +917,7 @@ def dashboard():
                 "tSkycommission" : skyBet.commission,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : william.balance,
+                "tWildollar" : william.monthly_commission,
                 
                 "tLadollar" : ladBroke.monthly_commission,
                 
@@ -994,7 +994,7 @@ def dashboard():
                 "tSkycommission" : skyBet.commiytd,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : william.balance,
+                "tWildollar" : william.monthly_commission,
                 
                 "tLadollar" : ladBroke.monthly_commission,
                 
@@ -1232,7 +1232,7 @@ def summary():
                 "tSkycommission" : skyBet.commission,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : william.balance,
+                "tWildollar" : william.monthly_commission,
                 
                 "tLadollar" : ladBroke.monthly_commission,
                 
@@ -1356,7 +1356,7 @@ def summary():
                 "tSkycommission" : skyBet.commiytd,
                 "tSkydollar": tSkydollar,
 
-                "tWildollar" : william.balance,
+                "tWildollar" : william.monthly_commission,
                 
                 "tLadollar" : ladBroke.monthly_commission,
                 
