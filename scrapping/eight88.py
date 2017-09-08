@@ -21,7 +21,6 @@ class Eight88(object):
     def __init__(self):
         self.client = UBrowse()
         self.login_url = 'http://affiliates.888.com/'
-        self.report_url = 'https://affiliate.coral.co.uk/reporting/quick_summary_report.asp'
         self.username = 'betfyuk1'
         self.password = 'dontfuckwithme'
         self.items = []
