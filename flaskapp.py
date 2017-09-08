@@ -272,42 +272,30 @@ class RealDeal(db.Model):
 class LadBroke(db.Model):
     __tablename__ = "ladbrokes"
     id = db.Column(db.Integer, primary_key=True)
-    dateto = db.Column(db.Date, unique = True)
-    merchant = db.Column(db.String(80))
-    impression = db.Column(db.Integer)
     click = db.Column(db.Integer)
-    registration = db.Column(db.Integer)
-    new_deposit = db.Column(db.Integer)
+    signup = db.Column(db.Integer)
     commission = db.Column(db.Float)
-    impreytd = db.Column(db.Integer)
-    cliytd = db.Column(db.Integer)
-    regytd = db.Column(db.Integer)
-    ndytd = db.Column(db.Integer)
-    commiytd = db.Column(db.Float)
-    impreto = db.Column(db.Integer)
-    clito = db.Column(db.Integer)
-    regto = db.Column(db.Integer)
-    ndto = db.Column(db.Integer)
-    commito = db.Column(db.Float)
+    monthly_click = db.Column(db.Integer)
+    monthly_signup = db.Column(db.Integer)
+    monthly_commission = db.Column(db.Float)
+    yearly_click = db.Column(db.Integer)
+    yearly_signup = db.Column(db.Integer)
+    yearly_commission = db.Column(db.Float)
+    paid_signup = db.Column(db.Integer)
+    created_at = db.Column(db.Date, unique = True)
 
-    def __init__(self, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto):
-        self.merchant = merchant
-        self.impression = impression
+    def __init__(self, click, signup, commmission, monthly_click, monthly_signup, monthly_commmission, yearly_click, yearly_signup, yearly_commmission, paid_signup, created_at):
         self.click = click
-        self.registration = registration
-        self.new_deposit = new_deposit
+        self.signup = signup
         self.commission = commission
-        self.impreytd = impreytd
-        self.cliytd = cliytd
-        self.regytd = regytd
-        self.ndytd = ndytd
-        self.commiytd = commiytd
-        self.impreto = impreto
-        self.clito = clito
-        self.regto = regto
-        self.ndto = ndto
-        self.commito = commito
-        self.dateto = dateto
+        self.monthly_click = monthly_click
+        self.monthly_signup = monthly_signup
+        self.monthly_commission = monthly_commission
+        self.yearly_click = yearly_click
+        self.yearly_signup = yearly_signup
+        self.yearly_commission = yearly_commission
+        self.paid_signup = paid_signup
+        self.created_at = created_at
 
 
 class BetFred(db.Model):
@@ -1888,6 +1876,6 @@ def victor():
 
 
 if __name__ == '__main__':
-    # manager.run()
-    app.debug = True
-    app.run()
+    manager.run()
+    # app.debug = True
+    # app.run()
