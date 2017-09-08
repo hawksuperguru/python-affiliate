@@ -376,62 +376,30 @@ class Paddy(db.Model):
 class NetBet(db.Model):
     __tablename__ = "netbets"
     id = db.Column(db.Integer, primary_key=True)
-    dateto = db.Column(db.Date, unique = True)
-    withdraw_amount = db.Column(db.Float)
-    withdraw_count = db.Column(db.Float)
-    impressions_count = db.Column(db.Float)
-    bonus_bets_amount = db.Column(db.Float)
-    first_deposits_count = db.Column(db.Float)
-    rakes_amount = db.Column(db.Float)
-    bonus_count = db.Column(db.Float)
-    net_revenue = db.Column(db.Float)
-    downloads_count = db.Column(db.Integer)
-    bonus_amount = db.Column(db.Float)
+    created_at = db.Column(db.Date, unique = True)
+    click = db.Column(db.Integer)
+    signup = db.Column(db.Integer)
     commission = db.Column(db.Float)
-    first_deposits_amount = db.Column(db.Float)
-    bonus_wins_amount = db.Column(db.Float)
-    deposits_count = db.Column(db.Float)
-    invalid_cpa = db.Column(db.Float)
-    gross_revenue =db.Column(db.Float)
-    valid_cpa = db.Column(db.Float)
-    affiliate_website_id = db.Column(db.Float)
-    pending_cpa = db.Column(db.Float)
-    cash_wins_amount = db.Column(db.Float)
-    fees_amount = db.Column(db.Float)
-    clicks_count = db.Column(db.Integer)
-    url = db.Column(db.String)
-    deposits_amount = db.Column(db.Float)
-    registrations = db.Column(db.Integer)
-    cash_bets_amount = db.Column(db.Float)
+    monthly_click = db.Column(db.Integer)
+    monthly_signup = db.Column(db.Integer)
+    monthly_commission = db.Column(db.Float)
+    yearly_click = db.Column(db.Integer)
+    yearly_signup = db.Column(db.Integer)
+    yearly_commission = db.Column(db.Float)
+    paid_signup = db.Column(db.Integer)
 
-    def __init__(self, dateto, withdraw_amount, withdraw_count, impressions_count, bonus_bets_amount, first_deposits_count, rakes_amount, bonus_count, net_revenue, downloads_count, bonus_amount, commission, first_deposits_amount, bonus_wins_amount, deposits_count, invalid_cpa, gross_revenue, valid_cpa, affiliate_website_id, pending_cpa, cash_wins_amount, fees_amount, clicks_count, url, deposits_amount, registrations, cash_bets_amount):
-        self.dateto = dateto
-        self.withdraw_amount = withdraw_amount
-        self.withdraw_count = withdraw_count
-        self.impressions_count = impressions_count
-        self.bonus_bets_amount = bonus_bets_amount
-        self.first_deposits_count = first_deposits_count
-        self.rakes_amount = rakes_amount
-        self.bonus_count = bonus_count
-        self.net_revenue = net_revenue
-        self.downloads_count = downloads_count
-        self.bonus_amount = bonus_amount
+    def __init__(self, click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at):
+        self.click = click
+        self.signup = signup
         self.commission = commission
-        self.first_deposits_amount = first_deposits_amount
-        self.bonus_wins_amount = bonus_wins_amount
-        self.deposits_count = deposits_count
-        self.invalid_cpa = invalid_cpa
-        self.gross_revenue =gross_revenue
-        self.valid_cpa = valid_cpa
-        self.affiliate_website_id = affiliate_website_id
-        self.pending_cpa = pending_cpa
-        self.cash_wins_amount = cash_wins_amount
-        self.fees_amount = fees_amount
-        self.clicks_count = clicks_count
-        self.url = url
-        self.deposits_amount = deposits_amount
-        self.registrations = registrations
-        self.cash_bets_amount = cash_bets_amount
+        self.monthly_click = monthly_click
+        self.monthly_signup = monthly_signup
+        self.monthly_commission = monthly_commission
+        self.yearly_click = yearly_click
+        self.yearly_signup = yearly_signup
+        self.yearly_commission = yearly_commission
+        self.paid_signup = paid_signup
+        self.created_at = created_at
 
 
 
