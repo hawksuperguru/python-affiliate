@@ -444,7 +444,7 @@ class Stan(db.Model):
     registration = db.Column(db.Integer)
     new_deposit = db.Column(db.Integer)
     commission = db.Column(db.Float)
-    imprytd = db.Column(db.Integer)
+    impreytd = db.Column(db.Integer)
     cliytd = db.Column(db.Integer)
     regytd = db.Column(db.Integer)
     ndytd = db.Column(db.Integer)
@@ -455,7 +455,7 @@ class Stan(db.Model):
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, imprytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
+    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito):
         self.dateto = dateto
         self.merchant = merchant
         self.impression = impression
@@ -463,7 +463,7 @@ class Stan(db.Model):
         self.registration = registration
         self.new_deposit = new_deposit
         self.commission = commission
-        self.imprytd = imprytd
+        self.impreytd = impreytd
         self.cliytd = cliytd
         self.regytd = regytd
         self.ndytd = ndytd
@@ -1759,7 +1759,7 @@ def stan():
             "registration" : data.registration,
             "new_deposit" : data.new_deposit,
             "commission" : data.commission,
-            "impreytd" : data.imprytd,
+            "impreytd" : data.impreytd,
             "cliytd" : data.cliytd,
             "regytd" : data.regytd,
             "ndytd" : data.ndytd,
