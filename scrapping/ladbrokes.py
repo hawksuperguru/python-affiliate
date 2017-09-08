@@ -53,7 +53,6 @@ class LadBrokes(object):
     def _get_auth_token(self):
         try:
             self.headers['X-Auth-Token'] = self.client.driver.execute_script("return localStorage.authToken")
-            print(self.headers['X-Auth-Token'])
         except:
             return False
         return True
@@ -63,6 +62,9 @@ class LadBrokes(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+    
+    def log(self, message, type = 'info'):
+        self.client.write_log(message, type)
 
     def get_yearly_data(self):
         self._create_params('yearly')
@@ -78,7 +80,7 @@ class LadBrokes(object):
             return True
 
         else:
-            print("Something went wrong in Ajax for Yearly data")
+            self.log("Something went wrong in Ajax for Yearly data", 'error')
             return False
         
     def get_monthly_data(self):
@@ -95,7 +97,7 @@ class LadBrokes(object):
             return True
 
         else:
-            print("Something went wrong in Ajax for Monthly data")
+            self.log("Something went wrong in Ajax for Monthly data", 'error')
             return False
 
     def get_daily_data(self):
@@ -115,29 +117,27 @@ class LadBrokes(object):
             return True
 
         else:
-            print("Something went wrong in Ajax for Daily data")
+            self.log("Something went wrong in Ajax for Daily data", 'error')
             return False
 
     def get_data(self):
         time.sleep(5)
         self._get_auth_token()
-        print("Getting daily data...")
+        self.log("Getting daily data...")
         self.get_daily_data()
-        print("Getting monthly data...")
+        self.log("Getting monthly data...")
         self.get_monthly_data()
-        print("Getting yearly data...")
+        self.log("Getting yearly data...")
         self.get_yearly_data()
-        print(self.data)
         return self.save()
-        
 
     def save(self):
-        # try:
-        engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO ladbrokes (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
-        return True
-        # except:
-        #     return False
+        try:
+            engine = create_engine(get_database_connection_string())
+            result = engine.execute("INSERT INTO ladbrokes (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
+            return True
+        except:
+            return False
 
     def run(self):
         self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')
@@ -150,11 +150,11 @@ class LadBrokes(object):
             self._create_params()
 
             if self.get_data():
-                print("Data stored successfully")
+                self.log("Data stored successfully")
             else:
-                print("Failed to write to DB")
+                self.log("Failed to write to DB", 'error')
         else:
-            print("Login Failed")
+            self.log("Login Failed", 'error')
         
         self.client.close()    
 
