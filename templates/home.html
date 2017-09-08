@@ -213,9 +213,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[14].balance}}</td>
+                      <td>{{data[14].monthly_commission}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette" id="tNetdollar">{{(data[14].balance * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tNetdollar">{{(data[14].monthly_commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
@@ -427,7 +427,7 @@
           <div class="small-box bg-yellow">
             <div class="inner">
               <h3>NETBET</h3>
-              <p>{{data[14].balance}} {{data[16][0]}}</p>
+              <p>{{data[14].monthly_commission}} {{data[16][0]}}</p>
             </div>
             <div class="icon">
               <i class="fa fa-balance-scale"></i>

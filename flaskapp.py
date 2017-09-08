@@ -882,7 +882,7 @@ def dashboard():
                 
                 "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : netBet.balance,
+                "tNetdollar" : netBet.monthly_commission,
                 
                 "tTidollar" : titanBet.balance,
 
@@ -959,7 +959,7 @@ def dashboard():
                 
                 "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : netBet.balance,
+                "tNetdollar" : netBet.monthly_commission,
                 
                 "tTidollar" : titanBet.balance,
 
@@ -1197,7 +1197,7 @@ def summary():
                 
                 "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : netBet.balance,
+                "tNetdollar" : netBet.monthly_commission,
                 
                 "tTidollar" : titanBet.balance,
 
@@ -1321,7 +1321,7 @@ def summary():
                 
                 "tPadollar" : paddy.balance,
                 
-                "tNetdollar" : netBet.balance,
+                "tNetdollar" : netBet.monthly_commission,
                 
                 "tTidollar" : titanBet.balance,
 
