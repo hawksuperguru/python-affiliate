@@ -145,6 +145,7 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tRealdollar">{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% if data[13] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">SKYBET</th>
@@ -157,6 +158,7 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tSkydollar">{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</th>
@@ -165,9 +167,9 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td>{{data[12].balance}}</td>
+                      <td>{{data[12].monthly_commission}}</td>
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
-                      <td class="bg-gray color-palette" id="tWildollar">{{(data[12].balance * data[10])|round(2, 'floor')}}</td>
+                      <td class="bg-gray color-palette" id="tWildollar">{{(data[12].monthly_commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
@@ -193,6 +195,7 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tVidollar">{{(data[17].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% if data[6] and data[6].balance %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">PADDY POWER</th>
@@ -205,6 +208,7 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tPadollar">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</th>
@@ -351,6 +355,7 @@
             <a href="{{ url_for('realDeal') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
+        {% if data[13] and data[13].commission %}
         <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-aqua">
             <div class="inner">
@@ -363,11 +368,12 @@
             <a href="{{ url_for('skyBet') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
+        {% endif %}
         <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-green">
             <div class="inner">
               <h3>WILLIAM HILL</h3>
-              <p>{{(data[12].balance * data[10])|round(2, 'floor')}} {{data[16][0]}}</p>
+              <p>{{(data[12].commission * data[10])|round(2, 'floor')}} {{data[16][0]}}</p>
             </div>
             <div class="icon">
               <i class="fa fa-balance-scale"></i>
@@ -379,7 +385,7 @@
           <div class="small-box bg-yellow">
             <div class="inner">
               <h3>LADBROKES</h3>
-              <p>{{(data[4].balance * data[11])|round(2, 'floor')}} {{data[16][0]}}</p>
+              <p>{{(data[4].monthly_commission * data[11])|round(2, 'floor')}} {{data[16][0]}}</p>
             </div>
             <div class="icon">
               <i class="fa fa-balance-scale"></i>
@@ -411,6 +417,7 @@
             <a href="{{ url_for('victor') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
+        {% if data[6] and data[6].balance %}
         <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-green">
             <div class="inner">
@@ -423,6 +430,7 @@
             <a href="{{ url_for('paddy') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
+        {% endif %}
         <div class="col-lg-3 col-xs-6">
           <div class="small-box bg-yellow">
             <div class="inner">

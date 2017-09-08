@@ -1885,6 +1885,6 @@ def victor():
 
 
 if __name__ == '__main__':
-    manager.run()
-    # app.debug = True
-    # app.run()
+    # manager.run()
+    app.debug = True
+    app.run()
