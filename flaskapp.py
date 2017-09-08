@@ -560,30 +560,30 @@ class Coral(db.Model):
 class William(db.Model):
     __tablename__ = "williams"
     id = db.Column(db.Integer, primary_key=True)
-    dateto = db.Column(db.Date, unique = True)
-    balance = db.Column(db.Float)
-    views = db.Column(db.Integer)
-    unique_views = db.Column(db.Integer)
-    clicks = db.Column(db.Integer)
-    unique_clicks = db.Column(db.Integer)
-    signups = db.Column(db.Integer)
-    depositing_customers = db.Column(db.Integer)
-    active_customers = db.Column(db.Integer)
-    chargebacks = db.Column(db.Float)
-    net_revenue = db.Column(db.Float)
+    click = db.Column(db.Integer)
+    signup = db.Column(db.Integer)
+    commission = db.Column(db.Float)
+    monthly_click = db.Column(db.Integer)
+    monthly_signup = db.Column(db.Integer)
+    monthly_commission = db.Column(db.Float)
+    yearly_click = db.Column(db.Integer)
+    yearly_signup = db.Column(db.Integer)
+    yearly_commission = db.Column(db.Float)
+    paid_signup = db.Column(db.Integer)
+    created_at = db.Column(db.Date, unique = True)
 
-    def __init__(self, dateto, balance, views, unique_views, clicks, unique_clicks, signups, depositing_customers, active_customers, chargebacks, net_revenue):
-        self.dateto = dateto
-        self.balance = balance
-        self.views = views
-        self.unique_views = unique_views
-        self.clicks = clicks
-        self.unique_clicks = unique_clicks
-        self.signups = signups
-        self.depositing_customers = depositing_customers
-        self.chargebacks = chargebacks
-        self.net_revenue = net_revenue
-
+    def __init__(self, click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at):
+        self.click = click
+        self.signup = signup
+        self.commission = commission
+        self.monthly_click = monthly_click
+        self.monthly_signup = monthly_signup
+        self.monthly_commission = monthly_commission
+        self.yearly_click = yearly_click
+        self.yearly_signup = yearly_signup
+        self.yearly_commission = yearly_commission
+        self.paid_signup = paid_signup
+        self.created_at = created_at
 
 
 class SkyBet(db.Model):
