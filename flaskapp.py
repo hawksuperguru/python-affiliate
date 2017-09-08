@@ -910,7 +910,7 @@ def dashboard():
 
                 "tWildollar" : william.balance,
                 
-                "tLadollar" : ladBroke.balance,
+                "tLadollar" : ladBroke.monthly_commission,
                 
                 "tPadollar" : paddy.balance,
                 
@@ -987,7 +987,7 @@ def dashboard():
 
                 "tWildollar" : william.balance,
                 
-                "tLadollar" : ladBroke.balance,
+                "tLadollar" : ladBroke.monthly_commission,
                 
                 "tPadollar" : paddy.balance,
                 
@@ -1225,7 +1225,7 @@ def summary():
 
                 "tWildollar" : william.balance,
                 
-                "tLadollar" : ladBroke.balance,
+                "tLadollar" : ladBroke.monthly_commission,
                 
                 "tPadollar" : paddy.balance,
                 
@@ -1349,7 +1349,7 @@ def summary():
 
                 "tWildollar" : william.balance,
                 
-                "tLadollar" : ladBroke.balance,
+                "tLadollar" : ladBroke.monthly_commission,
                 
                 "tPadollar" : paddy.balance,
                 
