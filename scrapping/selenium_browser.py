@@ -43,21 +43,6 @@ class UBrowse(object):
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(formatString)
 
-    def write_error_log(self, message):
-        if ENV == 'dev':
-            print(message)
-        else:
-            # Writing to DB.
-            pass
-
-    def write_log(self, message, type = 'info'):
-        if type == 'error':
-            self.write_error_log(message)
-        elif ENV == 'dev':
-            print(message)
-        else:
-            pass
-
     def close(self):
         if ENV != 'dev':
             self.display.stop()
