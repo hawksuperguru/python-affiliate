@@ -557,16 +557,16 @@ class SkyBet(db.Model):
     commission = db.Column(db.Float)
     impreytd = db.Column(db.Integer)
     cliytd = db.Column(db.Integer)
-    regiytd = db.Column(db.Integer)
+    regytd = db.Column(db.Integer)
     ndytd = db.Column(db.Integer)
     commiytd = db.Column(db.Float)
-    impreto = db.Column(db.Integer)
+    imprto = db.Column(db.Integer)
     clito = db.Column(db.Integer)
     regito = db.Column(db.Integer)
     ndto = db.Column(db.Integer)
     commito = db.Column(db.Float)
 
-    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regito, ndto, commito):
+    def __init__(self, dateto, merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regito, ndto, commito):
         self.dateto = dateto
         self.merchant = merchant
         self.impression = impression
@@ -576,10 +576,10 @@ class SkyBet(db.Model):
         self.commission = commission
         self.impreytd = impreytd
         self.cliytd = cliytd
-        self.regiytd = regiytd
+        self.regytd = regytd
         self.ndytd = ndytd
         self.commiytd = commiytd
-        self.impreto = impreto
+        self.imprto = imprto
         self.clito = clito
         self.regito = regito
         self.ndto = ndto
