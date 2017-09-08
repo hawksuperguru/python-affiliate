@@ -1,106 +1,211 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as wait
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options
-from pyvirtualdisplay import Display
+#!/bin/python
+# -*- coding: utf-8 -*-
+
+from selenium_browser import UBrowse
 from sqlalchemy import create_engine
-import psycopg2, time
-import os, re, datetime
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
+from settings.config import *
+from reporter import *
+
+import psycopg2
+import datetime
+import json
+import requests
+import time
+import re
+
+class RealDealBet(object):
+    """docstring for RealDealBet"""
+    def __init__(self):
+        self.report = SpiderReporter()
+        self.client = UBrowse()
+        self.login_url = 'https://partners.realdealbet.com/login.asp'
+        self.report_url = 'https://partners.realdealbet.com/reporting/quick_summary_report.asp'
+        self.username = 'id_betfyuk'
+        self.password = 'dontfuckwithme'
+        self.items = []
+        self.quick_stats_timer = 0
+        self.YTD_stats_timer = 0
+        self.report_timer = 0
+
+        self.headers = {
+            'Host': 'partners.realdealbet.com',
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Referer': 'https://partners.realdealbet.com/reporting/quick_summary_report.asp',
+        }
+
+    def _create_params(self, from_date, to_date, media=False):
+        if media:
+            self.params = (
+                ('key', 'value'),
+                )
+        else:
+            self.params = (
+                ('operatorID', '1'),
+                )
+
+    def _get_cookies(self):
+        self.cookies = dict()
+        cookies = self.client.driver.get_cookies()
+        for i in cookies:
+            self.cookies[i['name']] = i['value']
+
+    def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
+        today = datetime.datetime.today()
+        diff = datetime.timedelta(days = delta)
+        return (today - diff).strftime(format_string)
+
+    def login(self):
+        self.client.open_url(self.login_url)
+        time.sleep(3)
+        self.client.set_loginform('//*[@id="username"]')
+        self.client.set_passform('//*[@id="password"]')
+        self.client.set_loginbutton('//button[@type="submit"]')
+
+        if self.client.login(self.username, self.password) is True:
+            self._get_cookies()
+            return True
+        else:
+            return False
+
+    def select_YTD_option(self):
+        try:
+            period_select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
+            period_select.select_by_value('YTD')
+            return True
+        except:
+            return False
+
+    def get_YTD_stats(self):
+        time.sleep(5)
+        try:
+            table = self.client.driver.find_element_by_xpath('//*[@id="dashboard_quick_stats"]//tr[@class="row_light_color"]')
+            for td in table.find_elements_by_tag_name('td'):
+                if td.text == u'':
+                    raise ValueError("Value can't be empty.")
+                    break
+                self.items.append(td.text)
+            return True
+
+        except:
+            self.report.write_error_log("Element not found.")
+            self.YTD_stats_timer += 1
+            if self.YTD_stats_timer < 10:
+                return self.get_YTD_stats()
+            else:
+                return False
+
+    def get_quick_stats(self):
+        time.sleep(5)
+        try:
+            table = self.client.driver.find_element_by_xpath('//*[@id="dashboard_quick_stats"]//tr[@class="row_light_color"]')
+            for td in table.find_elements_by_tag_name('td'):
+                if td.text == u'':
+                    raise ValueError("Value can't be empty.")
+                    break
+                self.items.append(td.text)
+            return True
+            
+        except:
+            self.report.write_error_log("Element not found.")
+            self.quick_stats_timer += 1
+            if self.quick_stats_timer < 6:
+                return self.get_quick_stats()
+            else:
+                return False
+
+    def parse_stats_report(self):
+        time.sleep(3)
+        param_date = self.get_delta_date()
+        try:
+            # tableDiv = Betfred.find_element_by_id("internalreportdata")
+            table = self.client.driver.find_element_by_xpath('//*[@id="internalreportdata"]/table')
+            # table = tableDiv.find_element_by_tag_name("table")
+            todayVal = table.find_elements_by_tag_name("tr")
+
+            pattern = re.compile(r'[\-\d.\d]+')
+            impreto = pattern.search(todayVal[1].text).group(0)
+            self.items.append(impreto)
+            clito = pattern.search(todayVal[2].text).group(0)
+            self.items.append(clito)
+            regto = pattern.search(todayVal[5].text).group(0)
+            self.items.append(regto)
+            ndto = pattern.search(todayVal[8].text).group(0)
+            self.items.append(ndto)
+            commito = pattern.search(todayVal[-1].text).group(0)
+            self.items.append(commito)
+            self.items.append(param_date)
+            return True
+
+        except:
+            self.report.write_error_log("Element not found.")
+            self.report_timer += 1
+            if self.report_timer < 4:
+                return self.parse_stats_report()
+            else:
+                return False
+
+    def get_stats_report(self):
+        self.client.open_url(self.report_url)
+        time.sleep(10)
+        merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
+        merchant.select_by_value('0')
+        param_date = self.get_delta_date()
+        self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
+        self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
+        self.client.driver.find_element_by_class_name("button").click()
+        self.parse_stats_report()
+
+    def save(self):
+        merchant = str(self.items[0])
+        impression = int(self.items[1])
+        click = int(self.items[2])
+        registration = int(self.items[3])
+        new_deposit = int(self.items[4])
+        commissionStr = str(self.items[5]).replace(',', '')
+
+        pattern = re.compile(r'[\-\d.\d]+')
+        commission = float(pattern.search(commissionStr).group(0))
+        impreytd = int(self.items[7])
+        cliytd = int(self.items[8])
+        regiytd = int(self.items[9])
+        ndytd = int(self.items[10])
+        commiytdStr = str(self.items[11]).replace(',', '')
+        commiytd = float(pattern.search(commiytdStr).group(0))
+        impreto = int(self.items[12])
+        clito = int(self.items[13])
+        regto = int(self.items[14])
+        ndto = int(self.items[15])
+        commito = float(self.items[16])
+        dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
+
+        engine = create_engine(get_database_connection_string())
+        result = engine.execute("INSERT INTO realdeals (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+        return True
 
 
-def real_scrapping():
+if __name__ == "__main__":
+    me = RealDealBet()
 
-	display = Display(visible = 0, size = (1200, 900))
-	display.start()
+    if me.login() is True:
+        print("Successfully logged in. Parsing quick stats.")
+        me.get_quick_stats()
+        me.select_YTD_option()
+        me.get_YTD_stats()
 
-	try:
-		Real = webdriver.Chrome(executable_path=os.path.abspath("/usr/bin/chromedriver"))
-		Real.get("http://affiliates.realdealbet.com/")
-		Real.find_element_by_name("username").send_keys("id_betfyuk")
-		Real.find_element_by_name("password").send_keys("dontfuckwithme")
-		pwd = Real.find_element_by_name("password")
-		pwd.send_keys(Keys.RETURN)
-		Real.implicitly_wait(10)
-		window_after = Real.window_handles[1]
-		Real.switch_to_window(window_after)
-		mtd_valArr = []
-		table = Real.find_element(by=By.ID, value = "dashboard_quick_stats")
-		mtds_val = table.find_element(by=By.CLASS_NAME, value = "row_light_color")
-		for mtd_val in mtds_val.find_elements_by_tag_name("td"):
-			mtd_valArr.append(mtd_val.text)
-		time.sleep(2)
-		Real.find_element_by_xpath('//*[@id="dashboard"]/div[1]/div[1]/div/div[1]/div/div/select[1]/option[2]').click()
-		time.sleep(40)
-		table = Real.find_element(by=By.ID, value = "dashboard_quick_stats")
-		mtds_val = table.find_element(by=By.CLASS_NAME, value = "row_light_color")
-		for mtd_val in mtds_val.find_elements_by_tag_name("td"):
-			if mtd_val.text != 'Total -':
-				mtd_valArr.append(mtd_val.text)
-		
-		Real.get("https://partners.realdealbet.com/reporting/quick_summary_report.asp")
-		toDate = Real.find_element_by_id('enddate').get_attribute('value')
-		toDateObj = datetime.datetime.strptime(toDate, '%Y/%m/%d').date()
-		delta = datetime.timedelta(days = 1)
-		aDayAgo = toDateObj - delta
-		aDayAgoObj = aDayAgo.strftime("%Y/%m/%d")
-		reportDiv = Real.find_element_by_id("reportcriteria")
-		merchantDiv = reportDiv.find_elements_by_tag_name("tr")[3]
-		merchantId = merchantDiv.find_element_by_tag_name("select")
-		merchant = merchantId.find_elements_by_tag_name("option")[0]
-		
-		Real.execute_script("document.getElementById('startdate').value = '{0}'".format(aDayAgoObj))
-		Real.execute_script("document.getElementById('enddate').value = '{0}'".format(aDayAgoObj))
-		merchant.click()
-		time.sleep(5)
-		Real.find_element_by_class_name("button").click()
-		time.sleep(20)
-		tableDiv = Real.find_element_by_id("internalreportdata")
-		table = tableDiv.find_element_by_tag_name("table")
-		todayVal = table.find_elements_by_tag_name("tr")
+        print("Pulling quick stats reporting...")
+        me.get_stats_report()
 
-		pattern = re.compile(r'[\-\d.\d]+')
-		impreto = pattern.search(todayVal[1].text).group(0)
-		mtd_valArr.append(impreto)
-		clito = pattern.search(todayVal[2].text).group(0)
-		mtd_valArr.append(clito)
-		regto = pattern.search(todayVal[4].text).group(0)
-		mtd_valArr.append(regto)
-		ndto = pattern.search(todayVal[7].text).group(0)
-		mtd_valArr.append(ndto)
-		commito = pattern.search(todayVal[-1].text).group(0)
-		mtd_valArr.append(commito)
-		mtd_valArr.append(aDayAgoObj)
-		print(mtd_valArr)
-		return mtd_valArr
-	finally:
-		Real.quit()
-		display.stop()
+        if me.save() == True:
+            print("Pulled data successfully saved!")
+        else:
+            print("Something went wrong in DB Query.")
+    else:
+        print("Failed to log in!!")
 
-data = real_scrapping()
-
-merchant = str(data[0])
-impression = int(data[1])
-click = int(data[2])
-registration = int(data[3])
-new_deposit = int(data[4])
-commission = float(data[5])
-impreytd = int(data[6])
-cliytd = int(data[7])
-regiytd = int(data[8])
-ndytd = int(data[9])
-commiytdStr = str(data[10]).replace(',', '')
-pattern = re.compile(r'[\-\d.\d]+')
-commiytd = float(pattern.search(commiytdStr).group(0))
-impreto = int(data[11])
-clito = int(data[12])
-regto = int(data[13])
-ndto = int(data[14])
-commito = float(data[15])
-dateto = datetime.datetime.strptime(data[16], '%Y/%m/%d').date()
-
-
-engine = create_engine('postgresql://postgres:root@localhost/kyan')
-result = engine.execute("INSERT INTO realdeals (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+    me.client.close()

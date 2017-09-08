@@ -1,52 +1,90 @@
-# encoding=utf-8
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait as wait
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options
-from pyvirtualdisplay import Display
-from selenium.webdriver.chrome.options import Options
-from pyvirtualdisplay import Display
+from selenium_browser import UBrowse
 from sqlalchemy import create_engine
+from settings.config import *
+
 import psycopg2
-import os, re
+import datetime
+import json
+import requests
 
+class PaddyPartners(object):
+    """docstring for PaddyPartners"""
+    def __init__(self):
+        self.client = UBrowse()
+        
+        self.headers = {
+            'Host': 'affiliates.paddypartners.com',
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Content-Type': 'application/json; charset=utf-8',
+            'X-Requested-With': 'XMLHttpRequest',
+            'x-ms-request-root-id': 'cZ8hr',
+            'x-ms-request-id': 'ZK2p+',
+            'Referer': 'https://affiliates.paddypartners.com/affiliates/Reports/DailyFigures',
+            }
 
-def paddy_scrapping():
+    def _create_params(self):
+        one_day = datetime.timedelta(days = 1)
+        day_now = datetime.datetime.now()
+        yesterday = day_now - one_day
+        date = yesterday.strftime('%d-%m-%Y')
+        date = "13-08-2017"
 
-        display = Display(visible = 0, size = (1200, 900))
-        display.start()
+        self.params = (
+            ('dateFilterFrom', [date, date]),
+            ('dateFilterTo', [date, date]),
+        )
 
-        try:
-                Paddy = webdriver.Chrome(executable_path=os.path.abspath("/usr/bin/chromedriver"))
-                Paddy.get("http://www.paddypartners.com/")
-                Paddy.find_element_by_id("login-button").click()
-                wait(Paddy, 10).until(EC.frame_to_be_available_and_switch_to_it(Paddy.find_element_by_xpath('//iframe[contains(@id, "login-iframe")]')))
-                Paddy.find_element_by_id("txtUsername").clear()
-                Paddy.find_element_by_id("txtUsername").send_keys("betfyuk")
-                pwd = Paddy.find_element_by_id("txtPassword")
-                pwd.clear()
-                pwd.send_keys("dontfuckwithme")
-                pwd.send_keys(Keys.RETURN)
-                Paddy.find_element_by_id("txtUsername").send_keys("betfyuk")
-                Paddy.find_element_by_id("txtPassword").send_keys("dontfuckwithme")
-                Paddy.find_element_by_id("txtPassword").send_keys(Keys.RETURN)
-                waiter = wait(Paddy, 30)
-                uniSign = unicode("€", encoding='utf-8')
-                waiter.until(EC.text_to_be_present_in_element((By.XPATH, "//*[@id='ebContainer_latest']/div[2]/a/div/span[1]"), uniSign))
-                balance = Paddy.find_element_by_xpath("//*[@id='ebContainer_latest']/div[2]/a/div/span[1]").text
-                pattern = re.compile(r'[\d.\d]+')
-                tmp = pattern.search(balance)
-                balance = tmp.group(0)
-                print(balance)
-                return balance
-        finally:
-                Paddy.quit()
+    def _get_cookies(self):
+        self.cookies = dict()
+        cookies = self.client.driver.get_cookies()
+        for i in cookies:
+            self.cookies[i['name']] = i['value']
 
+    def get_data(self):
+        url = 'https://affiliates.paddypartners.com/affiliates/Reports/dailyFiguresReport'
+        response = requests.get(url, headers=self.headers, params=self.params, cookies=self.cookies)
+        return response
 
-data = paddy_scrapping()
-balance = data
-engine = create_engine('postgresql://postgres:root@localhost/kyan')
-result = engine.execute("INSERT INTO paddyies (balance) VALUES (%s);", balance)
+    def run(self):
+        self.client.open_url('https://affiliates.paddypartners.com/affiliates/Account/Login')
+
+        self.client.set_loginform('//*[@id="txtUsername"]')
+        self.client.set_passform('//*[@id="txtPassword"]')
+        self.client.set_loginbutton('//*[@id="btnLogin"]')
+
+        if self.client.login('betfyuk', 'dontfuckwithme') is True:
+            self._get_cookies()
+            self._create_params()
+        else:
+            return False
+        return True
+
+if __name__ == '__main__':
+    pp = PaddyPartners()
+    pp.run()
+    response = json.loads(pp.get_data().content)
+
+    data = response['data'][0]
+
+    date = data[0]['Value']
+    views = data[1]['Value']
+    uniqueviews = data[2]['Value']
+    clicks = data[3]['Value']
+    uniqueclicks = data[4]['Value']
+    signups = data[5]['Value']
+    depositingcustomers = data[6]['Value']
+    activecustomers = data[7]['Value']
+    newdepositingcustomers = data[8]['Value']
+    newactivecustomers = data[9]['Value']
+    firsttimedepositingcustomers = data[10]['Value']
+    firsttimeactivecustomers = data[11]['Value']
+    netrevenue = data[12]['Value']
+
+    pp.client.driver.close()
+
+    engine = create_engine(get_database_connection_string())
+    result = engine.execute("INSERT INTO paddyies (date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
+
