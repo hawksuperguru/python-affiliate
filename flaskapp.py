@@ -800,7 +800,11 @@ def dashboard():
             tB3dollar = bet365.ndepo * 100
             tB10dollar = "%.2f" % round(bet10.commito * eur, 2)
             tRealdollar = "%.2f" % round(realDeal.commito * eur, 2)
-            tSkydollar = "%.2f" % round(skyBet.commito * gbp, 2)
+
+            if (skyBet is None):
+                tSkydollar = 0.0
+            else:
+                tSkydollar = "%.2f" % round(skyBet.commito * gbp, 2)
             tStandollar = stan.commito
             tBFdollar = "%.2f" % round(betFred.commito * gbp, 2)
 
@@ -876,7 +880,11 @@ def dashboard():
             tB3dollar = bet365Data.ndepo * 100
             tB10dollar = "%.2f" % round(bet10.commission * eur, 2)
             tRealdollar = "%.2f" % round(realDeal.commission * eur, 2)
-            tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
+
+            if (skyBet is None):
+                tSkydollar = 0.0
+            else:
+                tSkydollar = "%.2f" % round(skyBet.commission * gbp, 2)
             tStandollar = stan.commission
             tBFdollar = "%.2f" % round(betFred.commission * gbp, 2)
 
@@ -990,7 +998,7 @@ def dashboard():
                 "tRealdollar" : tRealdollar,
 
                 "tSkyclick" : skyBet.cliytd,
-                "tSkyregister" : skyBet.regiytd,
+                "tSkyregister" : skyBet.regytd,
                 "tSkycommission" : skyBet.commiytd,
                 "tSkydollar": tSkydollar,
 
@@ -1860,10 +1868,10 @@ def skyBet():
             "commission" : data.commission,
             "impreytd" : data.impreytd,
             "cliytd" : data.cliytd,
-            "regytd" : data.regiytd,
+            "regytd" : data.regytd,
             "ndytd" : data.ndytd,
             "commiytd" : data.commiytd,
-            "impreto" : data.impreto,
+            "impreto" : data.imprto,
             "clito" : data.clito,
             "regto" : data.regito,
             "ndto" : data.ndto,
@@ -1878,10 +1886,10 @@ def william():
     return render_template('pages/william.html', data = data)
 
 
-@app.route('/victor/')
+@app.route('/victor/', methods = ['GET', 'POST'])
 def victor():
     data = "Woops, credential is not valid. Please tell me account info."
-    return render_template('pages/error.html', data = data)
+    return render_template('pages/victor.html', data = data)
 
 
 if __name__ == '__main__':

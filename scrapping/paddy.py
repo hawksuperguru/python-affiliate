@@ -30,7 +30,6 @@ class PaddyPartners(object):
         day_now = datetime.datetime.now()
         yesterday = day_now - one_day
         date = yesterday.strftime('%d-%m-%Y')
-        date = "13-08-2017"
 
         self.params = (
             ('dateFilterFrom', [date, date]),
@@ -69,7 +68,10 @@ if __name__ == '__main__':
 
     data = response['data'][0]
 
-    date = data[0]['Value']
+    one_day = datetime.timedelta(days = 1)
+    yesterday = datetime.datetime.now() - one_day
+    date = yesterday.strftime('%Y-%m-%d')
+    
     views = data[1]['Value']
     uniqueviews = data[2]['Value']
     clicks = data[3]['Value']
@@ -86,5 +88,5 @@ if __name__ == '__main__':
     pp.client.driver.close()
 
     engine = create_engine(get_database_connection_string())
-    result = engine.execute("INSERT INTO paddyies (date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
+    result = engine.execute("INSERT INTO paddyies (dateto, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
 
