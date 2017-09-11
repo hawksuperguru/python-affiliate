@@ -56,7 +56,7 @@ let Summary = (() => {
 			type : "POST",
 			success : (response) => {
 				if (!response.status) {
-					alert(response.message);
+					console.log(response.message);
 					$tB3Oclick.text("");
 					$tB3Osignup.text("");
 					$tB3Odepo.text("");
@@ -109,7 +109,7 @@ let Summary = (() => {
 				}
 			},
 			error : (error) => {
-				alert("Something went wrong....");
+				console.log("Something went wrong....");
 			},
 		});
 	}
