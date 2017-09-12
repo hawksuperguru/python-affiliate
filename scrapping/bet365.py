@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -20,6 +21,7 @@ class Bet365Spider(object):
         self.client = UBrowse()
         self.login_url = 'https://www.bet365affiliates.com/ui/pages/affiliates/Affiliates.aspx'
         self.stats_url = 'https://www.bet365affiliates.com/members/CMSitePages/Router.aspx?TargetPage=Members%2fStatistics&lng=1'
+        self.report = SpiderReporter()
         
         self.headers = {
             'Host': 'www.bet365affiliates.com',
@@ -48,6 +50,9 @@ class Bet365Spider(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+
+    def report_error_log(self, message):
+        self.report.write_error_log("Bet365", message)
 
     def parse_report_table(self, table_name):
         tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
@@ -108,7 +113,7 @@ class Bet365Spider(object):
             result = self.parse_report_table(table_name)
             return result
         except:
-            print("Exception occured in getting stats...")
+            self.report_error_log("Exception occured in getting stats...")
             return False
 
     def run(self, username = 'betfyuk', password = 'passiveincome'):
@@ -133,7 +138,7 @@ if __name__ == '__main__':
         bet365.parse_stats()
         print("Done!\n")
     else:
-        print("Login failed!!")
+        bet365.report_error_log("Login failed!!")
     bet365.client.close()
 
 
@@ -144,5 +149,5 @@ if __name__ == '__main__':
         bet365Other.parse_stats(10, 'bet365others')
         print("Done!\n")
     else:
-        print("Login failed!!")
+        bet365Other.report_error_log("Login failed!!")
     bet365Other.client.close()
