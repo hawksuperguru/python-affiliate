@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -24,6 +25,7 @@ class Bet10(object):
         self.password = 'dontfuckwithme'
         self.timer = 0
         self.items = []
+        self.report = SpiderReporter()
         
         self.headers = {
             'Host': 'www.bet365affiliates.com',
@@ -59,6 +61,9 @@ class Bet10(object):
         self.client.open_url(url)
         time.sleep(timer)
 
+    def report_error_log(self, message):
+        self.report.write_error_log("Bet10", message)
+
     def login(self):
         self.client.set_loginform('//*[@id="username"]')
         self.client.set_passform('//*[@id="password"]')
@@ -68,7 +73,7 @@ class Bet10(object):
             self._get_cookies()
             return True
         else:
-            print("Failed to log in.")
+            self.report_error_log("Failed to log in.")
             return False
 
     def extract_table_values(self):
@@ -83,7 +88,7 @@ class Bet10(object):
             if (self.timer < 10):
                 return self.extract_table_values()
             else:
-                print("Failed to get table values")
+                self.report_error_log("Failed to get table values")
                 return False
 
     def parse_stats_tables(self):
@@ -110,7 +115,7 @@ class Bet10(object):
             merchant.select_by_value('0')
             self.client.driver.find_element_by_class_name("button").click()
         except:
-            print("Failed to set params for daily report.")
+            self.report_error_log("Failed to set params for daily report.")
 
     def parse_daily_data(self):
         self.timer = 0
