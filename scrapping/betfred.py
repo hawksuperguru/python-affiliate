@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -26,6 +27,7 @@ class BetFred(object):
         self.quick_stats_timer = 0
         self.YTD_stats_timer = 0
         self.report_timer = 0
+        self.report = SpiderReporter()
 
         self.headers = {
             'Host': 'secure.activewins.com',
@@ -88,7 +90,6 @@ class BetFred(object):
                     raise ValueError("Value can't be empty.")
                     break
                 self.items.append(td.text)
-            print(self.items)
             return True
 
         except:
@@ -108,7 +109,6 @@ class BetFred(object):
                     raise ValueError("Value can't be empty.")
                     break
                 self.items.append(td.text)
-            print(self.items)
             return True
             
         except:
@@ -140,7 +140,6 @@ class BetFred(object):
             commito = pattern.search(todayVal[-1].text).group(0)
             self.items.append(commito)
             self.items.append(param_date)
-            print(self.items)
             return True
 
         except:
@@ -150,6 +149,9 @@ class BetFred(object):
                 return self.parse_stats_report()
             else:
                 return False
+
+    def report_error_log(self, message):
+        self.report.write_error_log("BetFred", message)
 
     def get_stats_report(self):
         self.client.open_url(self.report_url)
@@ -206,8 +208,8 @@ if __name__ == "__main__":
         if betFred.save() == True:
             print("Pulled data successfully saved!")
         else:
-            print("Something went wrong in DB Query.")
+            betFred.report_error_log("Something went wrong in DB Query.")
     else:
-        print("Failed to log in!!")
+        betFred.report_error_log("Failed to log in!!")
 
     betFred.client.close()
