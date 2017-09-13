@@ -2,3 +2,7 @@
 /*.pyc
 /scrapping/*.pyc
 /*.exe
+/storage
+/config.py
+*.pyc
+/scrapping/settings/env.py
