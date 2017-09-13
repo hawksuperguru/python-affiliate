@@ -22,7 +22,7 @@ elif ENV == 'staging':
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "./chrome/chromedriver"
     PG_DUMP_PATH = 'pg_dump'
-    PG_BACKUP_PATH = './storage'
+    PG_BACKUP_PATH = '/var/www/html/flaskapp/storage'
 else:
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
@@ -32,7 +32,7 @@ else:
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "./chrome/chromedriver"
     PG_DUMP_PATH = 'pg_dump'
-    PG_BACKUP_PATH = './storage'
+    PG_BACKUP_PATH = '/var/www/html/flaskapp/storage'
 
 def get_database_connection_string():
     if DB_PROVIDER == 'mysql':
