@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block navbar %}
+  {% include 'navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+	<section class="content-header">
+        <h1><i class="fa fa-balance-scale"></i>
+            <small>Please check </small>
+            Exceptions
+            <small>!</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="active">Issues</li>
+        </ol>
+    </section>
+
+    <div class="panel panel-default" style="margin-top: 50px;">
+        <div class="panel-heading">
+            <h1 class="panel-title alert alert-info alert-dismissible">Exceptions</h1>
+        </div>
+
+        <div class="panel-body">
+            <div class="">
+                <table id="isues-table" class="table bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Message</th>
+                            <th width="160px">Track</th>
+                            <th width="160px">At</th>
+                            <th width="90px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issues %}
+                        <tr>
+                            <td data-target='index'>{{ loop.index }}</td>
+                            <td>{{ issue.message }}</td>
+                            <td>{{ issue.provider }}</td>
+                            <td>{{ issue.created_at }}</td>
+                            <td><button class="btn btn-primary form-control manage-issue" data-issue-id="{{ issue.id }}">Resolved</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/common/affiliate.API.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/pages_customize/issues.js') }}"></script>
+{% endblock %}
+
+{% block aside %}
+  {% include 'aside.html' %}
+{% endblock %}

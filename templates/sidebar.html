@@ -51,6 +51,18 @@
           </ul>
         </li>
         <li><a href="{{ url_for('summary') }}"><i class="fa fa-th"></i> <span>Summary</span></a></li>
+        <li class="treeview">
+          <a href="#">
+            <i class="glyphicon glyphicon-cog"></i> <span>Settings</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ url_for('database') }}"><i class="glyphicon glyphicon-hdd"></i> Database</a></li>
+            <li><a href="{{ url_for('issues') }}"><i class="glyphicon glyphicon-exclamation-sign"></i> Exceptions</a></li>
+          </ul>
+        </li>
         
       </ul>
     </section>
