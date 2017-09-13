@@ -85,6 +85,7 @@
                     </tr>
                   </thead>
                   <tbody>
+                    {% if data[15] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365 OTHER</th>
@@ -97,6 +98,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="tB3Odollar">{{data[15].ndepo * 100}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[0] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">1</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET365</th>
@@ -109,6 +112,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="tB3dollar">{{data[0].ndepo * 100}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[1] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">3</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">888</th>
@@ -121,6 +126,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="t8dollar">{{data[1].balance}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[2] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">4</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">10BET</th>
@@ -133,6 +140,8 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tB10dollar">{{(data[2].commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[3] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">5</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">REAL DEAL DATA</th>
@@ -145,6 +154,7 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tRealdollar">{{(data[3].commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     {% if data[13] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">6</th>
@@ -159,6 +169,7 @@
                       <td class="bg-gray color-palette" id="tSkydollar">{{(data[13].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
                     {% endif %}
+                    {% if data[12] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">7</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">WILLIAM HILL</th>
@@ -171,6 +182,8 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tWildollar">{{(data[12].monthly_commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[4] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">8</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">LADBROKES</th>
@@ -183,6 +196,8 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tLadollar">{{(data[4].monthly_commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[17] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">9</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BET VICTOR</th>
@@ -195,6 +210,7 @@
                       <td>100 | {{data[16][2]}} | {{(100 * data[11])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tVidollar">{{(data[17].commission * data[11])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
                     {% if data[6] and data[6].balance %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">10</th>
@@ -209,6 +225,7 @@
                       <td class="bg-gray color-palette" id="tPadollar">{{(data[6].balance * data[10])|round(2, 'floor')}}</td>
                     </tr>
                     {% endif %}
+                    {% if data[14] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">11</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">NETBET</th>
@@ -221,6 +238,8 @@
                       <td>100 | {{data[16][1]}} | {{(100 * data[10])|round(2, 'floor')}}</td>
                       <td class="bg-gray color-palette" id="tNetdollar">{{(data[14].monthly_commission * data[10])|round(2, 'floor')}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[7] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">12</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">TITANBET</th>
@@ -233,6 +252,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="tTidollar">{{data[7].balance}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[8] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">13</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">STAN JAMES</th>
@@ -245,6 +266,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="tStandollar">{{data[8].commission}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[9] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">14</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">CORAL</th>
@@ -257,6 +280,8 @@
                       <td>{{data[16][0]}}</td>
                       <td class="bg-gray color-palette" id="tCoraldollar">{{data[9].commission}}</td>
                     </tr>
+                    {% endif %}
+                    {% if data[5] != None %}
                     <tr style="text-align: center;">
                       <th style="text-align: center;" scope="row" class="bg-maroon disabled color-palette">15</th>
                       <th style="text-align: center;" class="bg-teal-active color-palette">BETFRED</th>
