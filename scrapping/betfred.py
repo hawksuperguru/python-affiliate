@@ -55,7 +55,7 @@ class BetFred(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)
@@ -151,7 +151,7 @@ class BetFred(object):
                 return False
 
     def log(self, message, type = 'info'):
-        self.report.write_log("BetFred", message, type)
+        self.report.write_log("BetFred", message, self.get_delta_date(), type)
 
     def report_error_log(self, message):
         self.log(message, "error")

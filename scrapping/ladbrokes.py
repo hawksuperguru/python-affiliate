@@ -30,7 +30,7 @@ class LadBrokes(object):
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
             }
 
-    def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)
@@ -66,7 +66,7 @@ class LadBrokes(object):
             self.cookies[i['name']] = i['value']
     
     def log(self, message, type = 'info'):
-        self.report.write_log("LadBroke", message, type)
+        self.report.write_log("LadBroke", message, self.get_delta_date(), type)
 
     def get_yearly_data(self):
         self._create_params('yearly')

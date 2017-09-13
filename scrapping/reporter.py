@@ -9,24 +9,24 @@ class SpiderReporter(object):
     def __init__(self):
         self.temp = 0
 
-    def write_error_log(self, provider, message):
+    def write_error_log(self, provider, message, created_at):
         if ENV == 'dev':
-            print(message)
+            self.write_db(provider, message, created_at)
         else:
             # Writing to DB.
             pass
 
-    def write_log(self, provider, message, type = 'info'):
+    def write_log(self, provider, message, created_at, type = 'info'):
         if type == 'error':
-            self.write_error_log(message)
+            self.write_error_log(provider, message, created_at)
         elif ENV == 'dev':
             print(message)
         else:
-            pass
+            print(message)
 
-    def write_db(self, message):
+    def write_db(self, provider, message, created_at):
         engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO bet10s (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+        result = engine.execute("INSERT INTO logs (provider, message, created_at) VALUES (%s, %s, %s);", provider, message, created_at)
 
 if __name__ == "__main__":
     report = SpiderLoger()

@@ -55,7 +55,7 @@ class SkyBet(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)
@@ -82,7 +82,7 @@ class SkyBet(object):
             return False
 
     def log(self, message, type = "info"):
-        self.report.write_log("SkyBet", message, type)
+        self.report.write_log("SkyBet", message, self.get_delta_date(), type)
 
     def get_YTD_stats(self):
         time.sleep(5)

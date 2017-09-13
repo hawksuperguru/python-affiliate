@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 import json, gc
 from functools import wraps
@@ -14,22 +15,33 @@ import jinja2
 app = Flask(__name__)
 app.config.from_object('config')
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost/kyan'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SESSION_TYPE'] = 'filesystem'
-# app.config['SECRET_KEY'] = 'super secret key'
-
 db = SQLAlchemy(app)
+
+# from logs.views import log_app
+# app.register_blueprint(log_app)
+
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
 
 def datetimeformat(value, format='%Y/%m'):
     return value.strftime(format)
 
 jinja2.filters.FILTERS['datetimeformat'] = datetimeformat
 
+class Log(db.Model):
+    __tablename__ = "logs"
+    id = db.Column(db.Integer, primary_key=True)
+    provider = db.Column(db.String(10))
+    message = db.Column(db.String(100))
+    managed = db.Column(db.Boolean, unique = False, default = False)
+    created_at = db.Column(db.Date)
+
+    def __init__(self, provider, message, created_at, managed = False):
+        self.provider = provider
+        self.message = message
+        self.managed = managed
+        self.created_at = created_at
 
 class User(db.Model):
     __tablename__ = "users"
@@ -807,8 +819,8 @@ def dashboard():
             ORDER By datefield DESC LIMIT 1;""").first()
 
         data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
-
-        return render_template('home.html', data = data)
+        issues = db.session.query(Log).filter(Log.managed==False).all()
+        return render_template('home.html', data = data, issues = issues)
 
     if request.method == 'POST':
         val = request.json['val']
@@ -1311,7 +1323,8 @@ def summary():
        
         data = [bet365Data, eight88, bet10, realDeal, ladBroke, betFred, paddy, titanBet, stan, coral, eur, gbp, william, skyBet, netBet, bet365otherData, valSg, victor]
 
-        return render_template('pages/summary.html', data = data)
+        issues = db.session.query(Log).filter(Log.managed==False).all()
+        return render_template('pages/summary.html', data = data, issues = issues)
 
     if request.method == 'POST':
         val = request.json['val']
@@ -1741,7 +1754,8 @@ def bet365():
         now = datetime.datetime.now()
         today = now.date()
         data = db.session.query(Bet365).filter(Bet365.dateto == today)
-        return render_template('pages/bet365.html', data = data)
+        issues = db.session.query(Log).filter(Log.managed==False).all()
+        return render_template('pages/bet365.html', data = data, issues = issues)
 
     elif request.method == 'POST': 
         period = request.json['period']
@@ -1864,10 +1878,11 @@ def bet365():
 def bet365other():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         now = datetime.datetime.now()
         today = now.date()
         data = db.session.query(Bet365Other).filter(Bet365Other.dateto == today)
-        return render_template('pages/bet365other.html', data = data)
+        return render_template('pages/bet365other.html', data = data, issues = issues)
 
     elif request.method == 'POST': 
         period = request.json['period']
@@ -1990,8 +2005,9 @@ def bet365other():
 def eight88():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
-        return render_template('pages/eight88.html', data = data)
+        return render_template('pages/eight88.html', data = data, issues = issues)
     if request.method == 'POST':
         data = db.session.query(Eight88).order_by(Eight88.id.desc()).first()
         jsonData = []
@@ -2025,8 +2041,9 @@ def eight88():
 def bet10():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(Bet10).order_by(Bet10.id.desc()).first()
-        return render_template('pages/bet10.html', data = data)
+        return render_template('pages/bet10.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2069,8 +2086,9 @@ def bet10():
 def realDeal():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(RealDeal).order_by(RealDeal.id.desc()).first()
-        return render_template('pages/realDeal.html', data = data)
+        return render_template('pages/realDeal.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2111,16 +2129,18 @@ def realDeal():
 
 @app.route('/ladBroke/')
 def ladBroke():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
     data = db.session.query(LadBroke).order_by(LadBroke.id.desc()).first()
-    return render_template('pages/ladBroke.html', data = data)
+    return render_template('pages/ladBroke.html', data = data, issues = issues)
 
 
 @app.route('/betFred/', methods = ['GET', 'POST'])
 def betFred():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(BetFred).order_by(BetFred.id.desc()).first()
-        return render_template('pages/betFred.html', data = data)
+        return render_template('pages/betFred.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2161,29 +2181,32 @@ def betFred():
 
 @app.route('/paddy/')
 def paddy():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
     data = db.session.query(Paddy).order_by(Paddy.id.desc()).first()
-    return render_template('pages/paddy.html', data = data)
+    return render_template('pages/paddy.html', data = data, issues = issues)
 
 
 @app.route('/netBet/')
 def netBet():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
     data = db.session.query(NetBet).order_by(NetBet.id.desc()).first()
-    return render_template('pages/netBet.html', data = data)
+    return render_template('pages/netBet.html', data = data, issues = issues)
 
 
 @app.route('/titanBet/')
 def titanBet():
-	# data = db.session.query(TitanBet).all()[1]
+    issues = db.session.query(Log).filter(Log.managed==False).all()
     data = db.session.query(TitanBet).order_by(TitanBet.id.desc()).first()
-    return render_template('pages/titanBet.html', data = data)
+    return render_template('pages/titanBet.html', data = data, issues = issues)
 
 
 @app.route('/stan/', methods = ['GET', 'POST'])
 def stan():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(Stan).order_by(Stan.id.desc()).first()
-        return render_template('pages/stan.html', data = data)
+        return render_template('pages/stan.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2226,8 +2249,9 @@ def stan():
 def coral():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(Coral).order_by(Coral.id.desc()).first()
-        return render_template('pages/coral.html', data = data)
+        return render_template('pages/coral.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2270,8 +2294,9 @@ def coral():
 def skyBet():
     data = {}
     if request.method == 'GET':
+        issues = db.session.query(Log).filter(Log.managed==False).all()
         data = db.session.query(SkyBet).order_by(SkyBet.id.desc()).first()
-        return render_template('pages/skyBet.html', data = data)
+        return render_template('pages/skyBet.html', data = data, issues = issues)
     if request.method == 'POST':
         state = request.json["state"]
         if state == "1":
@@ -2312,8 +2337,22 @@ def skyBet():
 
 @app.route('/william/')
 def william():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
     data = db.session.query(William).order_by(William.id.desc()).first()
-    return render_template('pages/william.html', data = data)
+    return render_template('pages/william.html', data = data, issues = issues)
+
+@app.route('/settings/issues')
+def issues():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
+    return render_template('pages/issues.html', issues = issues)
+
+@app.route('/settings/issues/manage', methods = ["POST"])
+def manage_issue():
+    id = request.json['id']
+    result = db.session.query(Log).filter_by(id = id).update({'managed': True})
+    db.session.commit()
+    db.session.close()
+    return jsonify(status = result)
 
 
 @app.route('/victor/', methods = ['GET', 'POST'])
@@ -2362,6 +2401,6 @@ def victor():
 
 
 if __name__ == '__main__':
-    # manager.run()
-    app.debug = True
-    app.run()
+    manager.run()
+    # app.debug = True
+    # app.run()

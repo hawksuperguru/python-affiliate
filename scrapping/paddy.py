@@ -44,8 +44,13 @@ class PaddyPartners(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
+    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+        today = datetime.datetime.today()
+        diff = datetime.timedelta(days = delta)
+        return (today - diff).strftime(format_string)
+
     def log(self, message, type = "info"):
-        self.report.write_log("Paddy", message, type)
+        self.report.write_log("Paddy", message, self.get_delta_date(), type)
 
     def get_data(self):
         url = 'https://affiliates.paddypartners.com/affiliates/Reports/dailyFiguresReport'

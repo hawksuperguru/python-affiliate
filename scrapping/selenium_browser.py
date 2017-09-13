@@ -38,7 +38,7 @@ class UBrowse(object):
     def open_url(self, link):
         self.driver.get(link)
 
-    def get_delta_date(self, delta = 1, formatString = '%Y/%m/%d'):
+    def get_delta_date(self, delta = 2, formatString = '%Y/%m/%d'):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(formatString)

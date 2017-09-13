@@ -55,7 +55,7 @@ class Affutd(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 1):
+    def get_delta_date(self, delta = 2):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime("%Y/%m/%d")
@@ -74,7 +74,7 @@ class Affutd(object):
         return response
 
     def log(self, message, type = 'info'):
-        self.report.write_log("William", message, type)
+        self.report.write_log("William", message, self.get_delta_date(), type)
 
     def get_daily_data(self):
         response = self.get_ajax_data()

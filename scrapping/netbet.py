@@ -19,7 +19,7 @@ class LiveParters(object):
         self.monthly_ajax_url = "https://admin.livepartners.com/stats/quick-stats?start=0&limit=25&format=json&group_by%5B%5D=affiliate_website_id&search_period=last_30_days&apikey=5pokw8jnonkexde8beihufmf7cshjsrplpwgasow"
         self.yearly_ajax_url = "https://admin.livepartners.com/stats/quick-stats?start=0&limit=25&format=json&group_by%5B%5D=affiliate_website_id&search_period=current_year&apikey=5pokw8jnonkexde8beihufmf7cshjsrplpwgasow"
 
-    def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)
@@ -45,8 +45,14 @@ class LiveParters(object):
             self.data['commission'] = 0.0
             self.data['paid_signup'] = 0
             self.data['created_at'] = self.get_delta_date()
-            self.report.write_log("NetBet", "Filed to get daily data.", "error")
+            self.log("NetBet", "Filed to get daily data.", "error")
             return False
+
+    def log(self, message, type):
+        self.report.write_log("NetBet", message, self.get_delta_date(), type)
+
+    def write_error_log(self, message):
+        self.log(message, "error")
 
     def get_monthly_data(self):
         try:
@@ -59,7 +65,7 @@ class LiveParters(object):
             self.data['monthly_click'] = 0
             self.data['monthly_signup'] = 0
             self.data['monthly_commission'] = 0.0
-            self.report.write_log("NetBet", "Filed to get monthly data.", "error")
+            self.log("Filed to get monthly data.", "error")
             return False
 
     def get_yearly_data(self):
@@ -74,7 +80,7 @@ class LiveParters(object):
             self.data['yearly_click'] = 0
             self.data['yearly_signup'] = 0
             self.data['yearly_commission'] = 0.0
-            self.report.write_log("NetBet", "Filed to get yearly data.", "error")
+            self.log("Filed to get yearly data.", "error")
             return False
 
     def get_data(self):

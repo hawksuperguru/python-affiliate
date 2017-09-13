@@ -62,7 +62,7 @@ class Bet10(object):
         time.sleep(timer)
 
     def log(self, message, type = 'info'):
-        self.report.write_log("Bet10", message, type)
+        self.report.write_log("Bet10", message, self.get_delta_date(), type)
 
     def report_error_log(self, message):
         self.log(message, "error")
@@ -103,7 +103,7 @@ class Bet10(object):
         self.timer = 0
         self.extract_table_values()
 
-    def get_delta_date(self, delta = 1):
+    def get_delta_date(self, delta = 2):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime("%Y/%m/%d")

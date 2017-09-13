@@ -51,8 +51,13 @@ class Bet365Spider(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
+    def get_delta_date(self, delta = 2):
+        today = datetime.datetime.today()
+        diff = datetime.timedelta(days = delta)
+        return (today - diff).strftime("%Y/%m/%d")
+
     def log(self, message, type = 'info'):
-        self.report.write_log("Bet365", message, type)
+        self.report.write_log("Bet365", message, self.get_delta_date(), type)
 
     def report_error_log(self, message):
         self.log(message, "error")
@@ -85,7 +90,7 @@ class Bet365Spider(object):
 
         # val = [param_date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission]
 
-        date = datetime.datetime.strptime(self.client.get_delta_date(1, "%d/%m/%Y"), '%d/%m/%Y').date()
+        date = self.get_delta_date()
         engine = create_engine(get_database_connection_string())
         
         if table_name == "bet365s":
@@ -100,7 +105,7 @@ class Bet365Spider(object):
         try:
             self.client.open_url(self.stats_url)
             time.sleep(10)
-            param_date = self.client.get_delta_date(1, "%d/%m/%Y")
+            param_date = self.client.get_delta_date(2, "%d/%m/%Y")
 
             report_option = Select(self.client.driver.find_element_by_xpath('//*[@id="m_mainPlaceholder_ReportCriteria"]'))
             report_option.select_by_value('dailyReport')
