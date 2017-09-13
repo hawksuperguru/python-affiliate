@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file
 import json, gc
 from functools import wraps
 from passlib.handlers.sha2_crypt import sha256_crypt
@@ -2353,6 +2353,21 @@ def manage_issue():
     db.session.commit()
     db.session.close()
     return jsonify(status = result)
+
+@app.route('/settings/db', methods = ["GET", "POST"])
+def database():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
+    if request.method == "GET":
+        return render_template('pages/db.html', issues = issues)
+    else:
+        from common.backup import Backup
+        me = Backup()
+        full_path = me.dump()
+
+        try:
+            return send_file(full_path, as_attachment=True)
+        except Exception as e:
+            print("Error occured")
 
 
 @app.route('/victor/', methods = ['GET', 'POST'])

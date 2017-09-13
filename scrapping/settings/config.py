@@ -11,22 +11,28 @@ if ENV == 'dev':
     DB_PASSWORD = 'postgres'
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "../chrome/chromedriver.exe"
+    PG_DUMP_PATH = 'C:/Program Files/PostgreSQL/9.6/bin/pg_dump.exe'
+    PG_BACKUP_PATH =  'F:/workspace/Kyan/affiliate/affiliate/storage'
 elif ENV == 'staging':
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
     DB_NAME = 'kyan'
     DB_USERNAME = 'postgres'
-    DB_PASSWORD = 'postgres'
+    DB_PASSWORD = 'root'
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "./chrome/chromedriver"
+    PG_DUMP_PATH = 'pg_dump'
+    PG_BACKUP_PATH = './storage'
 else:
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
     DB_NAME = 'kyan'
     DB_USERNAME = 'postgres'
-    DB_PASSWORD = 'postgres'
+    DB_PASSWORD = 'root'
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "./chrome/chromedriver"
+    PG_DUMP_PATH = 'pg_dump'
+    PG_BACKUP_PATH = './storage'
 
 def get_database_connection_string():
     if DB_PROVIDER == 'mysql':

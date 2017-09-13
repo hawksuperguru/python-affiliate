@@ -10,3 +10,4 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost/kyan'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SESSION_TYPE = 'filesystem'
 SECRET_KEY = 'super secret key'
+DB_BACKUP_PATH = './test.sql'
