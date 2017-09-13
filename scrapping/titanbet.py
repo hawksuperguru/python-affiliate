@@ -1,6 +1,7 @@
 from selenium_browser import UBrowse
 from sqlalchemy import create_engine
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -12,6 +13,7 @@ class EuroPartners(object):
     """docstring for EuroPartners"""
     def __init__(self):
         self.client = UBrowse()
+        self.report = SpiderReporter()
         
         self.headers = {
             'Accept': 'application/json, text/plain, */*',
@@ -37,6 +39,7 @@ class EuroPartners(object):
         try:
             self.headers['X-Auth-Token'] = self.client.driver.execute_script("return localStorage.authToken")
         except:
+            self.log("Failed to get Auth Token")
             return False
         return True
 
@@ -45,6 +48,9 @@ class EuroPartners(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+
+    def log(self, message, type = 'info'):
+        self.report.write_log("TitanBet", message, type)
 
     def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
@@ -75,41 +81,43 @@ class EuroPartners(object):
 if __name__ == '__main__':
     ep = EuroPartners()
     ep.run()
-    response = json.loads(ep.get_data().content)
 
-    print(response)
+    try:
+        response = json.loads(ep.get_data().content)
 
-    data = dict()
-    if response['data']['values']:
-        values = response['data']['values'][0]['data']
+        data = dict()
+        if response['data']['values']:
+            values = response['data']['values'][0]['data']
 
-        data['tlr_amount'] = values[1]
-        data['real_clicks'] = values[2]
-        data['casino_u_real_count'] = values[3]
-        data['casino_d_rf_count'] = values[4]
-        data['casino_net_gaming'] = values[5]
-        data['poker_u_real_count'] = values[6]
-        data['poker_d_rf_count'] = values[7]
-        data['poker_net_gaming'] = values[8]
-        data['sport_u_real_count'] = values[9]
-        data['sport_d_rf_count'] = values[10]
-        data['dateto'] = ep.get_delta_date()
+            data['tlr_amount'] = values[1]
+            data['real_clicks'] = values[2]
+            data['casino_u_real_count'] = values[3]
+            data['casino_d_rf_count'] = values[4]
+            data['casino_net_gaming'] = values[5]
+            data['poker_u_real_count'] = values[6]
+            data['poker_d_rf_count'] = values[7]
+            data['poker_net_gaming'] = values[8]
+            data['sport_u_real_count'] = values[9]
+            data['sport_d_rf_count'] = values[10]
+            data['dateto'] = ep.get_delta_date()
 
-    else:
-        data['tlr_amount'] = 0
-        data['real_clicks'] = 0
-        data['casino_u_real_count'] = 0
-        data['casino_d_rf_count'] = 0
-        data['casino_net_gaming'] = 0
-        data['poker_u_real_count'] = 0
-        data['poker_d_rf_count'] = 0
-        data['poker_net_gaming'] = 0
-        data['sport_u_real_count'] = 0
-        data['sport_d_rf_count'] = 0
-        data['dateto'] = ep.get_delta_date()
+        else:
+            data['tlr_amount'] = 0
+            data['real_clicks'] = 0
+            data['casino_u_real_count'] = 0
+            data['casino_d_rf_count'] = 0
+            data['casino_net_gaming'] = 0
+            data['poker_u_real_count'] = 0
+            data['poker_d_rf_count'] = 0
+            data['poker_net_gaming'] = 0
+            data['sport_u_real_count'] = 0
+            data['sport_d_rf_count'] = 0
+            data['dateto'] = ep.get_delta_date()
 
-    ep.client.driver.close()
+        ep.client.driver.close()
 
-    engine = create_engine(get_database_connection_string())
+        engine = create_engine(get_database_connection_string())
     
-    result = engine.execute("INSERT INTO titanbets (tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", data['tlr_amount'], data['real_clicks'], data['casino_u_real_count'], data['casino_d_rf_count'], data['casino_net_gaming'], data['poker_u_real_count'], data['poker_d_rf_count'], data['poker_net_gaming'], data['sport_u_real_count'], data['sport_d_rf_count'], data['dateto'] )
+        result = engine.execute("INSERT INTO titanbets (tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", data['tlr_amount'], data['real_clicks'], data['casino_u_real_count'], data['casino_d_rf_count'], data['casino_net_gaming'], data['poker_u_real_count'], data['poker_d_rf_count'], data['poker_net_gaming'], data['sport_u_real_count'], data['sport_d_rf_count'], data['dateto'] )
+    except:
+        ep.log("Failed to parse Ajax Response", "error")

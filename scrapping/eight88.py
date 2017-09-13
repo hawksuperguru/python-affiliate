@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import ( Select, WebDriverWait )
 from selenium.webdriver.common.keys import Keys
-
+from reporter import SpiderReporter
 from settings.config import *
 
 import psycopg2
@@ -20,6 +20,7 @@ class Eight88(object):
     """docstring for Eight88"""
     def __init__(self):
         self.client = UBrowse()
+        self.report = SpiderReporter()
         self.login_url = 'http://affiliates.888.com/'
         self.username = 'betfyuk1'
         self.password = 'dontfuckwithme'
@@ -51,6 +52,12 @@ class Eight88(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+
+    def log(self, message, type = 'info'):
+        self.report.write_log("Eight88s", message, type)
+
+    def report_error_log(self, message):
+        self.log(message, "error")
 
     def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
@@ -101,7 +108,7 @@ class Eight88(object):
             self.items.append(prebal)
             return True
         except:
-            print("An error occured in parsing page...")
+            self.report_error_log("An error occured in parsing page...")
             return False
 
     def save(self):
@@ -136,16 +143,16 @@ class Eight88(object):
         self.client.open_url(self.login_url)
         time.sleep(1)
 
-        print("Logging in....")
+        self.log("Logging in....")
         if self.login() is True:
-            print("Successfully logged in.")
+            self.log("Successfully logged in.")
             if self.parse_page() is True:
                 self.save()
             else:
-                print("Parsing Error...")
+                self.report_error_log("Parsing Error...")
 
         else:
-            print("Failed to log in.")
+            self.report_error_log("Failed to log in.")
 
         self.close()
 

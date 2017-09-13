@@ -93,7 +93,7 @@ class BetFred(object):
             return True
 
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.YTD_stats_timer += 1
             if self.YTD_stats_timer < 10:
                 return self.get_YTD_stats()
@@ -112,7 +112,7 @@ class BetFred(object):
             return True
             
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.quick_stats_timer += 1
             if self.quick_stats_timer < 6:
                 return self.get_quick_stats()
@@ -143,15 +143,18 @@ class BetFred(object):
             return True
 
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.report_timer += 1
             if self.report_timer < 4:
                 return self.parse_stats_report()
             else:
                 return False
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("BetFred", message, type)
+
     def report_error_log(self, message):
-        self.report.write_error_log("BetFred", message)
+        self.log(message, "error")
 
     def get_stats_report(self):
         self.client.open_url(self.report_url)
@@ -193,20 +196,20 @@ class BetFred(object):
 
 
 if __name__ == "__main__":
-    print("BetFred Spider is being initialized....")
     betFred = BetFred()
+    betFred.log("BetFred Spider is being initialized....")
 
     if betFred.login() is True:
-        print("Successfully logged in. Parsing quick stats.")
+        betFred.log("Successfully logged in. Parsing quick stats.")
         betFred.get_quick_stats()
         betFred.select_YTD_option()
         betFred.get_YTD_stats()
 
-        print("Pulling quick stats reporting...")
+        betFred.log("Pulling quick stats reporting...")
         betFred.get_stats_report()
 
         if betFred.save() == True:
-            print("Pulled data successfully saved!")
+            betFred.log("Pulled data successfully saved!")
         else:
             betFred.report_error_log("Something went wrong in DB Query.")
     else:

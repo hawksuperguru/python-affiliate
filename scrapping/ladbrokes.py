@@ -66,7 +66,7 @@ class LadBrokes(object):
             self.cookies[i['name']] = i['value']
     
     def log(self, message, type = 'info'):
-        self.report.write_log(message, type)
+        self.report.write_log("LadBroke", message, type)
 
     def get_yearly_data(self):
         self._create_params('yearly')

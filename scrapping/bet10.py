@@ -61,8 +61,11 @@ class Bet10(object):
         self.client.open_url(url)
         time.sleep(timer)
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("Bet10", message, type)
+
     def report_error_log(self, message):
-        self.report.write_error_log("Bet10", message)
+        self.log(message, "error")
 
     def login(self):
         self.client.set_loginform('//*[@id="username"]')
@@ -158,21 +161,21 @@ class Bet10(object):
         return result
 
     def parse(self):
-        print('getting page...')
+        self.log('getting page...')
         self.get_page(self.login_url, 5)
 
-        print('getting pass the gate page...')
+        self.log('getting pass the gate page...')
         # time.sleep(5)
         self.login()
 
-        print('getting quick stats table...')
+        self.log('getting quick stats table...')
         self.parse_stats_tables()
 
-        print('getting summary page content')
+        self.log('getting summary page content')
         self.get_page(self.report_url, 1)
         self.parse_daily_data()
 
-        print("Saving to Database...")
+        self.log("Saving to Database...")
         self.save()
         self.close()
 

@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -18,6 +19,7 @@ class Coral(object):
     """docstring for Coral"""
     def __init__(self):
         self.client = UBrowse()
+        self.report = SpiderReporter()
         self.login_url = 'https://affiliate.coral.co.uk/login.asp'
         self.report_url = 'https://affiliate.coral.co.uk/reporting/quick_summary_report.asp'
         self.username = 'betfyuk1'
@@ -52,6 +54,12 @@ class Coral(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+
+    def log(self, message, type = 'info'):
+        self.report.write_log("Coral", message, type)
+
+    def report_error_log(self, message):
+        self.log(message, "error")
 
     def get_delta_date(self, delta = 1, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
@@ -88,11 +96,10 @@ class Coral(object):
                     raise ValueError("Value can't be empty.")
                     break
                 self.items.append(td.text)
-            print(self.items)
             return True
 
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.YTD_stats_timer += 1
             if self.YTD_stats_timer < 8:
                 return self.get_YTD_stats()
@@ -108,11 +115,10 @@ class Coral(object):
                     raise ValueError("Value can't be empty.")
                     break
                 self.items.append(td.text)
-            print(self.items)
             return True
             
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.quick_stats_timer += 1
             if self.quick_stats_timer < 8:
                 return self.get_quick_stats()
@@ -140,11 +146,10 @@ class Coral(object):
             commito = pattern.search(todayVal[-1].text).group(0)
             self.items.append(commito)
             self.items.append(param_date)
-            print(self.items)
             return True
 
         except:
-            print("Element not found.")
+            self.log("Element not found.")
             self.report_timer += 1
             if self.report_timer < 10:
                 return self.parse_stats_report()
@@ -191,25 +196,25 @@ class Coral(object):
 
 
 if __name__ == "__main__":
-    print("Coral Spider is being initialized....")
     coral = Coral()
+    coral.log("Coral Spider is being initialized....")
 
     if coral.login() is True:
-        print("Successfully logged in. Parsing quick stats.")
+        coral.log("Successfully logged in. Parsing quick stats.")
         coral.get_quick_stats()
 
-        print("pulling YTD stats data...")
+        coral.log("pulling YTD stats data...")
         coral.select_YTD_option()
         coral.get_YTD_stats()
 
-        print("Pulling quick stats reporting...")
+        coral.log("Pulling quick stats reporting...")
         coral.get_stats_report()
 
         if coral.save() == True:
-            print("Pulled data successfully saved!")
+            coral.log("Pulled data successfully saved!")
         else:
-            print("Something went wrong in DB Query.")
+            coral.report_error_log("Something went wrong in DB Query.")
     else:
-        print("Failed to log in!!")
+        coral.report_error_log("Failed to log in!!")
 
     coral.client.close()

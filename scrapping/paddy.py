@@ -1,6 +1,7 @@
 from selenium_browser import UBrowse
 from sqlalchemy import create_engine
 from settings.config import *
+from reporter import SpiderReporter
 
 import psycopg2
 import datetime
@@ -11,6 +12,7 @@ class PaddyPartners(object):
     """docstring for PaddyPartners"""
     def __init__(self):
         self.client = UBrowse()
+        self.report = SpiderReporter()
         
         self.headers = {
             'Host': 'affiliates.paddypartners.com',
@@ -41,6 +43,9 @@ class PaddyPartners(object):
         cookies = self.client.driver.get_cookies()
         for i in cookies:
             self.cookies[i['name']] = i['value']
+
+    def log(self, message, type = "info"):
+        self.report.write_log("Paddy", message, type)
 
     def get_data(self):
         url = 'https://affiliates.paddypartners.com/affiliates/Reports/dailyFiguresReport'

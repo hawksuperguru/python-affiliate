@@ -51,8 +51,11 @@ class Bet365Spider(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("Bet365", message, type)
+
     def report_error_log(self, message):
-        self.report.write_error_log("Bet365", message)
+        self.log(message, "error")
 
     def parse_report_table(self, table_name):
         tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
@@ -129,25 +132,25 @@ class Bet365Spider(object):
         return True
 
 if __name__ == '__main__':
-    print("Bet365Spider is being initialized...")
     bet365 = Bet365Spider()
+    bet365.log("Bet365Spider is being initialized...")
 
-    print("Going to log in with the first account(betfyuk:passiveincome) ...")
+    bet365.log("Going to log in with the first account(betfyuk:passiveincome) ...")
     if bet365.run() is True:
-        print("Getting reports...")
+        bet365.log("Getting reports...")
         bet365.parse_stats()
-        print("Done!\n")
+        bet365.log("Done!\n")
     else:
         bet365.report_error_log("Login failed!!")
     bet365.client.close()
 
 
     bet365Other = Bet365Spider()
-    print("Going to log in with the first account(bigfreebet1281:Porsche911) ...")
+    bet365Other.log("Going to log in with the first account(bigfreebet1281:Porsche911) ...")
     if bet365Other.run('bigfreebet1281', 'Porsche911') is True:
-        print("Getting reports...")
+        bet365Other.log("Getting reports...")
         bet365Other.parse_stats(10, 'bet365others')
-        print("Done!\n")
+        bet365Other.log("Done!\n")
     else:
         bet365Other.report_error_log("Login failed!!")
     bet365Other.client.close()

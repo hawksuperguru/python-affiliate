@@ -73,6 +73,9 @@ class Affutd(object):
         response = requests.get(self.ajax_url, headers=self.headers, params=self.params, cookies=self.cookies)
         return response
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("William", message, type)
+
     def get_daily_data(self):
         response = self.get_ajax_data()
         try:
@@ -85,31 +88,31 @@ class Affutd(object):
             self.data['created_at'] = self.get_delta_date()
             return True
         except:
-            self.report.write_error_log("Getting daily report failed in william spider.")
+            self.log("Getting daily report failed in william spider.", "error")
             return False
 
     def get_monthly_data(self):
         response = self.get_ajax_data('monthly')
-        # try:
-        response = json.loads(response.content)
-        rows = response['data']
-        click = 0
-        signup = 0
-        commission = 0.0
+        try:
+            response = json.loads(response.content)
+            rows = response['data']
+            click = 0
+            signup = 0
+            commission = 0.0
 
-        for row in rows:
-            click += int(row[3]['Value'])
-            signup += int(row[5]['Value'])
-            commission += float(row[13]['Value'])
-        
-        self.data['monthly_click'] = click
-        self.data['monthly_signup'] = signup
-        self.data['monthly_commission'] = commission
-        return True
+            for row in rows:
+                click += int(row[3]['Value'])
+                signup += int(row[5]['Value'])
+                commission += float(row[13]['Value'])
+            
+            self.data['monthly_click'] = click
+            self.data['monthly_signup'] = signup
+            self.data['monthly_commission'] = commission
+            return True
 
-        # except:
-        #     self.report.write_error_log("Getting monthly report failed in william spider.")
-        #     return False
+        except:
+            self.log("Getting monthly report failed in william spider.", "error")
+            return False
 
     def get_yearly_data(self):
         response = self.get_ajax_data('yearly')
@@ -156,12 +159,12 @@ if __name__ == '__main__':
     if affud.run():
         if affud.get_data():
             if affud.save():
-                affud.report.write_log("Successfully stored to DB.")
+                affud.log("Successfully stored to DB.")
             else:
-                affud.report.write_error_log("Something went wrong in DB manipulation.")
+                affud.log("Something went wrong in DB manipulation.", "error")
         else:
-            affud.report.write_error_log("Failed to get data")
+            affud.log("Failed to get data", "error")
     else:
-        affud.report.write_error_log("Login Failed in william spider")
+        affud.log("Login Failed in william spider", "error")
 
     affud.client.close()

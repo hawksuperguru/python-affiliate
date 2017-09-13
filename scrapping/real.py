@@ -73,6 +73,9 @@ class RealDealBet(object):
         else:
             return False
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("Real", message, type)
+
     def select_YTD_option(self):
         try:
             period_select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
@@ -193,19 +196,19 @@ if __name__ == "__main__":
     me = RealDealBet()
 
     if me.login() is True:
-        print("Successfully logged in. Parsing quick stats.")
+        me.log("Successfully logged in. Parsing quick stats.")
         me.get_quick_stats()
         me.select_YTD_option()
         me.get_YTD_stats()
 
-        print("Pulling quick stats reporting...")
+        me.log("Pulling quick stats reporting...")
         me.get_stats_report()
 
         if me.save() == True:
-            print("Pulled data successfully saved!")
+            me.log("Pulled data successfully saved!")
         else:
-            print("Something went wrong in DB Query.")
+            me.log("Something went wrong in DB Query.", "error")
     else:
-        print("Failed to log in!!")
+        me.log("Failed to log in!!", "error")
 
     me.client.close()

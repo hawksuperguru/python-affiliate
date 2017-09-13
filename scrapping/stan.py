@@ -81,6 +81,9 @@ class StanJames(object):
         except:
             return False
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("Stan", message, type)
+
     def get_YTD_stats(self):
         time.sleep(5)
         try:
@@ -93,7 +96,7 @@ class StanJames(object):
             return True
 
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found. (In get_YTD_stats function)")
             self.YTD_stats_timer += 1
             if self.YTD_stats_timer < 10:
                 return self.get_YTD_stats()
@@ -112,7 +115,7 @@ class StanJames(object):
             return True
             
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found in get_quick_stats function.")
             self.quick_stats_timer += 1
             if self.quick_stats_timer < 6:
                 return self.get_quick_stats()
@@ -141,7 +144,7 @@ class StanJames(object):
             return True
 
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found.", "error")
             self.report_timer += 1
             if self.report_timer < 4:
                 return self.parse_stats_report()
@@ -192,19 +195,19 @@ if __name__ == "__main__":
     me = StanJames()
 
     if me.login() is True:
-        print("Successfully logged in. Parsing quick stats.")
+        me.log("Successfully logged in. Parsing quick stats.")
         me.get_quick_stats()
         me.select_YTD_option()
         me.get_YTD_stats()
 
-        print("Pulling quick stats reporting...")
+        me.log("Pulling quick stats reporting...")
         me.get_stats_report()
 
         if me.save() == True:
-            print("Pulled data successfully saved!")
+            me.log("Pulled data successfully saved!")
         else:
-            print("Something went wrong in DB Query.")
+            me.log("Something went wrong in DB Query.", "error")
     else:
-        print("Failed to log in!!")
+        me.log("Failed to log in!!")
 
     me.client.close()

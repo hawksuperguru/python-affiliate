@@ -158,6 +158,9 @@ class Victor(object):
         self.client.driver.find_element_by_class_name("button").click()
         self.parse_stats_report()
 
+    def log(self, message, type = 'info'):
+        self.report.write_log("Victor", message, type)
+
     def save(self):
         merchant = str(self.items[0])
         impression = int(self.items[1])
@@ -188,22 +191,22 @@ class Victor(object):
 
 if __name__ == "__main__":
     betFred = Victor()
-    betFred.report.write_log("Victor Spider is being initialized....")
+    betFred.log("Victor Spider is being initialized....")
 
     if betFred.login() is True:
-        betFred.report.write_log("Successfully logged in. Parsing quick stats.")
+        betFred.log("Successfully logged in. Parsing quick stats.")
         betFred.get_quick_stats()
         betFred.select_YTD_option()
         betFred.get_YTD_stats()
 
-        betFred.report.write_log("Pulling quick stats reporting...")
+        betFred.log("Pulling quick stats reporting...")
         betFred.get_stats_report()
 
         if betFred.save() == True:
-            betFred.report.write_log("Pulled data successfully saved!")
+            betFred.log("Pulled data successfully saved!")
         else:
-            betFred.report.write_error_log("Something went wrong in DB Query.")
+            betFred.log("Something went wrong in DB Query.", "error")
     else:
-        betFred.report.write_error_log("Failed to log in!!")
+        betFred.log("Failed to log in!!", "error")
 
     betFred.client.close()

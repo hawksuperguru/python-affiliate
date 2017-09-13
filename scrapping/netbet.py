@@ -45,7 +45,7 @@ class LiveParters(object):
             self.data['commission'] = 0.0
             self.data['paid_signup'] = 0
             self.data['created_at'] = self.get_delta_date()
-            self.report.write_log("Filed to get daily data.", "error")
+            self.report.write_log("NetBet", "Filed to get daily data.", "error")
             return False
 
     def get_monthly_data(self):
@@ -59,7 +59,7 @@ class LiveParters(object):
             self.data['monthly_click'] = 0
             self.data['monthly_signup'] = 0
             self.data['monthly_commission'] = 0.0
-            self.report.write_log("Filed to get monthly data.", "error")
+            self.report.write_log("NetBet", "Filed to get monthly data.", "error")
             return False
 
     def get_yearly_data(self):
@@ -74,7 +74,7 @@ class LiveParters(object):
             self.data['yearly_click'] = 0
             self.data['yearly_signup'] = 0
             self.data['yearly_commission'] = 0.0
-            self.report.write_log("Filed to get yearly data.", "error")
+            self.report.write_log("NetBet", "Filed to get yearly data.", "error")
             return False
 
     def get_data(self):
@@ -86,7 +86,7 @@ class LiveParters(object):
             result = engine.execute("INSERT INTO netbets (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
             return True
         except:
-            self.report.write_error_log("Failed to write data in Netbet(livepartners_com.py)")
+            self.report.write_error_log("NetBet", "Failed to write data in Netbet(livepartners_com.py)")
             return False
 
 
