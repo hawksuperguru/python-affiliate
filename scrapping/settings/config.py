@@ -6,7 +6,7 @@ from env import *
 if ENV == 'dev':
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
-    DB_NAME = 'kyan'
+    DB_NAME = 'affiliate'
     DB_USERNAME = 'postgres'
     DB_PASSWORD = 'postgres'
     DB_HOST = 'localhost'
@@ -16,9 +16,9 @@ if ENV == 'dev':
 elif ENV == 'staging':
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
-    DB_NAME = 'kyan'
+    DB_NAME = 'affiliate'
     DB_USERNAME = 'postgres'
-    DB_PASSWORD = 'root'
+    DB_PASSWORD = 'y7I0]QfHBRKCvWp'
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "../chrome/chromedriver"
     PG_DUMP_PATH = 'pg_dump'
