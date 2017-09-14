@@ -2365,7 +2365,7 @@ def database():
         result = me.dump()
         full_path = result['full_path']
         file_name = result['file_name']
-        contents = open(full_path).read().decode("utf-8")
+        contents = open(full_path).read()
         response = make_response(contents)
         response.headers["Content-Disposition"] = "attachment; filename=%s" % (file_name)
         return response
