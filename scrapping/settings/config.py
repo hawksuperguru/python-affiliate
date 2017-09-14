@@ -22,7 +22,7 @@ elif ENV == 'staging':
     DB_HOST = 'localhost'
     CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver"
     PG_DUMP_PATH = 'pg_dump'
-    PG_BACKUP_PATH = '/var/www/html/flaskapp/storage'
+    PG_BACKUP_PATH = '/var/www/affiliate/storage'
 else:
     # DB_PROVIDER = 'mysql'
     DB_PROVIDER = 'postgresql'
