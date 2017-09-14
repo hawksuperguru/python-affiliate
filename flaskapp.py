@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file, send_from_directory
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, make_response# send_file, send_from_directory
 import json, gc
 from functools import wraps
 from passlib.handlers.sha2_crypt import sha256_crypt
@@ -2362,15 +2362,21 @@ def database():
     else:
         from common.backup import Backup
         me = Backup()
-        # full_path = me.dump()
-        file_name = me.dump()
+        result = me.dump()
+        full_path = result['full_path']
+        file_name = result['file_name']
+        contents = open(full_path).read().decode("utf-8")
+        response = make_response(contents)
+        response.headers["Content-Disposition"] = "attachment; filename=%s" % (file_name)
+        return response
+        # file_name = me.dump()
 
-        try:
-            from scrapping.settings.config import PG_BACKUP_PATH
-            return send_from_directory(PG_BACKUP_PATH, file_name, as_attachment = True)
-            # return send_file(full_path, as_attachment=True)
-        except Exception as e:
-            print("Error occured")
+        # try:
+        #     from scrapping.settings.config import PG_BACKUP_PATH
+        #     return send_from_directory(PG_BACKUP_PATH, file_name, as_attachment = True)
+        #     # return send_file(full_path, as_attachment=True)
+        # except Exception as e:
+        #     print("Error occured")
 
 
 @app.route('/victor/', methods = ['GET', 'POST'])
