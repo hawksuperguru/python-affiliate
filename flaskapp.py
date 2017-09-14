@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file, send_from_directory
 import json, gc
 from functools import wraps
 from passlib.handlers.sha2_crypt import sha256_crypt
@@ -2362,10 +2362,13 @@ def database():
     else:
         from common.backup import Backup
         me = Backup()
-        full_path = me.dump()
+        # full_path = me.dump()
+        file_name = me.dump()
 
         try:
-            return send_file(full_path, as_attachment=True)
+            from scrapping.settings.config import PG_BACKUP_PATH
+            return send_from_directory(PG_BACKUP_PATH, file_name, as_attachment = True)
+            # return send_file(full_path, as_attachment=True)
         except Exception as e:
             print("Error occured")
 

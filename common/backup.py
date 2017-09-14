@@ -45,7 +45,8 @@ class Backup(object):
         self.log(command)
         subprocess.call(command, shell = True)
         self.log("%s dump finished" % db_name)
-        return self.pg_backup_path + '/' + file_name
+        # return self.pg_backup_path + '/' + file_name
+        return file_name
 
 if __name__ == "__main__":
     me = Backup()
