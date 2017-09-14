@@ -20,7 +20,7 @@ elif ENV == 'staging':
     DB_USERNAME = 'postgres'
     DB_PASSWORD = 'y7I0]QfHBRKCvWp'
     DB_HOST = 'localhost'
-    CHROME_DRIVER_PATH = "/var/www/affiliate/chrome/chromedriver"
+    CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver"
     PG_DUMP_PATH = 'pg_dump'
     PG_BACKUP_PATH = '/var/www/html/flaskapp/storage'
 else:
