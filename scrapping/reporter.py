@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
+
 from settings.config import *
 from sqlalchemy import create_engine
 from sqlalchemy import create_engine
@@ -29,4 +32,4 @@ class SpiderReporter(object):
         result = engine.execute("INSERT INTO logs (provider, message, created_at) VALUES (%s, %s, %s);", provider, message, created_at)
 
 if __name__ == "__main__":
-    report = SpiderLoger()
+    report = SpiderReporter()
