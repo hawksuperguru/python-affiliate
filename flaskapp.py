@@ -2341,44 +2341,6 @@ def william():
     data = db.session.query(William).order_by(William.id.desc()).first()
     return render_template('pages/william.html', data = data, issues = issues)
 
-@app.route('/settings/issues')
-def issues():
-    issues = db.session.query(Log).filter(Log.managed==False).all()
-    return render_template('pages/issues.html', issues = issues)
-
-@app.route('/settings/issues/manage', methods = ["POST"])
-def manage_issue():
-    id = request.json['id']
-    result = db.session.query(Log).filter_by(id = id).update({'managed': True})
-    db.session.commit()
-    db.session.close()
-    return jsonify(status = result)
-
-@app.route('/settings/db', methods = ["GET", "POST"])
-def database():
-    issues = db.session.query(Log).filter(Log.managed==False).all()
-    if request.method == "GET":
-        return render_template('pages/db.html', issues = issues)
-    else:
-        from common.backup import Backup
-        me = Backup()
-        result = me.dump()
-        full_path = result['full_path']
-        file_name = result['file_name']
-        contents = open(full_path).read()
-        response = make_response(contents)
-        response.headers["Content-Disposition"] = "attachment; filename=%s" % (file_name)
-        return response
-        # file_name = me.dump()
-
-        # try:
-        #     from scrapping.settings.config import PG_BACKUP_PATH
-        #     return send_from_directory(PG_BACKUP_PATH, file_name, as_attachment = True)
-        #     # return send_file(full_path, as_attachment=True)
-        # except Exception as e:
-        #     print("Error occured")
-
-
 @app.route('/victor/', methods = ['GET', 'POST'])
 def victor():
     data = {}
@@ -2422,7 +2384,42 @@ def victor():
                 })
                 return jsonify(status = True, jsonData = jsonData)
 
+@app.route('/settings/issues')
+def issues():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
+    return render_template('pages/issues.html', issues = issues)
 
+@app.route('/settings/issues/manage', methods = ["POST"])
+def manage_issue():
+    id = request.json['id']
+    result = db.session.query(Log).filter_by(id = id).update({'managed': True})
+    db.session.commit()
+    db.session.close()
+    return jsonify(status = result)
+
+@app.route('/settings/db', methods = ["GET", "POST"])
+def database():
+    issues = db.session.query(Log).filter(Log.managed==False).all()
+    if request.method == "GET":
+        return render_template('pages/db.html', issues = issues)
+    else:
+        from common.backup import Backup
+        me = Backup()
+        result = me.dump()
+        full_path = result['full_path']
+        file_name = result['file_name']
+        contents = open(full_path).read()
+        response = make_response(contents)
+        response.headers["Content-Disposition"] = "attachment; filename=%s" % (file_name)
+        return response
+        # file_name = me.dump()
+
+        # try:
+        #     from scrapping.settings.config import PG_BACKUP_PATH
+        #     return send_from_directory(PG_BACKUP_PATH, file_name, as_attachment = True)
+        #     # return send_file(full_path, as_attachment=True)
+        # except Exception as e:
+        #     print("Error occured")
 
 if __name__ == '__main__':
     manager.run()
