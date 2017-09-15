@@ -41,4 +41,4 @@ def get_database_connection_string():
         # postgresql://postgres:postgres@localhost/kyan
         return "postgresql://{0}:{1}@{2}/{3}".format(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME)
     else:
-        return ''
+        return 
