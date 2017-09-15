@@ -50,6 +50,10 @@ let AffiliateAPI = (() => {
             failure)
         }
     }
+
+    const backupDatabase = () => {
+        sendRequest("settings/db", {}, () => {}, () => {})
+    }
     
     /**
      * Set base url
@@ -61,6 +65,7 @@ let AffiliateAPI = (() => {
 
     return {
         init: init,
-        manageIssue: manageIssue
+        manageIssue: manageIssue,
+        backup: backupDatabase
     }
 })();
