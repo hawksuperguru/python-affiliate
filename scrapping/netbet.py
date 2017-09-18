@@ -45,7 +45,7 @@ class LiveParters(object):
             self.data['commission'] = 0.0
             self.data['paid_signup'] = 0
             self.data['created_at'] = self.get_delta_date()
-            self.log("NetBet", "Filed to get daily data.", "error")
+            self.log("Filed to get daily data.", "error")
             return False
 
     def log(self, message, type):
