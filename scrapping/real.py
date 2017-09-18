@@ -96,7 +96,7 @@ class RealDealBet(object):
             return True
 
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found.", "error")
             self.YTD_stats_timer += 1
             if self.YTD_stats_timer < 10:
                 return self.get_YTD_stats()
@@ -115,7 +115,7 @@ class RealDealBet(object):
             return True
             
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found.", "error")
             self.quick_stats_timer += 1
             if self.quick_stats_timer < 6:
                 return self.get_quick_stats()
@@ -146,7 +146,7 @@ class RealDealBet(object):
             return True
 
         except:
-            self.report.write_error_log("Element not found.")
+            self.log("Element not found.", "error")
             self.report_timer += 1
             if self.report_timer < 4:
                 return self.parse_stats_report()
