@@ -1,7 +1,7 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 
-from scrapping.settings.env import *
+from env import *
 
 if ENV == 'dev':
     # DB_PROVIDER = 'mysql'
