@@ -162,31 +162,34 @@ class Victor(object):
         self.report.write_log("Victor", message, self.get_delta_date(), type)
 
     def save(self):
-        merchant = str(self.items[0])
-        impression = int(self.items[1])
-        click = int(self.items[2])
-        registration = int(self.items[3])
-        new_deposit = int(self.items[4])
-        commissionStr = str(self.items[5]).replace(',', '')
+        try:
+            merchant = str(self.items[0])
+            impression = int(self.items[1])
+            click = int(self.items[2])
+            registration = int(self.items[3])
+            new_deposit = int(self.items[4])
+            commissionStr = str(self.items[5]).replace(',', '')
 
-        pattern = re.compile(r'[\-\d.\d]+')
-        commission = float(pattern.search(commissionStr).group(0))
-        impreytd = int(self.items[7])
-        cliytd = int(self.items[8])
-        regytd = int(self.items[9])
-        ndytd = int(self.items[10])
-        commiytdStr = str(self.items[11]).replace(',', '')
-        commiytd = float(pattern.search(commiytdStr).group(0))
-        impreto = int(self.items[12])
-        clito = int(self.items[13])
-        regto = int(self.items[14])
-        ndto = int(self.items[15])
-        commito = float(self.items[16])
-        dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
+            pattern = re.compile(r'[\-\d.\d]+')
+            commission = float(pattern.search(commissionStr).group(0))
+            impreytd = int(self.items[7])
+            cliytd = int(self.items[8])
+            regytd = int(self.items[9])
+            ndytd = int(self.items[10])
+            commiytdStr = str(self.items[11]).replace(',', '')
+            commiytd = float(pattern.search(commiytdStr).group(0))
+            impreto = int(self.items[12])
+            clito = int(self.items[13])
+            regto = int(self.items[14])
+            ndto = int(self.items[15])
+            commito = float(self.items[16])
+            dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
 
-        engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO victors (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
-        return True
+            engine = create_engine(get_database_connection_string())
+            result = engine.execute("INSERT INTO victors (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+            return True
+        except:
+            self.log("Something went wrong in writing DB.", "error")
 
 
 if __name__ == "__main__":
