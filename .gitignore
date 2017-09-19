@@ -7,3 +7,4 @@
 *.pyc
 /scrapping/settings/env.py
 /migrations
+/backup
