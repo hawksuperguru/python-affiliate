@@ -4,9 +4,13 @@ from config import app_config
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
+from apscheduler.scheduler import Scheduler
+
+import logging
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+scheduler = Scheduler()
 
 def create_app(config_name = "dev"):
     app = Flask(__name__, instance_relative_config = True)
@@ -31,5 +35,18 @@ def create_app(config_name = "dev"):
     app.register_blueprint(admin_app, url_prefix='/admin')
     app.register_blueprint(auth_app)
     app.register_blueprint(home_app)
+
+    from .spiders import Spider
+
+    scheduler.app = app
+
+    logging.basicConfig()
+
+    def scrap_affiliates():
+        spider = Spider()
+        spider.run()
+
+    scheduler.start()
+    scheduler.add_cron_job(scrap_affiliates, minute = 46)
 
     return app

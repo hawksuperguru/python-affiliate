@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 from env import *
 from sqlalchemy import create_engine
 from sqlalchemy import create_engine
-from ..models import Log
+from ..models import Log, db
 import datetime
 
 class SpiderReporter(object):
@@ -28,8 +28,15 @@ class SpiderReporter(object):
             print(message)
 
     def write_db(self, provider, message, created_at):
-        engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO logs (provider, message, created_at) VALUES (%s, %s, %s);", provider, message, created_at)
+        log = Log(
+            affiliate = provider,
+            message = message,
+            created_at = created_at
+        )
+        db.session.add(log)
+        db.session.commit()
+        # engine = create_engine(get_database_connection_string())
+        # result = engine.execute("INSERT INTO logs (provider, message, created_at) VALUES (%s, %s, %s);", provider, message, created_at)
 
 if __name__ == "__main__":
     report = SpiderReporter()

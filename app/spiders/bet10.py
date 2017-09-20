@@ -4,18 +4,18 @@
 # sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
 from selenium_browser import UBrowse
-# from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from reporter import SpiderReporter
+from flask import Blueprint, current_app
+from app import scheduler
+from ..models import Affiliate, History, db
 
 # import psycopg2
 import datetime
 import json
 import time
 import re
-from ..models import Affiliate, History
-from .. import db
 
 class Bet10(object):
     """docstring for Bet10"""
@@ -128,86 +128,74 @@ class Bet10(object):
         self.set_params_for_daily_report()
 
         temp_array = []
-        for tr in self.client.driver.find_elements_by_xpath('//*[@id="internalreportdata"]//tr'):
-            for td in tr.find_elements_by_tag_name('td'):
-                temp_array.append(td.text)
-        
-        pattern = re.compile(r'[\-\d.\d]+')
-        self.items.append(pattern.search(temp_array[1]).group(0))
-        self.items.append(pattern.search(temp_array[2]).group(0))
-        self.items.append(pattern.search(temp_array[4]).group(0))
-        self.items.append(pattern.search(temp_array[7]).group(0))
-        self.items.append(pattern.search(temp_array[-1]).group(0))
+        try:
+            for tr in self.client.driver.find_elements_by_xpath('//*[@id="internalreportdata"]//tr'):
+                for td in tr.find_elements_by_tag_name('td'):
+                    temp_array.append(td.text)
+            
+            pattern = re.compile(r'[\-\d.\d]+')
+            self.items.append(pattern.search(temp_array[1]).group(0))
+            self.items.append(pattern.search(temp_array[2]).group(0))
+            self.items.append(pattern.search(temp_array[4]).group(0))
+            self.items.append(pattern.search(temp_array[7]).group(0))
+            self.items.append(pattern.search(temp_array[-1]).group(0))
+            return True
+        except:
+            self.log("Failed to get daily data.", "error")
+            return False
 
     def save(self):
-        monthly_click = int(self.items[2])
-        monthly_singup = int(self.items[3])
-        monthly_commission = float(self.items[5])
-        yearly_click = int(self.items[8])
-        yearly_signup = int(self.items[9])
-        yearly_commission = float((self.items[11]).replace(",", ""))
-        daily_click = int(self.items[13])
-        daily_signup = int(self.items[14])
-        daily_commission = float(self.items[16])
-        paid_signup = int(self.items[4])
-        created_at = datetime.datetime.strptime(self.get_delta_date(), '%Y/%m/%d').date()
+        app = scheduler.app
+        with app.app_context():
+            try:
+                monthly_click = int(self.items[2])
+                monthly_signup = int(self.items[3])
+                monthly_commission = float(self.items[5])
+                yearly_click = int(self.items[8])
+                yearly_signup = int(self.items[9])
+                yearly_commission = float((self.items[11]).replace(",", ""))
+                daily_click = int(self.items[13])
+                daily_signup = int(self.items[14])
+                daily_commission = float(self.items[16])
+                paid_signup = int(self.items[4])
+                created_at = self.get_delta_date()
 
-        affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-        if affiliate is None:
-            affiliate = Affiliate(name = self.affiliate)
-            db.session.add(affiliate)
-            db.commit()
-            
-        history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
+                    
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
-        if history is None:
-            history = History(
-                affiliate_id = affiliate.id,
-                daily_click = daily_click,
-                daily_signup = daily_signup,
-                daily_commission = daily_commission,
-                monthly_click = monthly_click,
-                monthly_signup = monthly_signup,
-                monthly_commission = monthly_commission,
-                yearly_click = yearly_click,
-                yearly_signup = yearly_signup,
-                yearly_commission = yearly_commission,
-                paid_signup = paid_signup
-            )
-            db.session.add(history)
-            db.commit()
-
-
-        # merchant = str(self.items[0])
-        # impression = int(self.items[1])
-        # click = int(self.items[2])
-        # registration = int(self.items[3])
-        # new_deposit = int(self.items[4])
-        # commission = float(self.items[5])
-        # impreytd = int(self.items[7])
-        # cliytd = int(self.items[8])
-        # regytd = int(self.items[9])
-        # ndytd = int(self.items[10])
-        # commiytd = float((self.items[11]).replace(",", ""))
-        # impreto = int(self.items[12])
-        # clito = int(self.items[13])
-        # regto = int(self.items[14])
-        # ndto = int(self.items[15])
-        # commito = float(self.items[16])
-        # dateto = datetime.datetime.strptime(self.get_delta_date(), '%Y/%m/%d').date()
-
-        # engine = create_engine(get_database_connection_string())
-        # result = engine.execute("INSERT INTO bet10s (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
-        
-        return result
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = daily_click,
+                        daily_signup = daily_signup,
+                        daily_commission = daily_commission,
+                        monthly_click = monthly_click,
+                        monthly_signup = monthly_signup,
+                        monthly_commission = monthly_commission,
+                        yearly_click = yearly_click,
+                        yearly_signup = yearly_signup,
+                        yearly_commission = yearly_commission,
+                        paid_signup = paid_signup,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+                return True
+            except:
+                self.log("Something went wrong in Saving.", "error")
+                return False
 
     def run(self):
         self.log('getting page...')
         self.get_page(self.login_url, 5)
 
         self.log('getting pass the gate page...')
-        # time.sleep(5)
         self.login()
 
         self.log('getting quick stats table...')

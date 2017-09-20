@@ -2,26 +2,24 @@
 # -*- coding: utf-8 -*-
 
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
-from settings.config import *
 from reporter import SpiderReporter
 
 import psycopg2
 import datetime
 import json
-import requests
 import time
 import re
 
-class Bet365Spider(object):
+class Bet365(object):
     """docstring for bet365Spider"""
     def __init__(self):
         self.client = UBrowse()
         self.login_url = 'https://www.bet365affiliates.com/ui/pages/affiliates/Affiliates.aspx'
         self.stats_url = 'https://www.bet365affiliates.com/members/CMSitePages/Router.aspx?TargetPage=Members%2fStatistics&lng=1'
         self.report = SpiderReporter()
+        self.affiliate = "Bet365"
         
         self.headers = {
             'Host': 'www.bet365affiliates.com',
@@ -124,7 +122,7 @@ class Bet365Spider(object):
             self.report_error_log("Exception occured in getting stats...")
             return False
 
-    def run(self, username = 'betfyuk', password = 'passiveincome'):
+    def login(self, username = 'betfyuk', password = 'passiveincome'):
         self.client.open_url(self.login_url)
         time.sleep(10)
         
@@ -136,26 +134,23 @@ class Bet365Spider(object):
         
         return True
 
+    def run(self):
+        self.log("Getting data with (betfyuk:passiveincome)")
+        if self.login():
+            self.parse_stats()
+        else:
+            self.log("Failed to Login", "error")
+        
+        self.client.close()
+        
+        self.log("Getting data with (bigfreebet1281:Porsche911)")
+        if self.login('bigfreebet1281', 'Porsche911'):
+            self.parse_stats()
+        else:
+            self.log("Failed to Login", "error")
+        
+        self.client.close()
+
 if __name__ == '__main__':
-    bet365 = Bet365Spider()
-    bet365.log("Bet365Spider is being initialized...")
-
-    bet365.log("Going to log in with the first account(betfyuk:passiveincome) ...")
-    if bet365.run() is True:
-        bet365.log("Getting reports...")
-        bet365.parse_stats()
-        bet365.log("Done!\n")
-    else:
-        bet365.report_error_log("Login failed!!")
-    bet365.client.close()
-
-
-    bet365Other = Bet365Spider()
-    bet365Other.log("Going to log in with the first account(bigfreebet1281:Porsche911) ...")
-    if bet365Other.run('bigfreebet1281', 'Porsche911') is True:
-        bet365Other.log("Getting reports...")
-        bet365Other.parse_stats(10, 'bet365others')
-        bet365Other.log("Done!\n")
-    else:
-        bet365Other.report_error_log("Login failed!!")
-    bet365Other.client.close()
+    bet365 = Bet365()
+    bet365.run()
