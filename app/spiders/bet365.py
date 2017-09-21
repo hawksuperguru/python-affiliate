@@ -5,6 +5,8 @@ from selenium_browser import UBrowse
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from reporter import SpiderReporter
+from app import scheduler
+from ..models import Affiliate, History, db
 
 import psycopg2
 import datetime
@@ -60,42 +62,115 @@ class Bet365(object):
     def report_error_log(self, message):
         self.log(message, "error")
 
+    def save(self):
+        app = scheduler.app
+        with app.app_context():
+            try:
+                monthly_click = int(self.items[2])
+                monthly_signup = int(self.items[3])
+                monthly_commission = float(self.items[5])
+                yearly_click = int(self.items[8])
+                yearly_signup = int(self.items[9])
+                yearly_commission = float((self.items[11]).replace(",", ""))
+                daily_click = int(self.items[13])
+                daily_signup = int(self.items[14])
+                daily_commission = float(self.items[16])
+                paid_signup = int(self.items[4])
+                created_at = self.get_delta_date()
+
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
+                    
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = daily_click,
+                        daily_signup = daily_signup,
+                        daily_commission = daily_commission,
+                        monthly_click = monthly_click,
+                        monthly_signup = monthly_signup,
+                        monthly_commission = monthly_commission,
+                        yearly_click = yearly_click,
+                        yearly_signup = yearly_signup,
+                        yearly_commission = yearly_commission,
+                        paid_signup = paid_signup,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+                return True
+            except:
+                self.log("Something went wrong in Saving.", "error")
+                return False
+
     def parse_report_table(self, table_name):
-        tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
-        table = tblWrapper.find_element_by_tag_name('table')
-        row = table.find_elements_by_tag_name('tr')[-1]
+        app = scheduler.app
+        with app.app_context():
+            try:
+                tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
+                table = tblWrapper.find_element_by_tag_name('table')
+                row = table.find_elements_by_tag_name('tr')[-1]
 
-        pattern = re.compile(r'[\-\d.\d]+')
+                pattern = re.compile(r'[\-\d.\d]+')
 
-        click = int(pattern.search(row.find_elements_by_tag_name('td')[0].text).group(0))
-        nSignup = int(pattern.search(row.find_elements_by_tag_name('td')[1].text).group(0))
-        nDepo = int(pattern.search(row.find_elements_by_tag_name('td')[2].text).group(0))
-        valDepo = float(pattern.search(row.find_elements_by_tag_name('td')[8].text).group(0).replace(',', '.'))
-        numDepo = int(pattern.search(row.find_elements_by_tag_name('td')[9].text).group(0))
-        spotsTurn = float(pattern.search(row.find_elements_by_tag_name('td')[10].text).group(0).replace(',', '.'))
-        numSptBet = int(pattern.search(row.find_elements_by_tag_name('td')[11].text).group(0))
-        acSptUsr = int(pattern.search(row.find_elements_by_tag_name('td')[12].text).group(0))
-        sptNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-10].text).group(0).replace(',', '.'))
-        casinoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-9].text).group(0).replace(',', '.'))
-        pokerNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-8].text).group(0).replace(',', '.'))
-        bingoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-7].text).group(0).replace(',', '.'))
-        netRev = float(pattern.search(row.find_elements_by_tag_name('td')[-6].text).group(0).replace(',', '.'))
-        afSpt = float(pattern.search(row.find_elements_by_tag_name('td')[-5].text).group(0).replace(',', '.'))
-        afCasino = float(pattern.search(row.find_elements_by_tag_name('td')[-4].text).group(0).replace(',', '.'))
-        afPoker = float(pattern.search(row.find_elements_by_tag_name('td')[-3].text).group(0).replace(',', '.'))
-        afBingo = float(pattern.search(row.find_elements_by_tag_name('td')[-2].text).group(0).replace(',', '.'))
-        commission = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text).group(0).replace(',', '.'))
+                monthly_click = int(pattern.search(row.find_elements_by_tag_name('td')[0].text).group(0))
+                monthly_signup = int(pattern.search(row.find_elements_by_tag_name('td')[1].text).group(0))
+                paid_signup = int(pattern.search(row.find_elements_by_tag_name('td')[9].text).group(0))
+                monthly_commission = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text).group(0).replace(',', '.'))
+                created_at = self.get_delta_date()
 
-        # val = [param_date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission]
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-        date = self.get_delta_date()
-        engine = create_engine(get_database_connection_string())
-        
-        if table_name == "bet365s":
-            result = engine.execute("INSERT INTO bet365s (dateto, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission)
-        else:
-            result = engine.execute("INSERT INTO bet365others (dateto, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, click, nSignup, nDepo, valDepo, numDepo, spotsTurn, numSptBet, acSptUsr, sptNetRev, casinoNetRev, pokerNetRev, bingoNetRev, netRev, afSpt, afCasino, afPoker, afBingo, commission)
-        return result
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
+                    # db.session.close()
+                    
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        monthly_click = monthly_click,
+                        monthly_signup = monthly_signup,
+                        monthly_commission = monthly_commission,
+                        paid_signup = paid_signup,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+                    # db.session.close()
+                #commented out
+                    # click = int(pattern.search(row.find_elements_by_tag_name('td')[0].text).group(0))
+                    # nSignup = int(pattern.search(row.find_elements_by_tag_name('td')[1].text).group(0))
+                    # nDepo = int(pattern.search(row.find_elements_by_tag_name('td')[2].text).group(0))
+                    # valDepo = float(pattern.search(row.find_elements_by_tag_name('td')[8].text).group(0).replace(',', '.'))
+                    # numDepo = int(pattern.search(row.find_elements_by_tag_name('td')[9].text).group(0))
+                    # spotsTurn = float(pattern.search(row.find_elements_by_tag_name('td')[10].text).group(0).replace(',', '.'))
+                    # numSptBet = int(pattern.search(row.find_elements_by_tag_name('td')[11].text).group(0))
+                    # acSptUsr = int(pattern.search(row.find_elements_by_tag_name('td')[12].text).group(0))
+                    # sptNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-10].text).group(0).replace(',', '.'))
+                    # casinoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-9].text).group(0).replace(',', '.'))
+                    # pokerNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-8].text).group(0).replace(',', '.'))
+                    # bingoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-7].text).group(0).replace(',', '.'))
+                    # netRev = float(pattern.search(row.find_elements_by_tag_name('td')[-6].text).group(0).replace(',', '.'))
+                    # afSpt = float(pattern.search(row.find_elements_by_tag_name('td')[-5].text).group(0).replace(',', '.'))
+                    # afCasino = float(pattern.search(row.find_elements_by_tag_name('td')[-4].text).group(0).replace(',', '.'))
+                    # afPoker = float(pattern.search(row.find_elements_by_tag_name('td')[-3].text).group(0).replace(',', '.'))
+                    # afBingo = float(pattern.search(row.find_elements_by_tag_name('td')[-2].text).group(0).replace(',', '.'))
+                    # commission = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text).group(0).replace(',', '.'))
+
+                return True
+            except:
+                self.log("Exception occured in parse_report_table", "error")
+                return False
 
     def parse_stats(self, wait_for = 10, table_name = "bet365s"):
         # time.sleep(10)
@@ -134,22 +209,24 @@ class Bet365(object):
         
         return True
 
-    def run(self):
+    def run(self, provider = 'Bet365', username = 'betfyuk', password = 'passiveincome'):
         self.log("Getting data with (betfyuk:passiveincome)")
-        if self.login():
+        self.affiliate = provider
+        if self.login(username, password):
             self.parse_stats()
         else:
-            self.log("Failed to Login", "error")
+            self.log("Failed to Login with 1st account.", "error")
         
         self.client.close()
         
-        self.log("Getting data with (bigfreebet1281:Porsche911)")
-        if self.login('bigfreebet1281', 'Porsche911'):
-            self.parse_stats()
-        else:
-            self.log("Failed to Login", "error")
+        # self.log("Getting data with (bigfreebet1281:Porsche911)")
+        # self.affiliate = "Bet365Other"
+        # if self.login('bigfreebet1281', 'Porsche911'):
+        #     self.parse_stats()
+        # else:
+        #     self.log("Failed to Login with 2nd account.", "error")
         
-        self.client.close()
+        # self.client.close()
 
 if __name__ == '__main__':
     bet365 = Bet365()
