@@ -1,9 +1,7 @@
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 
 from env import *
 from sqlalchemy import create_engine
-from sqlalchemy import create_engine
+from app import scheduler
 from ..models import Log, db
 import datetime
 
@@ -28,15 +26,16 @@ class SpiderReporter(object):
             print(message)
 
     def write_db(self, provider, message, created_at):
-        log = Log(
-            affiliate = provider,
-            message = message,
-            created_at = created_at
-        )
-        db.session.add(log)
-        db.session.commit()
-        # engine = create_engine(get_database_connection_string())
-        # result = engine.execute("INSERT INTO logs (provider, message, created_at) VALUES (%s, %s, %s);", provider, message, created_at)
+        app = scheduler.app
+        with app.app_context():
+            log = Log(
+                affiliate = provider,
+                message = message,
+                created_at = created_at
+            )
+            db.session.add(log)
+            db.session.commit()
+            # db.session.close()
 
 if __name__ == "__main__":
     report = SpiderReporter()

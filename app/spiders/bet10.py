@@ -166,6 +166,7 @@ class Bet10(object):
                     affiliate = Affiliate(name = self.affiliate)
                     db.session.add(affiliate)
                     db.session.commit()
+                    # db.session.close()
                     
                 history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
@@ -186,6 +187,7 @@ class Bet10(object):
                     )
                     db.session.add(history)
                     db.session.commit()
+                    # db.session.close()
                 return True
             except:
                 self.log("Something went wrong in Saving.", "error")

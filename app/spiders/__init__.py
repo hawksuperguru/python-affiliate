@@ -13,10 +13,14 @@ class Spider(object):
         pass
 
     def run(self):
-        bet10 = Bet10()
-        bet10.run()
+        # bet10 = Bet10()
+        # bet10.run()
 
         bet365 = Bet365()
+        bet365.run()
+
+        bet365Other = Bet365()
+        bet365Other.run('Bet365Other', 'bigfreebet1281', 'Porsche911')
 
 
 if __name__ == "__main__":
