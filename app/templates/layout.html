@@ -111,20 +111,9 @@
   
   <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}">
   </script>
-  
-  <script type="text/javascript" class="init">
-    $(document).ready(function() {
-      window.table = $('#example').DataTable( {    	
-        "scrollY": 400,
-        "scrollX": true
-  
-      } );
-    } );
-  </script>
-  
+ 
+  {% block custom_js %}
+  {% endblock %}
   
 </body>
-<script type="text/javascript">
-  $('#myForm').validator()
-</script>
 </html>

@@ -20,6 +20,21 @@ def homepage():
     return redirect(url_for('home.dashboard'))
     # return render_template("home/dashboard.html", title = "Dashbaord")
 
+def get_histories(mode, range = None):
+    if mode == 'weekly':
+        start_date = get_delta_date(9)
+        end_date = get_delta_date(2)
+    elif mode == "monthly":
+        start_date = get_delta_date(9)
+        end_date = get_delta_date(2)
+    elif mode == "yearly":
+        start_date = get_delta_date(9)
+        end_date = get_delta_date(2)
+    else:
+        start_date = get_delta_date(9)
+        end_date = get_delta_date(2)
+
+
 @home.route('/dashboard')
 @login_required
 def dashboard():
@@ -37,4 +52,4 @@ def dashboard():
     print("======================   Here    ====================")
     pprint(histories[0].monthly_commission)
     print("===========================================")
-    return render_template("home/dashboard.html", title = "Dashbaord", histories = histories)
+    return render_template("home/dashboard.html", title = "Dashbaord", date = initial_date, histories = histories)
