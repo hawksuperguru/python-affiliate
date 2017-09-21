@@ -1,19 +1,19 @@
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
-from settings.config import *
 from reporter import SpiderReporter
+from app import scheduler
+from ..models import Affiliate, History, db
 
-import psycopg2
 import datetime
 import time
 import json
 import requests
 
-class EuroPartners(object):
-    """docstring for EuroPartners"""
+class TitanBet(object):
+    """docstring for TitanBet"""
     def __init__(self):
         self.client = UBrowse()
         self.report = SpiderReporter()
+        self.affiliate = "TitanBet"
         
         self.headers = {
             'Accept': 'application/json, text/plain, */*',
@@ -63,7 +63,7 @@ class EuroPartners(object):
         response = requests.post(url, headers=self.headers, cookies=self.cookies, data=self.data)
         return response
 
-    def run(self):
+    def login(self):
         self.client.open_url('https://portal.europartners.com/portal/#/login')
         self.client.set_loginform('//*[@id="userName"]')
         self.client.set_passform('//*[@id="password"]')
@@ -77,47 +77,84 @@ class EuroPartners(object):
             return False
         return True
 
+    def run(self):
+        self.login()
+        try:
+            response = json.loads(self.get_data().content)
+
+            data = dict()
+            if response['data']['values']:
+                values = response['data']['values'][0]['data']
+                daily_click = int(values[2])
+            else:
+                daily_click = 0
+            
+            created_at = self.get_delta_date()
+
+            self.client.driver.close()
+            
+            app = scheduler.app
+            with app.app_context():
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
+                
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = daily_click,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+        except:
+            self.log("Failed to parse Ajax Response", "error")
+
 
 if __name__ == '__main__':
-    ep = EuroPartners()
+    ep = TitanBet()
     ep.run()
 
-    try:
-        response = json.loads(ep.get_data().content)
+#original code:
+    # try:
+    #     response = json.loads(self.get_data().content)
 
-        data = dict()
-        if response['data']['values']:
-            values = response['data']['values'][0]['data']
+    #     data = dict()
+    #     if response['data']['values']:
+    #         values = response['data']['values'][0]['data']
 
-            data['tlr_amount'] = values[1]
-            data['real_clicks'] = values[2]
-            data['casino_u_real_count'] = values[3]
-            data['casino_d_rf_count'] = values[4]
-            data['casino_net_gaming'] = values[5]
-            data['poker_u_real_count'] = values[6]
-            data['poker_d_rf_count'] = values[7]
-            data['poker_net_gaming'] = values[8]
-            data['sport_u_real_count'] = values[9]
-            data['sport_d_rf_count'] = values[10]
-            data['dateto'] = ep.get_delta_date()
+    #         data['tlr_amount'] = values[1]
+    #         data['real_clicks'] = values[2]
+    #         data['casino_u_real_count'] = values[3]
+    #         data['casino_d_rf_count'] = values[4]
+    #         data['casino_net_gaming'] = values[5]
+    #         data['poker_u_real_count'] = values[6]
+    #         data['poker_d_rf_count'] = values[7]
+    #         data['poker_net_gaming'] = values[8]
+    #         data['sport_u_real_count'] = values[9]
+    #         data['sport_d_rf_count'] = values[10]
+    #         data['dateto'] = self.get_delta_date()
 
-        else:
-            data['tlr_amount'] = 0
-            data['real_clicks'] = 0
-            data['casino_u_real_count'] = 0
-            data['casino_d_rf_count'] = 0
-            data['casino_net_gaming'] = 0
-            data['poker_u_real_count'] = 0
-            data['poker_d_rf_count'] = 0
-            data['poker_net_gaming'] = 0
-            data['sport_u_real_count'] = 0
-            data['sport_d_rf_count'] = 0
-            data['dateto'] = ep.get_delta_date()
+    #     else:
+    #         data['tlr_amount'] = 0
+    #         data['real_clicks'] = 0
+    #         data['casino_u_real_count'] = 0
+    #         data['casino_d_rf_count'] = 0
+    #         data['casino_net_gaming'] = 0
+    #         data['poker_u_real_count'] = 0
+    #         data['poker_d_rf_count'] = 0
+    #         data['poker_net_gaming'] = 0
+    #         data['sport_u_real_count'] = 0
+    #         data['sport_d_rf_count'] = 0
+    #         data['dateto'] = self.get_delta_date()
 
-        ep.client.driver.close()
+    #     self.client.driver.close()
 
-        engine = create_engine(get_database_connection_string())
-    
-        result = engine.execute("INSERT INTO titanbets (tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", data['tlr_amount'], data['real_clicks'], data['casino_u_real_count'], data['casino_d_rf_count'], data['casino_net_gaming'], data['poker_u_real_count'], data['poker_d_rf_count'], data['poker_net_gaming'], data['sport_u_real_count'], data['sport_d_rf_count'], data['dateto'] )
-    except:
-        ep.log("Failed to parse Ajax Response", "error")
+    #     engine = create_engine(get_database_connection_string())
+
+    #     result = engine.execute("INSERT INTO titanbets (tlr_amount, real_clicks, casino_u_real_count, casino_d_rf_count, casino_net_gaming, poker_u_real_count, poker_d_rf_count, poker_net_gaming, sport_u_real_count, sport_d_rf_count, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", data['tlr_amount'], data['real_clicks'], data['casino_u_real_count'], data['casino_d_rf_count'], data['casino_net_gaming'], data['poker_u_real_count'], data['poker_d_rf_count'], data['poker_net_gaming'], data['sport_u_real_count'], data['sport_d_rf_count'], data['dateto'] )
+    # except:
+    #     self.log("Failed to parse Ajax Response", "error")

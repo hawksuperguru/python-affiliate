@@ -2,16 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
-from settings.config import *
 from reporter import *
+from app import scheduler
+from ..models import Affiliate, History, db
 
-import psycopg2
 import datetime
 import json
-import requests
 import time
 import re
 
@@ -28,6 +26,7 @@ class SkyBet(object):
         self.quick_stats_timer = 0
         self.YTD_stats_timer = 0
         self.report_timer = 0
+        self.affiliate = "SkyBet"
 
         self.headers = {
             'Host': 'affiliatehub.skybet.com',
@@ -163,51 +162,101 @@ class SkyBet(object):
         self.parse_stats_report()
 
     def save(self):
-        merchant = str(self.items[0])
-        impression = int(self.items[1])
-        click = int(self.items[2])
-        registration = int(self.items[3])
-        new_deposit = int(self.items[4])
-        commissionStr = str(self.items[5]).replace(',', '')
-
         pattern = re.compile(r'[\-\d.\d]+')
-        commission = float(pattern.search(commissionStr).group(0))
-        impreytd = int(self.items[7])
-        cliytd = int(self.items[8])
-        regytd = int(self.items[9])
-        ndytd = int(self.items[10])
-        commiytdStr = str(self.items[11]).replace(',', '')
-        commiytd = float(pattern.search(commiytdStr).group(0))
-        imprto = int(self.items[12])
-        clito = int(self.items[13])
-        regto = int(self.items[14])
-        ndto = int(self.items[15])
-        commito = float(self.items[16])
-        dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
 
-        engine = create_engine(get_database_connection_string())
+        monthly_click = int(self.items[2])
+        monthly_signup = int(self.items[3])
+        paid_signup = int(self.items[4])
+        commissionStr = str(self.items[5]).replace(',', '')
+        monthly_commission = float(pattern.search(commissionStr).group(0))
         
-        result = engine.execute("INSERT INTO skybets (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto)
+        yearly_click = int(self.items[8])
+        yearly_signup = int(self.items[9])
+        commiytdStr = str(self.items[11]).replace(',', '')
+        yearly_commission = float(pattern.search(commiytdStr).group(0))
+        
+        daily_click = int(self.items[13])
+        daily_signup = int(self.items[14])
+        daily_commission = float(self.items[16])
+        
+        created_at = self.get_delta_date()
+
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+            if affiliate is None:
+                affiliate = Affiliate(name = self.affiliate)
+                db.session.add(affiliate)
+                db.session.commit()
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+            if history is None:
+                history = History(
+                    affiliate_id = affiliate.id,
+                    daily_click = daily_click,
+                    daily_signup = daily_signup,
+                    daily_commission = daily_commission,
+                    monthly_click = monthly_click,
+                    monthly_signup = monthly_signup,
+                    monthly_commission = monthly_commission,
+                    yearly_click = yearly_click,
+                    yearly_signup = yearly_signup,
+                    yearly_commission = yearly_commission,
+                    paid_signup = paid_signup,
+                    created_at = created_at
+                )
+                db.session.add(history)
+                db.session.commit()
         return True
+
+    def run(self):
+        if self.login() is True:
+            self.log("Successfully logged in. Parsing quick stats.")
+            self.get_quick_stats()
+            self.select_YTD_option()
+            self.get_YTD_stats()
+
+            self.log("Pulling quick stats reporting...")
+            self.get_stats_report()
+
+            if self.save() == True:
+                self.log("Pulled data successfully saved!")
+            else:
+                self.log("Something went wrong in DB Query.", "error")
+        else:
+            self.log("Failed to log in!!", "error")
+
+        self.client.close()
 
 
 if __name__ == "__main__":
     me = SkyBet()
+    me.run()
 
-    if me.login() is True:
-        me.log("Successfully logged in. Parsing quick stats.")
-        me.get_quick_stats()
-        me.select_YTD_option()
-        me.get_YTD_stats()
+#commened code
+    # merchant = str(self.items[0])
+    # impression = int(self.items[1])
+    # click = int(self.items[2])
+    # registration = int(self.items[3])
+    # new_deposit = int(self.items[4])
+    # commissionStr = str(self.items[5]).replace(',', '')
 
-        me.log("Pulling quick stats reporting...")
-        me.get_stats_report()
+    # pattern = re.compile(r'[\-\d.\d]+')
+    # commission = float(pattern.search(commissionStr).group(0))
+    # impreytd = int(self.items[7])
+    # cliytd = int(self.items[8])
+    # regytd = int(self.items[9])
+    # ndytd = int(self.items[10])
+    # commiytdStr = str(self.items[11]).replace(',', '')
+    # commiytd = float(pattern.search(commiytdStr).group(0))
+    # imprto = int(self.items[12])
+    # clito = int(self.items[13])
+    # regto = int(self.items[14])
+    # ndto = int(self.items[15])
+    # commito = float(self.items[16])
+    # dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
 
-        if me.save() == True:
-            me.log("Pulled data successfully saved!")
-        else:
-            me.log("Something went wrong in DB Query.", "error")
-    else:
-        me.log("Failed to log in!!", "error")
+    # engine = create_engine(get_database_connection_string())
 
-    me.client.close()
+    # result = engine.execute("INSERT INTO skybets (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, imprto, clito, regto, ndto, commito, dateto)
+    # return True
