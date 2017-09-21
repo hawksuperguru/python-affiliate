@@ -131,7 +131,6 @@ class Bet365(object):
                     affiliate = Affiliate(name = self.affiliate)
                     db.session.add(affiliate)
                     db.session.commit()
-                    # db.session.close()
                     
                 history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
@@ -146,26 +145,6 @@ class Bet365(object):
                     )
                     db.session.add(history)
                     db.session.commit()
-                    # db.session.close()
-                #commented out
-                    # click = int(pattern.search(row.find_elements_by_tag_name('td')[0].text).group(0))
-                    # nSignup = int(pattern.search(row.find_elements_by_tag_name('td')[1].text).group(0))
-                    # nDepo = int(pattern.search(row.find_elements_by_tag_name('td')[2].text).group(0))
-                    # valDepo = float(pattern.search(row.find_elements_by_tag_name('td')[8].text).group(0).replace(',', '.'))
-                    # numDepo = int(pattern.search(row.find_elements_by_tag_name('td')[9].text).group(0))
-                    # spotsTurn = float(pattern.search(row.find_elements_by_tag_name('td')[10].text).group(0).replace(',', '.'))
-                    # numSptBet = int(pattern.search(row.find_elements_by_tag_name('td')[11].text).group(0))
-                    # acSptUsr = int(pattern.search(row.find_elements_by_tag_name('td')[12].text).group(0))
-                    # sptNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-10].text).group(0).replace(',', '.'))
-                    # casinoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-9].text).group(0).replace(',', '.'))
-                    # pokerNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-8].text).group(0).replace(',', '.'))
-                    # bingoNetRev = float(pattern.search(row.find_elements_by_tag_name('td')[-7].text).group(0).replace(',', '.'))
-                    # netRev = float(pattern.search(row.find_elements_by_tag_name('td')[-6].text).group(0).replace(',', '.'))
-                    # afSpt = float(pattern.search(row.find_elements_by_tag_name('td')[-5].text).group(0).replace(',', '.'))
-                    # afCasino = float(pattern.search(row.find_elements_by_tag_name('td')[-4].text).group(0).replace(',', '.'))
-                    # afPoker = float(pattern.search(row.find_elements_by_tag_name('td')[-3].text).group(0).replace(',', '.'))
-                    # afBingo = float(pattern.search(row.find_elements_by_tag_name('td')[-2].text).group(0).replace(',', '.'))
-                    # commission = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text).group(0).replace(',', '.'))
 
                 return True
             except:
@@ -218,15 +197,6 @@ class Bet365(object):
             self.log("Failed to Login with 1st account.", "error")
         
         self.client.close()
-        
-        # self.log("Getting data with (bigfreebet1281:Porsche911)")
-        # self.affiliate = "Bet365Other"
-        # if self.login('bigfreebet1281', 'Porsche911'):
-        #     self.parse_stats()
-        # else:
-        #     self.log("Failed to Login with 2nd account.", "error")
-        
-        # self.client.close()
 
 if __name__ == '__main__':
     bet365 = Bet365()

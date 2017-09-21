@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
-from settings.config import *
 from reporter import SpiderReporter
+from app import scheduler
+from ..models import Affiliate, History, db
 
 import psycopg2
 import datetime
 import json
-import requests
 import time
 import re
 
@@ -28,6 +27,7 @@ class BetFred(object):
         self.YTD_stats_timer = 0
         self.report_timer = 0
         self.report = SpiderReporter()
+        self.affiliate = "BetFred"
 
         self.headers = {
             'Host': 'secure.activewins.com',
@@ -168,51 +168,99 @@ class BetFred(object):
         self.parse_stats_report()
 
     def save(self):
-        merchant = str(self.items[0])
-        impression = int(self.items[1])
-        click = int(self.items[2])
-        registration = int(self.items[3])
-        new_deposit = int(self.items[4])
+        app = scheduler.app
+
+        monthly_click = int(self.items[2])
+        monthly_signup = int(self.items[3])
+        paid_signup = int(self.items[4])
         commissionStr = str(self.items[5]).replace(',', '')
 
         pattern = re.compile(r'[\-\d.\d]+')
-        commission = float(pattern.search(commissionStr).group(0))
-        impreytd = int(self.items[7])
-        cliytd = int(self.items[8])
-        regytd = int(self.items[9])
-        ndytd = int(self.items[10])
+        monthly_commission = float(pattern.search(commissionStr).group(0))
+        
+        yearly_click = int(self.items[8])
+        yearly_signup = int(self.items[9])
         commiytdStr = str(self.items[11]).replace(',', '')
-        commiytd = float(pattern.search(commiytdStr).group(0))
-        impreto = int(self.items[12])
-        clito = int(self.items[13])
-        regto = int(self.items[14])
-        ndto = int(self.items[15])
-        commito = float(self.items[16])
-        dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
+        yearly_commission = float(pattern.search(commiytdStr).group(0))
+        
+        daily_click = int(self.items[13])
+        daily_signup = int(self.items[14])
+        daily_commission = float(self.items[16])
 
-        engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO betfreds (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)
+        created_at = self.get_delta_date()
+
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                affiliate = Affiliate(name = self.affiliate)
+                db.session.add(affiliate)
+                db.session.commit()
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+            if history is None:
+                history = History(
+                    affiliate_id = affiliate.id,
+                    daily_click = daily_click,
+                    daily_signup = daily_signup,
+                    daily_commission = daily_commission,
+                    monthly_click = monthly_click,
+                    monthly_signup = monthly_signup,
+                    monthly_commission = monthly_commission,
+                    yearly_click = yearly_click,
+                    yearly_signup = yearly_signup,
+                    yearly_commission = yearly_commission,
+                    paid_signup = paid_signup,
+                    created_at = created_at
+                )
+                db.session.add(history)
+                db.session.commit()
         return True
+
+    def run(self):
+        if self.login():
+            self.get_quick_stats()
+            self.select_YTD_option()
+            self.get_YTD_stats()
+            self.get_stats_report()
+
+            if self.save():
+                self.log("Successfully saved!")
+            else:
+                self.log("Failed to write database", "error")
+
+        else:
+            self.log("Failed to Login.", "error")
+        
+        self.client.close()
 
 
 if __name__ == "__main__":
     betFred = BetFred()
-    betFred.log("BetFred Spider is being initialized....")
+    betFred.run()
 
-    if betFred.login() is True:
-        betFred.log("Successfully logged in. Parsing quick stats.")
-        betFred.get_quick_stats()
-        betFred.select_YTD_option()
-        betFred.get_YTD_stats()
+# merchant = str(self.items[0])
+# impression = int(self.items[1])
+# click = int(self.items[2])
+# registration = int(self.items[3])
+# new_deposit = int(self.items[4])
+# commissionStr = str(self.items[5]).replace(',', '')
 
-        betFred.log("Pulling quick stats reporting...")
-        betFred.get_stats_report()
+# pattern = re.compile(r'[\-\d.\d]+')
+# commission = float(pattern.search(commissionStr).group(0))
+# impreytd = int(self.items[7])
+# cliytd = int(self.items[8])
+# regytd = int(self.items[9])
+# ndytd = int(self.items[10])
+# commiytdStr = str(self.items[11]).replace(',', '')
+# commiytd = float(pattern.search(commiytdStr).group(0))
+# impreto = int(self.items[12])
+# clito = int(self.items[13])
+# regto = int(self.items[14])
+# ndto = int(self.items[15])
+# commito = float(self.items[16])
+# dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
 
-        if betFred.save() == True:
-            betFred.log("Pulled data successfully saved!")
-        else:
-            betFred.report_error_log("Something went wrong in DB Query.")
-    else:
-        betFred.report_error_log("Failed to log in!!")
-
-    betFred.client.close()
+# engine = create_engine(get_database_connection_string())
+# result = engine.execute("INSERT INTO betfreds (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)

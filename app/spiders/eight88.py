@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import ( Select, WebDriverWait )
 from selenium.webdriver.common.keys import Keys
 from reporter import SpiderReporter
-from settings.config import *
+from app import scheduler
+from ..models import Affiliate, History, db
 
 import psycopg2
 import datetime
 import json
-import requests
 import time
 import re
 
@@ -22,10 +21,11 @@ class Eight88(object):
         self.client = UBrowse()
         self.report = SpiderReporter()
         self.login_url = 'http://affiliates.888.com/'
-        self.username = 'betfyuk1'
-        self.password = 'dontfuckwithme'
+        self.username = 'betfyuk'
+        self.password = 'LALB37hUhs'
         self.items = []
         self.timer = 0
+        self.affiliate = "Eight88"
 
         self.headers = {
             'Host': 'secure.activewins.com',
@@ -112,32 +112,44 @@ class Eight88(object):
             return False
 
     def save(self):
-        impression = int(self.items[0])
-        click = int(self.items[1])
-        registration = int(self.items[2])
-        lead = int(self.items[3])
-        money_player = int(self.items[4])
-        balance = float(self.items[5])
-        imprwk = int(self.items[6])
-        cliwk = int(self.items[7])
-        regwk = int(self.items[8])
-        leadwk = int(self.items[9])
-        mpwk = int(self.items[10])
-        imprpre = int(self.items[11])
-        clipre = int(self.items[12])
-        regpre = int(self.items[13])
-        leadpre = int(self.items[14])
-        mppre = int(self.items[15])
-        imprto = int(self.items[16])
-        clito = int(self.items[17])
-        regto = int(self.items[18])
-        leadto = int(self.items[19])
-        mpto = int(self.items[20])
-        prebal = int(self.items[21])
-        dateto = self.get_delta_date()
+        app = scheduler.app
 
-        engine = create_engine(get_database_connection_string())
-        result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal, dateto)
+        monthly_click = int(self.items[1])
+        monthly_signup = int(self.items[2])
+        monthly_commission = float(self.items[5])
+        
+        weekly_click = int(self.items[7])
+        weekly_signup = int(self.items[8])
+        
+        daily_click = int(self.items[17])
+        daily_signup = int(self.items[18])
+
+        created_at = self.get_delta_date()
+
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                affiliate = Affiliate(name = self.affiliate)
+                db.session.add(affiliate)
+                db.session.commit()
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+            if history is None:
+                history = History(
+                    affiliate_id = affiliate.id,
+                    daily_click = daily_click,
+                    daily_signup = daily_signup,
+                    weekly_click = weekly_click,
+                    weekly_signup = weekly_signup,
+                    monthly_click = monthly_click,
+                    monthly_signup = monthly_signup,
+                    monthly_commission = monthly_commission,
+                    created_at = created_at
+                )
+                db.session.add(history)
+                db.session.commit()
 
     def run(self):
         self.client.open_url(self.login_url)
@@ -160,3 +172,30 @@ class Eight88(object):
 if __name__ == "__main__":
     eight88 = Eight88()
     eight88.run()
+
+# impression = int(self.items[0])
+# click = int(self.items[1])
+# registration = int(self.items[2])
+# lead = int(self.items[3])
+# money_player = int(self.items[4])
+# balance = float(self.items[5])
+# imprwk = int(self.items[6])
+# cliwk = int(self.items[7])
+# regwk = int(self.items[8])
+# leadwk = int(self.items[9])
+# mpwk = int(self.items[10])
+# imprpre = int(self.items[11])
+# clipre = int(self.items[12])
+# regpre = int(self.items[13])
+# leadpre = int(self.items[14])
+# mppre = int(self.items[15])
+# imprto = int(self.items[16])
+# clito = int(self.items[17])
+# regto = int(self.items[18])
+# leadto = int(self.items[19])
+# mpto = int(self.items[20])
+# prebal = int(self.items[21])
+# dateto = self.get_delta_date()
+
+# engine = create_engine(get_database_connection_string())
+# result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal, dateto)
