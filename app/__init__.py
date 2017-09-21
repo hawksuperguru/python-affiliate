@@ -47,6 +47,6 @@ def create_app(config_name = "dev"):
         spider.run()
 
     scheduler.start()
-    scheduler.add_cron_job(scrap_affiliates, minute = 18)
+    scheduler.add_cron_job(scrap_affiliates, minute = 41)
 
     return app
