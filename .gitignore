@@ -8,3 +8,4 @@
 /scrapping/settings/env.py
 /migrations
 /backup
+/app/spiders/env.py
