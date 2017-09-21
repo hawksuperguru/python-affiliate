@@ -144,12 +144,14 @@ class LadBrokes(object):
                 db.session.add(affiliate)
                 db.session.commit()
 
+            print(affiliate)
             created_at = self.get_delta_date()
 
             history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
             if history is None:
                 history = History(
+                    affiliate_id = affiliate.id,
                     daily_click = self.data['daily_click'],
                     daily_signup = self.data['daily_signup'],
                     daily_commission = self.data['daily_commission'],
