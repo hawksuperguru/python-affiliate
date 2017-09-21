@@ -1,7 +1,7 @@
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
-from settings.config import *
 from reporter import *
+from app import scheduler
+from ..models import Affiliate, History, db
 
 import psycopg2
 import datetime
@@ -18,6 +18,7 @@ class LadBrokes(object):
         self.report_url = 'https://portal.ladbrokespartners.com/portal/#/statistics'
         self.ajax_url = 'https://portal.ladbrokespartners.com/portal/rest/reports/run/atOnce'
         self.data = {}
+        self.affiliate = "LadBrokes"
         
         self.headers = {
             'Accept': 'application/json, text/plain, */*',
@@ -112,9 +113,9 @@ class LadBrokes(object):
         if (response['data']['total']['data']):
             values = response['data']['total']['data']
             self.data['created_at'] = self.get_delta_date()
-            self.data['click'] = int(values[3])
-            self.data['signup'] = int(values[5])
-            self.data['commission'] = float(values[10])
+            self.data['daily_click'] = int(values[3])
+            self.data['daily_signup'] = int(values[5])
+            self.data['daily_commission'] = float(values[10])
             self.data['paid_signup'] = 0
             return True
 
@@ -134,12 +135,36 @@ class LadBrokes(object):
         return self.save()
 
     def save(self):
-        try:
-            engine = create_engine(get_database_connection_string())
-            result = engine.execute("INSERT INTO ladbrokes (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
-            return True
-        except:
-            return False
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                affiliate = Affiliate(name = self.affiliate)
+                db.session.add(affiliate)
+                db.session.commit()
+
+            created_at = self.get_delta_date()
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+            if history is None:
+                history = History(
+                    daily_click = self.data['daily_click'],
+                    daily_signup = self.data['daily_signup'],
+                    daily_commission = self.data['daily_commission'],
+                    monthly_click = self.data['monthly_click'],
+                    monthly_signup = self.data['monthly_signup'],
+                    monthly_commission = self.data['monthly_commission'],
+                    yearly_click = self.data['yearly_click'],
+                    yearly_signup = self.data['yearly_signup'],
+                    yearly_commission = self.data['yearly_commission'],
+                    paid_signup = self.data['paid_signup'],
+                    created_at = created_at
+                )
+                db.session.add(history)
+                db.session.commit()
+        
 
     def run(self):
         self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')
@@ -165,3 +190,9 @@ if __name__ == '__main__':
     lb = LadBrokes()
     lb.run()
 
+# try:
+#     engine = create_engine(get_database_connection_string())
+#     result = engine.execute("INSERT INTO ladbrokes (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['daily_click'], self.data['daily_signup'], self.data['daily_commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
+#     return True
+# except:
+#     return False
