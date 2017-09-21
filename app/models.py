@@ -100,6 +100,28 @@ class History(db.Model):
     def __repr__(self):
         return '<History: {} {}>'.format(self.affiliate_id, self.created_at)
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format."""
+        return {
+            id : self.id,
+            affiliate_id: self.affiliate_id,
+            daily_click: self.daily_click,
+            daily_signup: self.daily_signup,
+            daily_commission: self.daily_commission,
+            weekly_click: self.weekly_click,
+            weekly_signup: self.weekly_signup,
+            weekly_commission: self.weekly_commission,
+            monthly_click: self.monthly_click,
+            monthly_signup: self.monthly_signup,
+            monthly_commission: self.monthly_commission,
+            yearly_click: self.yearly_click,
+            yearly_signup: self.yearly_signup,
+            yearly_commission: self.yearly_commission,
+            paid_signup: self.paid_signup,
+            created_at: self.created_at,
+        }
+
 
 class Log(db.Model):
     """

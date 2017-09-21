@@ -36,6 +36,7 @@
         <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
           <div class="input-group col-xs-12">
             <select id="reservations" class="form-control">
+              <option value="daily">{{ date }}</option>
               <option value="weekly">Last 1 Week</option>
               <option value="monthly">Last 1 Month</option>
               <option value="yearly">Last 1 year</option>
@@ -61,16 +62,18 @@
               <th>Daily Click</th>
               <th>Daily Signup</th>
               <th>Daily Commission</th>
+              <th>Created At</th>
             </tr>
           </thead>
           <tbody>
             {% for history in histories %}
-            <tr>
+            <tr data-affiliate-id="{{ history.affiliate_id }}">
               <td>{{ loop.index }}</td>
               <td>{{ history.name }}</td>
               <td>{{ history.daily_click }}</td>
               <td>{{ history.daily_signup }}</td>
               <td>{{ history.daily_commission }}</td>
+              <td>{{ history.created_at }}</td>
             </tr>
             {% endfor %}
           </tbody>
