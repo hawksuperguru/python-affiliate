@@ -104,3 +104,7 @@ p.copyright {
   height: 100%;
   margin: 0 auto -4em;
 }
+
+table thead tr th {
+    vertical-align: middle;
+}
