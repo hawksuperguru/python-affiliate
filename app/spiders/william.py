@@ -1,21 +1,21 @@
 from selenium_browser import UBrowse
-from sqlalchemy import create_engine
 from reporter import SpiderReporter
-from settings.config import *
+from app import scheduler
+from ..models import Affiliate, History, db
 
-import psycopg2
 import dateutil.relativedelta
 import datetime
 import json
 import requests
 
-class Affutd(object):
-    """docstring for Affutd"""
+class William(object):
+    """docstring for William"""
     def __init__(self):
         self.client = UBrowse()
         self.ajax_url = 'https://account.affiliates.williamhill.com/affiliates/Reports/dailyFiguresReport'
         self.report = SpiderReporter()
         self.data = {}
+        self.affiliate = "William"
         
         self.headers = {
             'Host': 'account.affiliates.williamhill.com',
@@ -62,10 +62,35 @@ class Affutd(object):
 
     def save(self):
         try:
-            engine = create_engine(get_database_connection_string())
-            result = engine.execute("INSERT INTO williams (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
+            app = scheduler.app
+            with app.app_context():
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.commit()
+
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = self.data['created_at']).first()
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = self.data['daily_click'],
+                        daily_signup = self.data['daily_signup'],
+                        daily_commission = self.data['daily_commission'],
+                        monthly_click = self.data['monthly_click'],
+                        monthly_signup = self.data['monthly_signup'],
+                        monthly_commission = self.data['monthly_commission'],
+                        yearly_click = self.data['yearly_click'],
+                        yearly_signup = self.data['yearly_signup'],
+                        yearly_commission = self.data['yearly_commission'],
+                        paid_signup = self.data['paid_signup'],
+                        created_at = self.data['created_at']
+                    )
+                    db.session.add(history)
+                    db.session.commit()
             return True
         except:
+            self.log("Something went wrong in DB.", "error")
             return False
 
     def get_ajax_data(self, mode = 'daily'):
@@ -81,9 +106,9 @@ class Affutd(object):
         try:
             response = json.loads(response.content)
             data = response['data'][0]
-            self.data['click'] = int(data[3]['Value'])
-            self.data['signup'] = int(data[5]['Value'])
-            self.data['commission'] = float(data[13]['Value'])
+            self.data['daily_click'] = int(data[3]['Value'])
+            self.data['daily_signup'] = int(data[5]['Value'])
+            self.data['daily_commission'] = float(data[13]['Value'])
             self.data['paid_signup'] = int(data[10]['Value'])
             self.data['created_at'] = self.get_delta_date()
             return True
@@ -138,7 +163,7 @@ class Affutd(object):
     def get_data(self):
         return self.get_daily_data() and self.get_monthly_data() and self.get_yearly_data()
 
-    def run(self):
+    def login(self):
         try:
             self.client.open_url('https://account.affiliates.williamhill.com/affiliates/Account/Login')
             self.client.set_loginform('//*[@id="txtUsername"]')
@@ -153,18 +178,29 @@ class Affutd(object):
         except:
             return False
 
+    def run(self):
+        if self.login():
+            if self.get_data():
+                if self.save():
+                    self.log("Successfully stored to DB.")
+                else:
+                    self.log("Something went wrong in DB manipulation.", "error")
+            else:
+                self.log("Failed to get data", "error")
+        else:
+            self.log("Login Failed in william spider", "error")
+
+        self.client.close()
+
 
 if __name__ == '__main__':
-    affud = Affutd()
-    if affud.run():
-        if affud.get_data():
-            if affud.save():
-                affud.log("Successfully stored to DB.")
-            else:
-                affud.log("Something went wrong in DB manipulation.", "error")
-        else:
-            affud.log("Failed to get data", "error")
-    else:
-        affud.log("Login Failed in william spider", "error")
+    me = William()
+    me.run()
 
-    affud.client.close()
+# Original code:
+    # try:
+    #     engine = create_engine(get_database_connection_string())
+    #     result = engine.execute("INSERT INTO williams (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['daily_click'], self.data['daily_signup'], self.data['daily_commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
+    #     return True
+    # except:
+    #     return False
