@@ -43,7 +43,9 @@
           <div class="panel-footer">
             <div class="row">
               <div class="col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-sm-4 col-sm-8 col-xs-6 col-xs-offset-6">
-                <button class="btn btn-primary form-control">Backup Now!</button>
+                <form action="/settings/db/backup" method="post">
+                  <button class="btn btn-primary form-control" type="submit">Backup Now!</button>
+                </form>
               </div>
             </div>
           </div>
