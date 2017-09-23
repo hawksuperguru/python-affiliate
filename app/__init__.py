@@ -31,15 +31,15 @@ def create_app(config_name = "dev"):
     from .admin import admin_app
     from .auth import auth_app
     from .home import home_app
+    from .settings import settings_app
 
     app.register_blueprint(admin_app, url_prefix='/admin')
     app.register_blueprint(auth_app)
     app.register_blueprint(home_app)
+    app.register_blueprint(settings_app)
 
     from .spiders import Spider
-
     scheduler.app = app
-
     logging.basicConfig()
 
     def scrap_affiliates():
@@ -50,3 +50,7 @@ def create_app(config_name = "dev"):
     scheduler.add_cron_job(scrap_affiliates, minute = 15)
 
     return app
+
+def get_issues():
+    from .models import Log
+    return Log.query.filter_by(status = True).all()

@@ -4,6 +4,7 @@ from flask_login import login_required
 from . import home_app as home
 from ..models import Affiliate, History, db
 from pprint import pprint
+from .. import get_issues
 
 import datetime, json
 import dateutil.relativedelta
@@ -122,13 +123,15 @@ def dashboard():
     """
     initial_date = get_delta_date()
     histories = get_histories('daily')
-    
-    temp_results = get_yearly_histories()
-    print("==============   Here    ======================")
-    print(temp_results)
-    print("====================================")
+    issues = get_issues()
 
-    return render_template("home/dashboard.html", title = "Dashbaord", date = initial_date, histories = histories)
+    return render_template(
+        "home/dashboard.html",
+        title = "Dashbaord",
+        date = initial_date,
+        histories = histories,
+        issues = issues
+    )
 
 
 @home.route('/histories', methods = ['POST', 'GET'])
@@ -136,11 +139,5 @@ def api_histories():
     mode = request.json['mode']
     date_range = user = request.json['date_range']
     histories = get_histories(mode, date_range)
-
-    print("==============   Here    ======================")
-    print(mode)
-    print(date_range)
-    print(histories)
-    print("====================================")
 
     return jsonify(status = True, data = histories)

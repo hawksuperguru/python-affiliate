@@ -41,6 +41,7 @@ let Dashboard = ((window, jQuery) => {
                 break
             case 'custom':
                 $("#date-range-container").removeClass("hide")
+                AffiliateAPI.get(value, _dateRange, drawTable)
                 break
         }
     }
@@ -60,6 +61,7 @@ let Dashboard = ((window, jQuery) => {
         })
 
         _resultsTable = $("#dashboard-results").DataTable()
+        _dateRange = $("#date-range").val()
     }
 
     /**

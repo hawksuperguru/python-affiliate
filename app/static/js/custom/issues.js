@@ -14,6 +14,9 @@ let Issues = ((window, jQuery) => {
                     $(event.target).removeClass("btn-primary").addClass("btn-danger")
                     .removeClass("btn-mark-as-solved").addClass("btn-undo")
                     .text("Undo")
+
+                    $issuesCount = $("#notification-issues-count");
+                    $issuesCount.text(Math.max(parseInt($issuesCount.text()) - 1, 0))
                 })
             }
         })
@@ -25,6 +28,9 @@ let Issues = ((window, jQuery) => {
                 $(event.target).removeClass("btn-danger").addClass("btn-primary")
                 .removeClass("btn-undo").addClass("btn-mark-as-solved")
                 .text("Mark as solved")
+
+                $issuesCount = $("#notification-issues-count");
+                $issuesCount.text(Math.max(parseInt($issuesCount.text()) + 1, 0))
             })
         })
     }
