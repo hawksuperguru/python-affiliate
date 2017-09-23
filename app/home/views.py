@@ -6,6 +6,7 @@ from ..models import Affiliate, History, db
 from pprint import pprint
 
 import datetime, json
+import dateutil.relativedelta
 
 def get_delta_date(delta = 2, format_string = "%Y/%m/%d"):
     today = datetime.datetime.today()
@@ -24,103 +25,80 @@ def homepage():
 STATISTIC_COMPUTING_METHOD = 'temp'
 
 def get_weekly_histories():
-    if STATISTIC_COMPUTING_METHOD == 'temp':
-        initial_date = get_delta_date()
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at == initial_date).all()
-        return histories
-
-    else:
-        start_date = get_delta_date(9)
-        end_date = get_delta_date(2)
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at >= start_date)\
-            .filter(History.created_at <= end_date).all()
-        
-        return histories
+    start_date = get_delta_date(9)
+    end_date = get_delta_date(2)
+    
+    return get_from_date_range(start_date, end_date)
 
 def get_monthly_histories():
-    if STATISTIC_COMPUTING_METHOD == 'temp':
-        initial_date = get_delta_date()
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at == initial_date).all()
-        return histories
-    else:
-        start_date = get_delta_date(9)
-        end_date = get_delta_date(2)
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at >= start_date)\
-            .filter(History.created_at <= end_date).all()
-        
-        return histories
+    today = datetime.datetime.today()
+    diff = datetime.timedelta(days = 2)
+    end_date = (today - diff)#.strftime("%Y/%m/%d")
+
+    delta = dateutil.relativedelta.relativedelta(months = 1)
+    start_date = end_date - delta
+
+    return get_from_date_range(start_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d"))
 
 def get_yearly_histories():
-    if STATISTIC_COMPUTING_METHOD == 'temp':
-        initial_date = get_delta_date()
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at == initial_date).all()
-        return histories
-    else:
-        start_date = get_delta_date(9)
-        end_date = get_delta_date(2)
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at >= start_date)\
-            .filter(History.created_at <= end_date).all()
-        
-        return histories
+    today = datetime.datetime.today()
+    diff = datetime.timedelta(days = 2)
+    end_date = (today - diff)#.strftime("%Y/%m/%d")
+
+    delta = dateutil.relativedelta.relativedelta(years = 1)
+    start_date = end_date - delta
+
+    return get_from_date_range(start_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d"))
 
 def get_from_date_range(start, end):
-    # histories = db.session.query()
-    histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-        .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-        History.weekly_click, History.weekly_signup, History.weekly_commission, \
-        History.monthly_click, History.monthly_signup, History.monthly_commission, \
-        History.yearly_click, History.yearly_signup, History.yearly_commission, \
-        History.paid_signup, History.created_at)\
-        .filter(History.created_at >= start)\
-        .filter(History.created_at <= end).all()
+    histories = db.session.query(
+        Affiliate.id,
+        Affiliate.name,
+        func.sum(History.daily_click).label('click'),
+        func.sum(History.daily_signup).label('signup'),
+        func.sum(History.daily_commission).label('commission'),
+    ).filter(
+        History.created_at >= start,
+        History.created_at <= end
+    ).join(History.affiliate).group_by(Affiliate.id).order_by(Affiliate.name).all()
+
+    results = []
+    for history in histories:
+        last_history = History.query.filter(
+            History.affiliate_id == history.id,
+            History.created_at >= start,
+            History.created_at <= end
+        ).order_by(History.created_at.desc()).first()
+
+        results.append({
+            'id': history.id,
+            'name': history.name,
+            'click': history.click,
+            'signup': history.signup,
+            'commission': history.commission,
+            'affiliate_click': last_history.weekly_click if last_history is not None else 0,
+            'affiliate_signup': last_history.weekly_signup if last_history is not None else 0,
+            'affiliate_commission': last_history.weekly_commission if last_history is not None else 0.0,
+        })
+    return results
 
 def get_histories(mode, range = None):
     if mode == 'daily':
         initial_date = get_delta_date()
-        histories = History.query.join(Affiliate, Affiliate.id == History.affiliate_id)\
-            .add_columns(History.affiliate_id, Affiliate.name, History.daily_click, History.daily_signup, History.daily_commission, \
-            History.weekly_click, History.weekly_signup, History.weekly_commission, \
-            History.monthly_click, History.monthly_signup, History.monthly_commission, \
-            History.yearly_click, History.yearly_signup, History.yearly_commission, \
-            History.paid_signup, History.created_at)\
-            .filter(History.created_at == initial_date).all()
-        return histories
+        histories = History.query.join(Affiliate).filter(History.created_at == initial_date).all()
+        results = []
+        for history in histories:
+            results.append({
+                'id': history.affiliate_id,
+                'name': history.affiliate.name,
+                'click': history.daily_click,
+                'signup': history.daily_signup,
+                'commission': history.daily_commission,
+                'affiliate_click': history.daily_click,
+                'affiliate_signup': history.daily_signup,
+                'affiliate_commission': history.daily_commission,
+            })
+        return results
     elif mode == 'weekly':
         return get_weekly_histories()
     elif mode == "monthly":
@@ -144,32 +122,25 @@ def dashboard():
     """
     initial_date = get_delta_date()
     histories = get_histories('daily')
+    
+    temp_results = get_yearly_histories()
+    print("==============   Here    ======================")
+    print(temp_results)
+    print("====================================")
+
     return render_template("home/dashboard.html", title = "Dashbaord", date = initial_date, histories = histories)
 
 
 @home.route('/histories', methods = ['POST', 'GET'])
 def api_histories():
-    mode = request.args.get('mode')
-    date_range = user = request.args.get('date_range')
-    histories = []
+    mode = request.json['mode']
+    date_range = user = request.json['date_range']
+    histories = get_histories(mode, date_range)
 
-    for history in get_histories(mode, date_range):
-        histories.append({
-            'id': history.affiliate_id,
-            'name': history.name,
-            'daily_click': history.daily_click,
-            'daily_signup': history.daily_signup,
-            'daily_commission': history.daily_commission,
-            'weekly_click': history.weekly_click,
-            'weekly_signup': history.weekly_signup,
-            'weekly_commission': history.weekly_commission,
-            'monthly_click': history.monthly_click,
-            'monthly_signup': history.monthly_signup,
-            'monthly_commission': history.monthly_commission,
-            'yearly_click': history.yearly_click,
-            'yearly_signup': history.yearly_signup,
-            'yearly_commission': history.yearly_commission,
-            'paid_signup': history.paid_signup,
-            'created_at': history.created_at
-        })
-    return jsonify(status = True, histories = histories)
+    print("==============   Here    ======================")
+    print(mode)
+    print(date_range)
+    print(histories)
+    print("====================================")
+
+    return jsonify(status = True, data = histories)

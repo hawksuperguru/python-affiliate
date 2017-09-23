@@ -51,6 +51,21 @@ let AffiliateAPI = (() => {
         }
     }
 
+    /**
+     * Get Data to be shown in DataTable
+     * @param {string} mode 
+     * @param {string} dateRange 
+     * @param {function} success
+     * @param {function} failure
+     * @return {void}
+     */
+    const getData = (mode = 'daily', dateRange = null, success, failure) => {
+        sendRequest("histories", {mode, date_range: dateRange}, success, failure)
+    }
+
+    /**
+     * Function to call ajax request for Database backup
+     */
     const backupDatabase = () => {
         sendRequest("settings/db", {}, () => {}, () => {})
     }
@@ -66,6 +81,7 @@ let AffiliateAPI = (() => {
     return {
         init: init,
         manageIssue: manageIssue,
-        backup: backupDatabase
+        backup: backupDatabase,
+        get: getData
     }
 })();

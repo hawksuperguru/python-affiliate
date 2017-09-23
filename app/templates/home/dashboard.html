@@ -32,37 +32,45 @@
       </ol>
     </section>
     <section class="content">
-      <div class="col-xs-12">
-        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
-          <div class="input-group col-xs-12">
-            <select id="reservations" class="form-control">
-              <option value="daily">{{ date }}</option>
-              <option value="weekly">Last 1 Week</option>
-              <option value="monthly">Last 1 Month</option>
-              <option value="yearly">Last 1 year</option>
-              <option value="custom">Custom</option>
-            </select>
+      <div class="col-xs-12" style="padding-bottom:10px;">
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="input-group col-xs-12">
+              <select id="reservations" class="form-control">
+                <option value="daily">{{ date }}</option>
+                <option value="weekly">Last 1 Week</option>
+                <option value="monthly">Last 1 Month</option>
+                <option value="yearly">Last 1 year</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hide" id="date-range-container">
-          <div class="input-group">
-            <input type="text" class="form-control pull-right" value="{{ date }} - {{ date }}" id="date-range" placeholder="Select date range">
-            <div class="input-group-addon bg-green color-palette">
-              <i class="fa fa-calendar"></i>
+          <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hide" id="date-range-container">
+            <div class="input-group">
+              <input type="text" class="form-control pull-right" value="{{ date }} - {{ date }}" id="date-range" placeholder="Select date range">
+              <div class="input-group-addon bg-green color-palette">
+                <i class="fa fa-calendar"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-xs-12">
-        <table>
+        <table class="table table-striped table-bordered" id="dashboard-results" style="width:100%;">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Affiliate</th>
-              <th>Daily Click</th>
-              <th>Daily Signup</th>
-              <th>Daily Commission</th>
-              <th>Created At</th>
+              <th rowspan="2">#</th>
+              <th rowspan="2">Affiliate</th>
+              <th colspan="3">Calculated</th>
+              <th colspan="3">From Affiliate</th>
+            </tr>
+            <tr>
+              <th>Clicks</th>
+              <th>Registrations</th>
+              <th>Commissions</th>
+              <th>Clicks</th>
+              <th>Registrations</th>
+              <th>Commissions</th>
             </tr>
           </thead>
           <tbody>
@@ -70,10 +78,12 @@
             <tr data-affiliate-id="{{ history.affiliate_id }}">
               <td>{{ loop.index }}</td>
               <td>{{ history.name }}</td>
-              <td>{{ history.daily_click }}</td>
-              <td>{{ history.daily_signup }}</td>
-              <td>{{ history.daily_commission }}</td>
-              <td>{{ history.created_at }}</td>
+              <td>{{ history.click }}</td>
+              <td>{{ history.signup }}</td>
+              <td>{{ history.commission }}</td>
+              <td>{{ history.affiliate_click }}</td>
+              <td>{{ history.affiliate_signup }}</td>
+              <td>{{ history.affiliate_commission }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -92,6 +102,7 @@
 {% endblock %}
 
 {% block custom_js %}
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/common/affiliate.API.js') }}"></script>
 <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/custom/dashboard.js') }}">
 </script>
 {% endblock %}
