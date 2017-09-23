@@ -135,37 +135,41 @@ class LadBrokes(object):
         return self.save()
 
     def save(self):
-        app = scheduler.app
-        with app.app_context():
-            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+        try:
+            app = scheduler.app
+            with app.app_context():
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-            if affiliate is None:
-                affiliate = Affiliate(name = self.affiliate)
-                db.session.add(affiliate)
-                db.session.commit()
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
 
-            print(affiliate)
-            created_at = self.get_delta_date()
+                print(affiliate)
+                created_at = self.get_delta_date()
 
-            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
-            if history is None:
-                history = History(
-                    affiliate_id = affiliate.id,
-                    daily_click = self.data['daily_click'],
-                    daily_signup = self.data['daily_signup'],
-                    daily_commission = self.data['daily_commission'],
-                    monthly_click = self.data['monthly_click'],
-                    monthly_signup = self.data['monthly_signup'],
-                    monthly_commission = self.data['monthly_commission'],
-                    yearly_click = self.data['yearly_click'],
-                    yearly_signup = self.data['yearly_signup'],
-                    yearly_commission = self.data['yearly_commission'],
-                    paid_signup = self.data['paid_signup'],
-                    created_at = created_at
-                )
-                db.session.add(history)
-                db.session.commit()
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = self.data['daily_click'],
+                        daily_signup = self.data['daily_signup'],
+                        daily_commission = self.data['daily_commission'],
+                        monthly_click = self.data['monthly_click'],
+                        monthly_signup = self.data['monthly_signup'],
+                        monthly_commission = self.data['monthly_commission'],
+                        yearly_click = self.data['yearly_click'],
+                        yearly_signup = self.data['yearly_signup'],
+                        yearly_commission = self.data['yearly_commission'],
+                        paid_signup = self.data['paid_signup'],
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+            return True
+        except:
+            return False
         
 
     def run(self):
