@@ -137,4 +137,4 @@ class Log(db.Model):
     created_at = db.Column(db.Date)
 
     def __repr__(self):
-        return '<Log: {}>'.format(self.affiliate_id)
+        return '<Log: {}>'.format(self.affiliate)
