@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock %} 
+
+{% block content %}
+  <div class="content-wrapper">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          {{message}}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <section class="content-header">
+      <h1>
+        <i class="fa fa-balance-scale"></i>
+        WELCOME
+        <small>to AFFILIATE ADMIN!</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Settings</a></li>
+        <li class="active">Issues</li>
+      </ol>
+    </section>
+    <section class="content">
+      <div class="col-xs-12">
+        <table class="table table-striped table-bordered" id="issues-table" style="width:100%;">
+          <thead>
+            <tr>
+              <th width="60px">#</th>
+              <th width="90px">At</th>
+              <th>Message</th>
+              <th width="120px">Occured at</th>
+              <th width="120px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for issue in issues %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ issue.affiliate }}</td>
+                <td>{{ issue.message }}</td>
+                <td>{{ issue.created_at }}</td>
+                <td>
+                  <div>
+                    <button class="btn btn-primary form-control btn-mark-as-solved" data-id="{{ issue.id }}">Mark as solved</button>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}
+
+{% block aside %}
+{% include 'aside.html' %}
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/common/affiliate.API.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/custom/issues.js') }}">
+</script>
+{% endblock %}

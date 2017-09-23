@@ -133,6 +133,7 @@ class Log(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     affiliate = db.Column(db.String(50))
     message = db.Column(db.String(200))
+    status = db.Column(db.Boolean, default = True)
     created_at = db.Column(db.Date)
 
     def __repr__(self):

@@ -52,6 +52,23 @@ let AffiliateAPI = (() => {
     }
 
     /**
+     * Recovering the issue by marking as 'unsolved' for the record mkared as 'solved' by mistake.
+     * @param {number} id 
+     * @param {function} success 
+     * @param {function} failure 
+     * @return {void}
+     */
+    const undoIssue = (id, success, failure) => {
+        if (parseInt(id) == NaN) {
+            failure()
+        } else {
+            sendRequest("settings/issues/undo", { id },
+            success,
+            failure)
+        }
+    }
+
+    /**
      * Get Data to be shown in DataTable
      * @param {string} mode 
      * @param {string} dateRange 
@@ -81,6 +98,7 @@ let AffiliateAPI = (() => {
     return {
         init: init,
         manageIssue: manageIssue,
+        undoIssue: undoIssue,
         backup: backupDatabase,
         get: getData
     }
