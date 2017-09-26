@@ -17,6 +17,7 @@ let Dashboard = ((window, jQuery) => {
                 element.affiliate_click,
                 element.affiliate_signup,
                 element.affiliate_commission,
+                element.rate,
             ]
             _resultsTable.row.add(rowData).draw()
             index++

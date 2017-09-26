@@ -58,10 +58,11 @@ def get_from_date_range(start, end):
         func.sum(History.daily_click).label('click'),
         func.sum(History.daily_signup).label('signup'),
         func.sum(History.daily_commission).label('commission'),
+        func.sum(History.rate).label('rate'),
     ).filter(
         History.created_at >= start,
         History.created_at <= end
-    ).join(History.affiliate).group_by(Affiliate.id).order_by(Affiliate.name).all()
+    ).join(History.affiliate).group_by(Affiliate.id).order_by('rate desc').all()
 
     results = []
     for history in histories:
@@ -80,13 +81,14 @@ def get_from_date_range(start, end):
             'affiliate_click': last_history.weekly_click if last_history is not None else 0,
             'affiliate_signup': last_history.weekly_signup if last_history is not None else 0,
             'affiliate_commission': last_history.weekly_commission if last_history is not None else 0.0,
+            'rate': history.rate,
         })
     return results
 
 def get_histories(mode, range = None):
     if mode == 'daily':
         initial_date = get_delta_date()
-        histories = History.query.join(Affiliate).filter(History.created_at == initial_date).all()
+        histories = History.query.join(Affiliate).filter(History.created_at == initial_date).order_by(History.rate.desc()).all()
         results = []
         for history in histories:
             results.append({
@@ -98,6 +100,7 @@ def get_histories(mode, range = None):
                 'affiliate_click': history.daily_click,
                 'affiliate_signup': history.daily_signup,
                 'affiliate_commission': history.daily_commission,
+                'rate': history.rate,
             })
         return results
     elif mode == 'weekly':
