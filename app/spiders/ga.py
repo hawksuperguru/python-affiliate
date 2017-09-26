@@ -1,15 +1,15 @@
-from reporter import *
-from app import scheduler
-from ..models import Affiliate, History, db
+# from reporter import *
+# from app import scheduler
+# from ..models import Affiliate, History, db
 
-import datetime
-import json
+# import datetime
+# import json
 import requests
 
 
 
-class PositionSpider(object):
-    """docstring for PositionSpider"""
+class GASpider(object):
+    """docstring for GASpider"""
     def __init__(self):
         self.affiliate = "Positions"
         self.data = {}
@@ -39,25 +39,25 @@ class PositionSpider(object):
 
     def save(self, affiliate, rate):
         created_at = self.get_delta_date()
-        # try:
-        app = scheduler.app
-        with app.app_context():
-            affiliate = Affiliate.query.filter_by(name = affiliate).first()
-            if affiliate is None:
-                self.report.write_error_log("Positions", "Affiliate '{0}' not found.".format(affiliate), created_at)
-                return False
+        try:
+            app = scheduler.app
+            with app.app_context():
+                affiliate = Affiliate.query.filter_by(affiliate).first()
+                if affiliate is None:
+                    self.report.write_error_log("Positions", "Affiliate '{0}' not found.".format(affiliate), created_at)
+                    return False
 
-            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
-            if history is None:
-                self.report.write_error_log("Positions", "History for '{0}' not found.".format(affiliate), created_at)
-                return False
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if history is None:
+                    self.report.write_error_log("Positions", "History for '{0}' not found.".format(affiliate), created_at)
+                    return False
 
-            history.rate = float(rate)
-            db.session.commit()
-            return True
-        # except:
-        #     self.report.write_error_log("Positions", "Something went wrong. ({0}, {1})".format(affiliate, rate), created_at)
-        #     return False
+                history.rate = float(rate)
+                db.session.commit()
+                return True
+        except:
+            self.report.write_error_log("Positions", "Something went wrong. ({0}, {1})".format(affiliate, rate), created_at)
+            return False
 
 
     def run(self):
@@ -68,5 +68,5 @@ class PositionSpider(object):
             self.save(self.affiliates_map[website], rating)
 
 if __name__ == "__main__":
-    me = PositionSpider()
+    me = GASpider()
     me.run()

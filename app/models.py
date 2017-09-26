@@ -82,6 +82,8 @@ class History(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     affiliate_id = db.Column(db.Integer, db.ForeignKey('affiliates.id'))
+    rate = db.Column(db.Float, default = 0.0)
+    ga_click = db.Column(db.Integer, default = 0)
     daily_click = db.Column(db.Integer, default = 0)
     daily_signup = db.Column(db.Integer, default = 0)
     daily_commission = db.Column(db.Float, default = 0.0)
@@ -107,6 +109,7 @@ class History(db.Model):
         return {
             id : self.id,
             affiliate_id: self.affiliate_id,
+            rate: self.rate,
             daily_click: self.daily_click,
             daily_signup: self.daily_signup,
             daily_commission: self.daily_commission,

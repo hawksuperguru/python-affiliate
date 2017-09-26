@@ -189,7 +189,7 @@ class Bet365(object):
         return True
 
     def run(self, provider = 'Bet365', username = 'betfyuk', password = 'passiveincome'):
-        self.log("Getting data with (betfyuk:passiveincome)")
+        self.log("Getting data with (" + username + ":" + password + ")")
         self.affiliate = provider
         if self.login(username, password):
             self.parse_stats()
