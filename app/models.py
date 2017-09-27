@@ -97,7 +97,6 @@ class History(db.Model):
     yearly_signup = db.Column(db.Integer, default = 0)
     yearly_commission = db.Column(db.Float, default = 0.0)
     paid_signup = db.Column(db.Integer, default = 0)
-    ga_click = db.Column(db.Integer, default = 0)
     created_at = db.Column(db.Date)
     affiliate = db.relationship(Affiliate, backref = 'affiliates')
 
