@@ -144,7 +144,7 @@ class GoogleAnalyticsReport(object):
                 aff = self.affiliates_map.get(report.get('affiliate'))
                 if aff is None:
                     continue
-                
+
                 created_at = self.get_delta_date()
                 affiliate = Affiliate.query.filter_by(name = aff).first()
                 if affiliate is None:

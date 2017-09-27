@@ -90,6 +90,7 @@ class Bet10(object):
                     self.items.append(td.text)
         except:
             if (self.timer < 10):
+                self.timer += 1
                 return self.extract_table_values()
             else:
                 self.report_error_log("Failed to get table values")
