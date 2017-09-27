@@ -217,8 +217,8 @@ class Coral(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
-            self.log("Something went wrong in saving DB", "error")
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def run(self):
