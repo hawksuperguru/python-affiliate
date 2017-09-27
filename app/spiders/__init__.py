@@ -16,6 +16,9 @@ from titanbet import TitanBet
 from victor import Victor
 from william import William
 
+from positions import PositionSpider
+from ga import GoogleAnalyticsReport
+
 class Spider(object):
     """
     Spider class to handle all of spider instances
@@ -65,6 +68,12 @@ class Spider(object):
 
         william = William()
         william.run()
+
+        position = PositionSpider()
+        position.run()
+
+        google = GoogleAnalyticsReport()
+        google.run()
 
 if __name__ == "__main__":
     spider = Spider()

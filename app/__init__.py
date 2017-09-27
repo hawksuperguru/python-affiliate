@@ -28,12 +28,12 @@ def create_app(config_name = "dev"):
 
     from app import models
 
-    from .admin import admin_app
+    # from .admin import admin_app
     from .auth import auth_app
     from .home import home_app
     from .settings import settings_app
 
-    app.register_blueprint(admin_app, url_prefix='/admin')
+    # app.register_blueprint(admin_app, url_prefix='/admin')
     app.register_blueprint(auth_app)
     app.register_blueprint(home_app)
     app.register_blueprint(settings_app)
@@ -47,7 +47,7 @@ def create_app(config_name = "dev"):
         spider.run()
 
     scheduler.start()
-    scheduler.add_cron_job(scrap_affiliates, minute = 23, second = 0)
+    scheduler.add_cron_job(scrap_affiliates, hour = 7, minute = 43)
 
     return app
 

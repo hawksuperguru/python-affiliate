@@ -142,6 +142,14 @@ def api_histories():
 
     return jsonify(status = True, data = histories)
 
+
+@home.route('/home/test')
+def test():
+    from ..spiders.ga import GoogleAnalyticsReport
+    me = GoogleAnalyticsReport()
+    response = me.run()
+    return jsonify(status = True, data = response)
+
 @home.errorhandler(500)
 def server_error(e):
     logging.exception('An error occurred during a request.')

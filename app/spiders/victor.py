@@ -213,6 +213,8 @@ class Victor(object):
         
 
     def run(self):
+        self.client.open_url('https://www.betvictoraffiliates.com/en-gb/home/')
+        time.sleep(5)
         if self.login() is True:
             self.log("Successfully logged in. Parsing quick stats.")
             self.get_quick_stats()
