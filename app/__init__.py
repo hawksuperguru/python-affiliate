@@ -43,6 +43,8 @@ def create_app(config_name = "dev"):
     logging.basicConfig()
 
     def scrap_affiliates():
+        print("=========================================")
+        print("Scheduled Jobs are bing started shortly...")
         spider = Spider()
         spider.run()
 

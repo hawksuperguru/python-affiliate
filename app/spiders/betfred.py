@@ -61,16 +61,20 @@ class BetFred(object):
         return (today - diff).strftime(format_string)
 
     def login(self):
-        self.client.open_url(self.login_url)
-        time.sleep(3)
-        self.client.set_loginform('//*[@id="username"]')
-        self.client.set_passform('//*[@id="password"]')
-        self.client.set_loginbutton('//button[@type="submit"]')
+        try:
+            self.client.open_url(self.login_url)
+            time.sleep(3)
+            self.client.set_loginform('//*[@id="username"]')
+            self.client.set_passform('//*[@id="password"]')
+            self.client.set_loginbutton('//button[@type="submit"]')
 
-        if self.client.login(self.username, self.password) is True:
-            self._get_cookies()
-            return True
-        else:
+            if self.client.login(self.username, self.password) is True:
+                self._get_cookies()
+                return True
+            else:
+                return False
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def select_YTD_option(self):
@@ -78,7 +82,8 @@ class BetFred(object):
             period_select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
             period_select.select_by_value('YTD')
             return True
-        except:
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def get_YTD_stats(self):
@@ -157,69 +162,100 @@ class BetFred(object):
         self.log(message, "error")
 
     def get_stats_report(self):
-        self.client.open_url(self.report_url)
-        time.sleep(10)
-        merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
-        merchant.select_by_value('0')
-        param_date = self.get_delta_date()
-        self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
-        self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
-        self.client.driver.find_element_by_class_name("button").click()
-        self.parse_stats_report()
+        try:
+            self.client.open_url(self.report_url)
+            time.sleep(10)
+            merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
+            merchant.select_by_value('0')
+            param_date = self.get_delta_date()
+            self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
+            self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
+            self.client.driver.find_element_by_class_name("button").click()
+            self.parse_stats_report()
+            return True
+        except Exception as e:
+            self.report_error_log(str(e))
+            return False
 
     def save(self):
+        try:
+            app = scheduler.app
+
+            monthly_click = int(self.items[2])
+            monthly_signup = int(self.items[3])
+            paid_signup = int(self.items[4])
+            commissionStr = str(self.items[5]).replace(',', '')
+
+            pattern = re.compile(r'[\-\d.\d]+')
+            monthly_commission = float(pattern.search(commissionStr).group(0))
+            
+            yearly_click = int(self.items[8])
+            yearly_signup = int(self.items[9])
+            commiytdStr = str(self.items[11]).replace(',', '')
+            yearly_commission = float(pattern.search(commiytdStr).group(0))
+            
+            daily_click = int(self.items[13])
+            daily_signup = int(self.items[14])
+            daily_commission = float(self.items[16])
+
+            created_at = self.get_delta_date()
+
+            with app.app_context():
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
+
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = daily_click,
+                        daily_signup = daily_signup,
+                        daily_commission = daily_commission,
+                        monthly_click = monthly_click,
+                        monthly_signup = monthly_signup,
+                        monthly_commission = monthly_commission,
+                        yearly_click = yearly_click,
+                        yearly_signup = yearly_signup,
+                        yearly_commission = yearly_commission,
+                        paid_signup = paid_signup,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+            return True
+        except Exception as e:
+            self.report_error_log(str(e))
+            return False
+
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        
         app = scheduler.app
-
-        monthly_click = int(self.items[2])
-        monthly_signup = int(self.items[3])
-        paid_signup = int(self.items[4])
-        commissionStr = str(self.items[5]).replace(',', '')
-
-        pattern = re.compile(r'[\-\d.\d]+')
-        monthly_commission = float(pattern.search(commissionStr).group(0))
-        
-        yearly_click = int(self.items[8])
-        yearly_signup = int(self.items[9])
-        commiytdStr = str(self.items[11]).replace(',', '')
-        yearly_commission = float(pattern.search(commiytdStr).group(0))
-        
-        daily_click = int(self.items[13])
-        daily_signup = int(self.items[14])
-        daily_commission = float(self.items[16])
-
         created_at = self.get_delta_date()
-
         with app.app_context():
             affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
-
             if affiliate is None:
-                affiliate = Affiliate(name = self.affiliate)
-                db.session.add(affiliate)
-                db.session.commit()
+                return False
 
             history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
-
             if history is None:
-                history = History(
-                    affiliate_id = affiliate.id,
-                    daily_click = daily_click,
-                    daily_signup = daily_signup,
-                    daily_commission = daily_commission,
-                    monthly_click = monthly_click,
-                    monthly_signup = monthly_signup,
-                    monthly_commission = monthly_commission,
-                    yearly_click = yearly_click,
-                    yearly_signup = yearly_signup,
-                    yearly_commission = yearly_commission,
-                    paid_signup = paid_signup,
-                    created_at = created_at
-                )
-                db.session.add(history)
-                db.session.commit()
+                return False
         return True
 
     def run(self):
-        if self.login():
+        self.log("""
+        ======================================================
+        ======  Starting BetFred Spider  ======================
+        """)
+        if self.isExisting():
+            self.report_error_log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
+        elif self.login():
             self.get_quick_stats()
             self.select_YTD_option()
             self.get_YTD_stats()
@@ -228,7 +264,7 @@ class BetFred(object):
             if self.save():
                 self.log("Successfully saved!")
             else:
-                self.log("Failed to write database", "error")
+                self.log("Failed to write database")
 
         else:
             self.log("Failed to Login.", "error")
