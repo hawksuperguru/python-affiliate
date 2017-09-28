@@ -37,14 +37,14 @@ class PositionSpider(object):
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)
 
-    def save(self, affiliate, rate):
+    def save(self, name, rate):
         created_at = self.get_delta_date()
         try:
             app = scheduler.app
             with app.app_context():
-                affiliate = Affiliate.query.filter_by(name = affiliate).first()
+                affiliate = Affiliate.query.filter_by(name = name).first()
                 if affiliate is None:
-                    self.report.write_error_log("Positions", "Affiliate '{0}' not found.".format(affiliate), created_at)
+                    self.report.write_error_log("Positions", "Affiliate '{0}' not found.".format(name), created_at)
                     return False
 
                 history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
@@ -55,19 +55,22 @@ class PositionSpider(object):
                 history.rate = float(rate)
                 db.session.commit()
                 return True
-        except:
-            self.report.write_error_log("Positions", "Something went wrong. ({0}, {1})".format(affiliate, rate), created_at)
+        except Exception as e:
+            self.report.write_error_log("Positions", str(e) + "at ({0}, {1})".format(affiliate, rate), created_at)
             return False
 
 
     def run(self):
-        r = requests.get(self.url).json()
-        for i in r:
-            website = i['title']['rendered']
-            rating = i['acf']['rating']
-            self.save(self.affiliates_map[website], rating)
-        
-        self.report.write_log("Positions", "Position Scraping was completed.", self.get_delta_date())
+        try:
+            r = requests.get(self.url).json()
+            for i in r:
+                website = i['title']['rendered']
+                rating = i['acf']['rating']
+                self.save(self.affiliates_map[website], rating)
+            
+            self.report.write_log("Positions", "Position Scraping was completed.", self.get_delta_date())
+        except Exception as e:
+            self.report.write_error_log("Positions", str(e), self.get_delta_date())
 
 if __name__ == "__main__":
     me = PositionSpider()

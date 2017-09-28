@@ -13,7 +13,6 @@ import time
 class LadBrokes(object):
     """docstring for LadBrokes"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.report_url = 'https://portal.ladbrokespartners.com/portal/#/statistics'
         self.ajax_url = 'https://portal.ladbrokespartners.com/portal/rest/reports/run/atOnce'
@@ -168,7 +167,8 @@ class LadBrokes(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def isExisting(self, date = None):
@@ -193,6 +193,7 @@ class LadBrokes(object):
 
     def run(self):
         if self.isExisting() is False:
+            self.client = UBrowse()
             self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')
             self.client.set_loginform('//*[@id="userName"]')
             self.client.set_passform('//*[@id="password"]')
@@ -205,13 +206,13 @@ class LadBrokes(object):
                 if self.get_data():
                     self.log("Data stored successfully")
                 else:
-                    self.log("Failed to write to DB", 'error')
+                    self.log("Failed to write to DB")
             else:
                 self.log("Login Failed", 'error')
+            self.client.close()
+
         else:
             self.log("Already scrapped for `{0}`. Skipping...".format(self.affiliate))
-        
-        self.client.close()    
 
 
 if __name__ == '__main__':

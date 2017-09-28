@@ -16,7 +16,6 @@ import re
 class Victor(object):
     """docstring for Victor"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.login_url = 'https://partners.betvictoraffiliates.com'
         # self.report_url = 'https://partners.victorsaffiliates.com/reporting/quick_summary_report.asp'
@@ -78,7 +77,8 @@ class Victor(object):
             period_select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
             period_select.select_by_value('YTD')
             return True
-        except:
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def get_YTD_stats(self):
@@ -112,7 +112,7 @@ class Victor(object):
             
         except:
             self.quick_stats_timer += 1
-            if self.quick_stats_timer < 6:
+            if self.quick_stats_timer < 10:
                 return self.get_quick_stats()
             else:
                 return False
@@ -140,23 +140,29 @@ class Victor(object):
             self.items.append(param_date)
             return True
 
-        except:
+        except Exception as e:
             self.report_timer += 1
-            if self.report_timer < 4:
+            if self.report_timer < 10:
                 return self.parse_stats_report()
             else:
+                self.log(str(e), "error")
                 return False
 
     def get_stats_report(self):
-        self.client.open_url(self.report_url)
-        time.sleep(10)
-        merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
-        merchant.select_by_value('0')
-        param_date = self.get_delta_date()
-        self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
-        self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
-        self.client.driver.find_element_by_class_name("button").click()
-        self.parse_stats_report()
+        try:
+            self.client.open_url(self.report_url)
+            time.sleep(10)
+            merchant = Select(self.client.driver.find_element_by_xpath('//form[@id="FRMReportoptions"]//select[@name="merchantid"]'))
+            merchant.select_by_value('0')
+            param_date = self.get_delta_date()
+            self.client.driver.execute_script("document.getElementById('startdate').value = '{0}'".format(param_date))
+            self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(param_date))
+            self.client.driver.find_element_by_class_name("button").click()
+            self.parse_stats_report()
+            return True
+        except Exception as e:
+            self.log(str(e), 'error')
+            return False
 
     def log(self, message, type = 'info'):
         self.report.write_log("Victor", message, self.get_delta_date(), type)
@@ -208,8 +214,8 @@ class Victor(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
-            self.log("Something went wrong in writing DB.", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def isExisting(self, date = None):
@@ -217,44 +223,48 @@ class Victor(object):
             date = self.get_delta_date()
         app = scheduler.app
         with app.app_context():
-            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+            try:
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-            if affiliate is None:
+                if affiliate is None:
+                    return False
+
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+                if history is None:
+                    return False
+                else:
+                    return True
+            except Exception as e:
+                self.log(str(e), 'error')
                 return False
-
-            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
-
-            if history is None:
-                return False
-            else:
-                return True
-        
-        return True
         
 
     def run(self):
-        self.client.open_url('https://www.betvictoraffiliates.com/en-gb/home/')
-        time.sleep(5)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return True
-        elif self.login():
-            self.log("Successfully logged in. Parsing quick stats.")
-            self.get_quick_stats()
-            self.select_YTD_option()
-            self.get_YTD_stats()
-
-            self.log("Pulling quick stats reporting...")
-            self.get_stats_report()
-
-            if self.save() == True:
-                self.log("Pulled data successfully saved!")
-            else:
-                self.log("Something went wrong in DB Query.", "error")
         else:
-            self.log("Failed to log in!!", "error")
+            self.client = UBrowse()
+            self.client.open_url('https://www.betvictoraffiliates.com/en-gb/home/')
+            time.sleep(5)
+            if self.login():
+                self.log("Successfully logged in. Parsing quick stats.")
+                self.get_quick_stats()
+                self.select_YTD_option()
+                self.get_YTD_stats()
 
-        self.client.close()
+                self.log("Pulling quick stats reporting...")
+                self.get_stats_report()
+
+                if self.save() == True:
+                    self.log("Pulled data successfully saved!")
+                else:
+                    self.log("Something went wrong in DB Query.", "error")
+            else:
+                self.log("Failed to log in!!", "error")
+
+            self.client.close()
 
 
 if __name__ == "__main__":
