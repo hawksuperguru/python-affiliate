@@ -215,8 +215,29 @@ class RealDealBet(object):
             self.log("Something went wrong in writing DB.", "error")
             return False
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                return True
+        
+        return True
+
     def run(self):
-        if self.login() is True:
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+        elif self.login():
             self.log("Successfully logged in. Parsing quick stats.")
             self.get_quick_stats()
             self.select_YTD_option()
@@ -238,29 +259,3 @@ class RealDealBet(object):
 if __name__ == "__main__":
     me = RealDealBet()
     me.run()
-
-# Commented Code
-    # merchant = str(self.items[0])
-    # impression = int(self.items[1])
-    # click = int(self.items[2])
-    # registration = int(self.items[3])
-    # new_deposit = int(self.items[4])
-    # commissionStr = str(self.items[5]).replace(',', '')
-
-    # pattern = re.compile(r'[\-\d.\d]+')
-    # commission = float(pattern.search(commissionStr).group(0))
-    # impreytd = int(self.items[7])
-    # cliytd = int(self.items[8])
-    # regiytd = int(self.items[9])
-    # ndytd = int(self.items[10])
-    # commiytdStr = str(self.items[11]).replace(',', '')
-    # commiytd = float(pattern.search(commiytdStr).group(0))
-    # impreto = int(self.items[12])
-    # clito = int(self.items[13])
-    # regto = int(self.items[14])
-    # ndto = int(self.items[15])
-    # commito = float(self.items[16])
-    # dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
-
-    # engine = create_engine(get_database_connection_string())
-    # result = engine.execute("INSERT INTO realdeals (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regiytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)

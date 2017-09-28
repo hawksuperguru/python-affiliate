@@ -3,6 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from reporter import SpiderReporter
 from .. import scheduler
 from ..models import Affiliate, History, db
+from env import KEYFILE_PATH
 
 import logging
 import datetime
@@ -17,7 +18,7 @@ class GoogleAnalyticsReport(object):
     def __init__(self):
         logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
         self.SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
-        self.KEY_FILE_LOCATION = 'F:/workspace/Alexis Richard/leanrank/affiliate/app/spiders/ga_keyfile.json'
+        self.KEY_FILE_LOCATION = KEYFILE_PATH + '/ga_keyfile.json'
         self.VIEW_ID = '134163596'
         self.report = SpiderReporter()
         self.affiliates_map = {

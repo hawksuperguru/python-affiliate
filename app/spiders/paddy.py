@@ -69,8 +69,30 @@ class Paddy(object):
             return False
         return True
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                return True
+        
+        return True
+
     def run(self):
-        if self.login():
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+            return True
+        elif self.login():
             response = json.loads(self.get_data().content)
             data = response['data'][0]
 
@@ -114,10 +136,10 @@ class Paddy(object):
                     db.session.commit()
 
             self.client.driver.close()
-
-            # engine = create_engine(get_database_connection_string())
-            # result = engine.execute("INSERT INTO paddyies (dateto, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
-        pass
+            return False
+        else:
+            self.log("Failed to login", "error")
+            return False
 
 if __name__ == '__main__':
     pp = Paddy()

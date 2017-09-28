@@ -87,6 +87,26 @@ class Netbet(object):
     def get_data(self):
         return self.get_daily_data() and self.get_monthly_data() and self.get_yearly_data()
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+                return True
+        
+        return True
+
     def save(self):
         app = scheduler.app
         with app.app_context():
@@ -121,7 +141,7 @@ class Netbet(object):
 
 
     def run(self):
-        if (self.get_data()):
+        if self.isExisting() is False and self.get_data():
             return self.save()
         else:
             return False
@@ -129,38 +149,3 @@ class Netbet(object):
 if __name__ == "__main__":
     netbet = Netbet()
     netbet.run()
-
-# withdraw_amount = data['withdraw_amount']
-    # withdraw_count = data['withdraw_count']
-    # impressions_count = data['impressions_count']
-    # bonus_bets_amount = data['bonus_bets_amount']
-    # first_deposits_count = data['first_deposits_count']
-    # rakes_amount = data['rakes_amount']
-    # bonus_count = data['bonus_count']
-    # net_revenue = data['net_revenue']
-    # downloads_count = data['downloads_count']
-    # bonus_amount = data['bonus_amount']
-    # commission = data['commission']
-    # first_deposits_amount = data['first_deposits_amount']
-    # bonus_wins_amount = data['bonus_wins_amount']
-    # deposits_count = data['deposits_count']
-    # invalid_cpa = data['invalid_cpa']
-    # gross_revenue = data['gross_revenue']
-    # valid_cpa = data['valid_cpa']
-    # affiliate_website_id = data['affiliate_website_id']
-    # pending_cpa = data['pending_cpa']
-    # cash_wins_amount = data['cash_wins_amount']
-    # fees_amount = data['fees_amount']
-    # clicks_count = data['clicks_count']
-    # url = data['url']
-    # deposits_amount = data['deposits_amount']
-    # registrations = data['registrations']
-    # cash_bets_amount = data['cash_bets_amount']
-
-    # try:
-    #     engine = create_engine(get_database_connection_string())
-    #     result = engine.execute("INSERT INTO netbets (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['click'], self.data['signup'], self.data['commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
-    #     return True
-    # except:
-    #     self.report.write_error_log("NetBet", "Failed to write data in Netbet(livepartners_com.py)")
-    #     return False

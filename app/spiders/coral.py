@@ -217,28 +217,36 @@ class Coral(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except Exception as e:
-            self.report_error_log(str(e))
+        except:
+            self.log("Something went wrong in saving DB", "error")
             return False
 
     def run(self):
-        if self.login():
-            self.log("Getting quick stats")
-            self.get_quick_stats()
+        app = scheduler.app
+        created_at = self.get_delta_date()
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-            self.log("Getting Yearly data")
-            self.select_YTD_option()
-            self.get_YTD_stats()
+            if affiliate is None or Affiliate.query.filter_by(affiliate_id = affiliate.id, created_at = created_at) is None:
+                if self.login():
+                    self.log("Getting quick stats")
+                    self.get_quick_stats()
 
-            self.log("Getting reports")
-            self.get_stats_report()
+                    self.log("Getting Yearly data")
+                    self.select_YTD_option()
+                    self.get_YTD_stats()
 
-            if self.save():
-                self.log("Successfully saved!")
+                    self.log("Getting reports")
+                    self.get_stats_report()
+
+                    if self.save():
+                        self.log("Successfully saved!")
+                    else:
+                        self.log("Failed to write DB", "error")
+                else:
+                    self.log("Failed to login.", "error")
             else:
-                self.log("Failed to write DB", "error")
-        else:
-            self.log("Failed to login.", "error")
+                self.log("Already scrapped for `{0}`. Skipping...".format(self.affiliate))
         
         self.client.close()
 
@@ -246,28 +254,3 @@ class Coral(object):
 if __name__ == "__main__":
     coral = Coral()
     coral.run()
-
-# merchant = str(self.items[0])
-# impression = int(self.items[1])
-# click = int(self.items[2])
-# registration = int(self.items[3])
-# new_deposit = int(self.items[4])
-# commissionStr = str(self.items[5]).replace(',', '')
-
-# pattern = re.compile(r'[\-\d.\d]+')
-# commission = float(pattern.search(commissionStr).group(0))
-# impreytd = int(self.items[7])
-# cliytd = int(self.items[8])
-# regytd = int(self.items[9])
-# ndytd = int(self.items[10])
-# commiytdStr = str(self.items[11]).replace(',', '')
-# commiytd = float(pattern.search(commiytdStr).group(0))
-# impreto = int(self.items[12])
-# clito = int(self.items[13])
-# regto = int(self.items[14])
-# ndto = int(self.items[15])
-# commito = float(self.items[16])
-# dateto = datetime.datetime.strptime(self.items[17], '%Y/%m/%d').date()
-
-# engine = create_engine(get_database_connection_string())
-# result = engine.execute("INSERT INTO corals (merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", merchant, impression, click, registration, new_deposit, commission, impreytd, cliytd, regytd, ndytd, commiytd, impreto, clito, regto, ndto, commito, dateto)

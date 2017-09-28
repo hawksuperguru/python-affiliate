@@ -77,7 +77,30 @@ class TitanBet(object):
             return False
         return True
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                return True
+        
+        return True
+
     def run(self):
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+            return False
+
         self.login()
         try:
             response = json.loads(self.get_data().content)
