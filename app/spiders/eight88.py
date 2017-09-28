@@ -18,7 +18,6 @@ import re
 class Eight88(object):
     """docstring for Eight88"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.login_url = 'http://affiliates.888.com/'
         self.username = 'betfyuk'
@@ -77,7 +76,8 @@ class Eight88(object):
             time.sleep(1)
             self._get_cookies()
             return True
-        except:
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def parse_page(self):
@@ -107,74 +107,93 @@ class Eight88(object):
                 self.items.append(summarise.text)
             self.items.append(prebal)
             return True
-        except:
-            self.report_error_log("An error occured in parsing page...")
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def save(self):
         app = scheduler.app
 
-        monthly_click = int(self.items[1])
-        monthly_signup = int(self.items[2])
-        monthly_commission = float(self.items[5])
-        
-        weekly_click = int(self.items[7])
-        weekly_signup = int(self.items[8])
-        
-        daily_click = int(self.items[17])
-        daily_signup = int(self.items[18])
+        try:
+            with app.app_context():
+                monthly_click = int(self.items[1])
+                monthly_signup = int(self.items[2])
+                monthly_commission = float(self.items[5])
+                
+                weekly_click = int(self.items[7])
+                weekly_signup = int(self.items[8])
+                
+                daily_click = int(self.items[17])
+                daily_signup = int(self.items[18])
 
-        created_at = self.get_delta_date()
+                created_at = self.get_delta_date()
+                
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-        with app.app_context():
-            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                if affiliate is None:
+                    affiliate = Affiliate(name = self.affiliate)
+                    db.session.add(affiliate)
+                    db.session.commit()
 
-            if affiliate is None:
-                affiliate = Affiliate(name = self.affiliate)
-                db.session.add(affiliate)
-                db.session.commit()
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
-            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if history is None:
+                    history = History(
+                        affiliate_id = affiliate.id,
+                        daily_click = daily_click,
+                        daily_signup = daily_signup,
+                        weekly_click = weekly_click,
+                        weekly_signup = weekly_signup,
+                        monthly_click = monthly_click,
+                        monthly_signup = monthly_signup,
+                        monthly_commission = monthly_commission,
+                        created_at = created_at
+                    )
+                    db.session.add(history)
+                    db.session.commit()
+            return True
+        except Exception as e:
+            self.report_error_log(str(e))
+            return False
 
-            if history is None:
-                history = History(
-                    affiliate_id = affiliate.id,
-                    daily_click = daily_click,
-                    daily_signup = daily_signup,
-                    weekly_click = weekly_click,
-                    weekly_signup = weekly_signup,
-                    monthly_click = monthly_click,
-                    monthly_signup = monthly_signup,
-                    monthly_commission = monthly_commission,
-                    created_at = created_at
-                )
-                db.session.add(history)
-                db.session.commit()
-
-    def run(self):
-        self.client.open_url(self.login_url)
-        time.sleep(1)
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
 
         app = scheduler.app
+        created_at = self.get_delta_date()
         with app.app_context():
-            created_at = self.get_delta_date()
-            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+            try:
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                if affiliate is None:
+                    return False
 
-            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first():
-                self.log("Logging in....")
-                if self.login() is True:
-                    self.log("Successfully logged in.")
-                    if self.parse_page() is True:
-                        self.save()
-                    else:
-                        self.report_error_log("Parsing Error...")
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if history is None:
+                    return False
+            except Exception as e:
+                self.report_error_log(str(e))
+                return False
+        return True
 
+    def run(self):
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done.".format(self.affiliate))
+        else:
+            self.client = UBrowse()
+            self.log("Logging in....")
+            self.client.open_url(self.login_url)
+            time.sleep(1)
+            if self.login() is True:
+                self.log("Successfully logged in.")
+                if self.parse_page() is True:
+                    self.save()
                 else:
-                    self.report_error_log("Failed to log in.")
-            else:
-                self.log("Scrapped for `{0}` already done.".format(self.affiliate))
+                    self.log("Parsing Error...")
 
-        self.close()
+            else:
+                self.report_error_log("Failed to log in.")
+            self.close()
 
 
 if __name__ == "__main__":

@@ -17,7 +17,6 @@ import re
 class Coral(object):
     """docstring for Coral"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.login_url = 'https://affiliate.coral.co.uk/login.asp'
         self.report_url = 'https://affiliate.coral.co.uk/reporting/quick_summary_report.asp'
@@ -67,16 +66,20 @@ class Coral(object):
         return (today - diff).strftime(format_string)
 
     def login(self):
-        self.client.open_url(self.login_url)
-        time.sleep(3)
-        self.client.set_loginform('//*[@id="username"]')
-        self.client.set_passform('//*[@id="password"]')
-        self.client.set_loginbutton('//button[@type="submit"]')
+        try:
+            self.client.open_url(self.login_url)
+            time.sleep(3)
+            self.client.set_loginform('//*[@id="username"]')
+            self.client.set_passform('//*[@id="password"]')
+            self.client.set_loginbutton('//button[@type="submit"]')
 
-        if self.client.login(self.username, self.password) is True:
-            self._get_cookies()
-            return True
-        else:
+            if self.client.login(self.username, self.password) is True:
+                self._get_cookies()
+                return True
+            else:
+                return False
+        except Exception as e:
+            self.report_error_log(str(e), "error")
             return False
 
     def select_YTD_option(self):
@@ -84,7 +87,8 @@ class Coral(object):
             period_select = Select(self.client.driver.find_element_by_xpath('//*[@id="dashboard"]//select[@name="WRQSperiod"]'))
             period_select.select_by_value('YTD')
             return True
-        except:
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def get_YTD_stats(self):
@@ -217,38 +221,54 @@ class Coral(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
-            self.log("Something went wrong in saving DB", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
-
-    def run(self):
+    
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        
         app = scheduler.app
         created_at = self.get_delta_date()
         with app.app_context():
             affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+            if affiliate is None:
+                return False
 
-            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at) is None:
-                if self.login():
-                    self.log("Getting quick stats")
-                    self.get_quick_stats()
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+            if history is None:
+                return False
+        return True
 
-                    self.log("Getting Yearly data")
-                    self.select_YTD_option()
-                    self.get_YTD_stats()
+    def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting Coral Spider  ======================
+        """)
+        if self.isExisting():
+            self.log("Already scraped for {0} at {1}".format(self.affiliate, self.get_delta_date()))
+        else:
+            self.client = UBrowse()
+            if self.login():
+                self.log("Getting quick stats")
+                self.get_quick_stats()
 
-                    self.log("Getting reports")
-                    self.get_stats_report()
+                self.log("Getting Yearly data")
+                self.select_YTD_option()
+                self.get_YTD_stats()
 
-                    if self.save():
-                        self.log("Successfully saved!")
-                    else:
-                        self.log("Failed to write DB", "error")
+                self.log("Getting reports")
+                self.get_stats_report()
+
+                if self.save():
+                    self.log("Successfully saved!")
                 else:
-                    self.log("Failed to login.", "error")
+                    self.log("Failed to write DB", "error")
             else:
-                self.log("Already scrapped for `{0}`. Skipping...".format(self.affiliate))
+                self.log("Failed to login.", "error")
         
-        self.client.close()
+            self.client.close()
 
 
 if __name__ == "__main__":
