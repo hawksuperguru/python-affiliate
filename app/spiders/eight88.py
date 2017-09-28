@@ -155,16 +155,24 @@ class Eight88(object):
         self.client.open_url(self.login_url)
         time.sleep(1)
 
-        self.log("Logging in....")
-        if self.login() is True:
-            self.log("Successfully logged in.")
-            if self.parse_page() is True:
-                self.save()
-            else:
-                self.report_error_log("Parsing Error...")
+        app = scheduler.app
+        with app.app_context():
+            created_at = self.get_delta_date()
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-        else:
-            self.report_error_log("Failed to log in.")
+            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first():
+                self.log("Logging in....")
+                if self.login() is True:
+                    self.log("Successfully logged in.")
+                    if self.parse_page() is True:
+                        self.save()
+                    else:
+                        self.report_error_log("Parsing Error...")
+
+                else:
+                    self.report_error_log("Failed to log in.")
+            else:
+                self.log("Scrapped for `{0}` already done.".format(self.affiliate))
 
         self.close()
 
@@ -172,30 +180,3 @@ class Eight88(object):
 if __name__ == "__main__":
     eight88 = Eight88()
     eight88.run()
-
-# impression = int(self.items[0])
-# click = int(self.items[1])
-# registration = int(self.items[2])
-# lead = int(self.items[3])
-# money_player = int(self.items[4])
-# balance = float(self.items[5])
-# imprwk = int(self.items[6])
-# cliwk = int(self.items[7])
-# regwk = int(self.items[8])
-# leadwk = int(self.items[9])
-# mpwk = int(self.items[10])
-# imprpre = int(self.items[11])
-# clipre = int(self.items[12])
-# regpre = int(self.items[13])
-# leadpre = int(self.items[14])
-# mppre = int(self.items[15])
-# imprto = int(self.items[16])
-# clito = int(self.items[17])
-# regto = int(self.items[18])
-# leadto = int(self.items[19])
-# mpto = int(self.items[20])
-# prebal = int(self.items[21])
-# dateto = self.get_delta_date()
-
-# engine = create_engine(get_database_connection_string())
-# result = engine.execute("INSERT INTO eight88s (impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebalance, dateto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", impression, click, registration, lead, money_player, balance, imprwk, cliwk, regwk, leadwk, mpwk, imprpre, clipre, regpre, leadpre, mppre, imprto, clito, regto, leadto, mpto, prebal, dateto)

@@ -170,24 +170,46 @@ class LadBrokes(object):
             return True
         except:
             return False
+
+    def isExisting(self, date = None):
+        if date == None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                return True
+        
+        return True
         
 
     def run(self):
-        self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')
-        self.client.set_loginform('//*[@id="userName"]')
-        self.client.set_passform('//*[@id="password"]')
-        self.client.set_loginbutton('/html/body/div[3]/section/div/form/div[5]/div/input')
+        if self.isExisting() is False:
+            self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')
+            self.client.set_loginform('//*[@id="userName"]')
+            self.client.set_passform('//*[@id="password"]')
+            self.client.set_loginbutton('/html/body/div[3]/section/div/form/div[5]/div/input')
 
-        if self.client.login('betfyuk', 'WjewEEUV') is True:
-            self._get_cookies()
-            self._create_params()
+            if self.client.login('betfyuk', 'WjewEEUV') is True:
+                self._get_cookies()
+                self._create_params()
 
-            if self.get_data():
-                self.log("Data stored successfully")
+                if self.get_data():
+                    self.log("Data stored successfully")
+                else:
+                    self.log("Failed to write to DB", 'error')
             else:
-                self.log("Failed to write to DB", 'error')
+                self.log("Login Failed", 'error')
         else:
-            self.log("Login Failed", 'error')
+            self.log("Already scrapped for `{0}`. Skipping...".format(self.affiliate))
         
         self.client.close()    
 
@@ -195,10 +217,3 @@ class LadBrokes(object):
 if __name__ == '__main__':
     lb = LadBrokes()
     lb.run()
-
-# try:
-#     engine = create_engine(get_database_connection_string())
-#     result = engine.execute("INSERT INTO ladbrokes (click, signup, commission, monthly_click, monthly_signup, monthly_commission, yearly_click, yearly_signup, yearly_commission, paid_signup, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", self.data['daily_click'], self.data['daily_signup'], self.data['daily_commission'], self.data['monthly_click'], self.data['monthly_signup'], self.data['monthly_commission'], self.data['yearly_click'], self.data['yearly_signup'], self.data['yearly_commission'], self.data['paid_signup'], self.data['created_at'])
-#     return True
-# except:
-#     return False

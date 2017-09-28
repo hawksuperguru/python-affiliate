@@ -208,12 +208,34 @@ class StanJames(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
-            self.log("Something went wrong in writing DB.", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
+            if history is None:
+                return False
+            else:
+                return True
+        
+        return True
+
     def run(self):
-        if self.login() is True:
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+            return True
+        elif self.login():
             self.log("Successfully logged in. Parsing quick stats.")
             self.get_quick_stats()
             self.select_YTD_option()
@@ -224,8 +246,9 @@ class StanJames(object):
 
             if self.save() == True:
                 self.log("Pulled data successfully saved!")
+                return True
             else:
-                self.log("Something went wrong in DB Query.", "error")
+                return False
         else:
             self.log("Failed to log in!!", "error")
 
