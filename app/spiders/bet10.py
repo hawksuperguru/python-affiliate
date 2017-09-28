@@ -69,15 +69,19 @@ class Bet10(object):
         self.log(message, "error")
 
     def login(self):
-        self.client.set_loginform('//*[@id="username"]')
-        self.client.set_passform('//*[@id="password"]')
-        self.client.set_loginbutton('//button[@type="submit"]')
+        try:
+            self.client.set_loginform('//*[@id="username"]')
+            self.client.set_passform('//*[@id="password"]')
+            self.client.set_loginbutton('//button[@type="submit"]')
 
-        if self.client.login(self.username, self.password) is True:
-            self._get_cookies()
-            return True
-        else:
-            self.report_error_log("Failed to log in.")
+            if self.client.login(self.username, self.password) is True:
+                self._get_cookies()
+                return True
+            else:
+                self.report_error_log("Failed to log in.")
+                return False
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def extract_table_values(self):
@@ -186,27 +190,39 @@ class Bet10(object):
                     db.session.add(history)
                     db.session.commit()
                 return True
-            except:
-                self.log("Something went wrong in Saving.", "error")
+            except Exception as e:
+                self.log(str(e), "error")
                 return False
 
     def run(self):
-        self.log('getting page...')
-        self.get_page(self.login_url, 5)
+        self.log("""
+        ======================================================
+        ======  Starting Bet 10 Spider  ======================
+        """)
+        app = scheduler.app
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-        self.log('getting pass the gate page...')
-        self.login()
+            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = self.get_delta_date()).first() is None:
+                self.log('getting page...')
+                self.get_page(self.login_url, 5)
 
-        self.log('getting quick stats table...')
-        self.parse_stats_tables()
+                self.log('getting pass the gate page...')
+                self.login()
 
-        self.log('getting summary page content')
-        self.get_page(self.report_url, 1)
-        self.parse_daily_data()
+                self.log('getting quick stats table...')
+                self.parse_stats_tables()
 
-        self.log("Saving to Database...")
-        self.save()
-        self.close()
+                self.log('getting summary page content')
+                self.get_page(self.report_url, 1)
+                self.parse_daily_data()
+
+                self.log("Saving to Database...")
+                self.save()
+            else:
+                self.log("Already scraped for {0}".format(self.get_delta_date()))
+
+            self.close()
 
 
 # Run spider

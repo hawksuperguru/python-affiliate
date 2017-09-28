@@ -11,6 +11,7 @@ let Dashboard = ((window, jQuery) => {
             let rowData = [
                 index,
                 element.name,
+                element.ga_click,
                 element.click,
                 element.signup,
                 element.commission,

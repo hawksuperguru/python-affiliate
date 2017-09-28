@@ -105,8 +105,8 @@ class Bet365(object):
                     db.session.add(history)
                     db.session.commit()
                 return True
-            except:
-                self.log("Something went wrong in Saving.", "error")
+            except Exception as e:
+                self.log(str(e), "error")
                 return False
 
     def parse_report_table(self, table_name):
@@ -147,8 +147,8 @@ class Bet365(object):
                     db.session.commit()
 
                 return True
-            except:
-                self.log("Exception occured in parse_report_table", "error")
+            except Exception as e:
+                self.log(str(e), "error")
                 return False
 
     def parse_stats(self, wait_for = 10, table_name = "bet365s"):
@@ -172,26 +172,52 @@ class Bet365(object):
 
             result = self.parse_report_table(table_name)
             return result
-        except:
-            self.report_error_log("Exception occured in getting stats...")
+        except Exception as e:
+            self.report_error_log(str(e))
             return False
 
     def login(self, username = 'betfyuk', password = 'passiveincome'):
-        self.client.open_url(self.login_url)
-        time.sleep(10)
+        try:
+            self.client.open_url(self.login_url)
+            time.sleep(10)
+            
+            self.client.driver.find_element_by_css_selector("input[name='ctl00$MasterHeaderPlaceHolder$ctl00$userNameTextbox']").send_keys(username)
+            tmp_pass = self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_tempPasswordTextbox']")
+            tmp_pass.clear()
+            self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_passwordTextbox']").send_keys(password)
+            self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_passwordTextbox']").send_keys(Keys.RETURN)
         
-        self.client.driver.find_element_by_css_selector("input[name='ctl00$MasterHeaderPlaceHolder$ctl00$userNameTextbox']").send_keys(username)
-        tmp_pass = self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_tempPasswordTextbox']")
-        tmp_pass.clear()
-        self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_passwordTextbox']").send_keys(password)
-        self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_passwordTextbox']").send_keys(Keys.RETURN)
+            return True
+        except Exception as e:
+            self.report_error_log(str(e))
+            return False
+
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
         
+        app = scheduler.app
+        created_at = self.get_delta_date()
+        with app.app_context():
+            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+            if affiliate is None:
+                return False
+
+            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+            if history is None:
+                return False
         return True
 
     def run(self, provider = 'Bet365', username = 'betfyuk', password = 'passiveincome'):
+        self.log("""
+        ======================================================
+        ======  Starting Bet 365 Spider  ======================
+        """)
         self.log("Getting data with (" + username + ":" + password + ")")
         self.affiliate = provider
-        if self.login(username, password):
+        if self.isExisting():
+            self.report_error_log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
+        elif self.login(username, password):
             self.parse_stats()
         else:
             self.log("Failed to Login with 1st account.", "error")

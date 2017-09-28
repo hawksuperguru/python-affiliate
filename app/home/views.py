@@ -59,6 +59,7 @@ def get_from_date_range(start, end):
         func.sum(History.daily_signup).label('signup'),
         func.sum(History.daily_commission).label('commission'),
         func.sum(History.rate).label('rate'),
+        func.sum(History.ga_click).label('ga_click'),
     ).filter(
         History.created_at >= start,
         History.created_at <= end
@@ -82,6 +83,7 @@ def get_from_date_range(start, end):
             'affiliate_signup': last_history.weekly_signup if last_history is not None else 0,
             'affiliate_commission': last_history.weekly_commission if last_history is not None else 0.0,
             'rate': history.rate,
+            'ga_click': history.ga_click,
         })
     return results
 
@@ -101,6 +103,7 @@ def get_histories(mode, range = None):
                 'affiliate_signup': history.daily_signup,
                 'affiliate_commission': history.daily_commission,
                 'rate': history.rate,
+                'ga_click': history.ga_click
             })
         return results
     elif mode == 'weekly':

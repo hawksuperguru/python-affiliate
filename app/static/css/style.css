@@ -106,7 +106,8 @@ p.copyright {
 }
 
 table thead tr th {
-    vertical-align: middle;
+    vertical-align: middle !important;
+    text-align: center !important;
 }
 
 table tbody tr td {
