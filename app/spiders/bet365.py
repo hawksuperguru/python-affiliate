@@ -17,7 +17,6 @@ import re
 class Bet365(object):
     """docstring for bet365Spider"""
     def __init__(self):
-        self.client = UBrowse()
         self.login_url = 'https://www.bet365affiliates.com/ui/pages/affiliates/Affiliates.aspx'
         self.stats_url = 'https://www.bet365affiliates.com/members/CMSitePages/Router.aspx?TargetPage=Members%2fStatistics&lng=1'
         self.report = SpiderReporter()
@@ -216,13 +215,16 @@ class Bet365(object):
         self.log("Getting data with (" + username + ":" + password + ")")
         self.affiliate = provider
         if self.isExisting():
-            self.report_error_log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
-        elif self.login(username, password):
-            self.parse_stats()
+            self.log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
         else:
-            self.log("Failed to Login with 1st account.", "error")
+            self.client = UBrowse()
+            if self.login(username, password):
+                self.parse_stats()
+            else:
+                self.log("Failed to Login with current account.", "error")
+            
+            self.client.close()
         
-        self.client.close()
 
 if __name__ == '__main__':
     bet365 = Bet365()

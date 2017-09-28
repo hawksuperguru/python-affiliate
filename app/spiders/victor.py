@@ -18,8 +18,9 @@ class Victor(object):
     def __init__(self):
         self.client = UBrowse()
         self.report = SpiderReporter()
-        self.login_url = 'https://partners.victorsaffiliates.com/login.asp'
-        self.report_url = 'https://partners.victorsaffiliates.com/reporting/quick_summary_report.asp'
+        self.login_url = 'https://partners.betvictoraffiliates.com'
+        # self.report_url = 'https://partners.victorsaffiliates.com/reporting/quick_summary_report.asp'
+        self.report_url = 'https://partners.betvictoraffiliates.com/reporting/quick_summary_report.asp'
         self.username = 'betfyuk'
         self.password = 'dontfuckwithme'
         self.items = []
@@ -29,13 +30,13 @@ class Victor(object):
         self.affiliate = "Victor"
 
         self.headers = {
-            'Host': 'partners.victorsaffiliates.com',
+            'Host': 'partners.betvictoraffiliates.com',
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
             'Accept': 'application/json, text/javascript, */*; q=0.01',
             'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'X-Requested-With': 'XMLHttpRequest',
-            'Referer': 'https://partners.victorsaffiliates.com/reporting/quick_summary_report.asp',
+            'Referer': 'https://partners.betvictoraffiliates.com/reporting/quick_summary_report.asp',
         }
 
     def _create_params(self, from_date, to_date, media=False):
@@ -232,12 +233,12 @@ class Victor(object):
         
 
     def run(self):
+        self.client.open_url('https://www.betvictoraffiliates.com/en-gb/home/')
+        time.sleep(5)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return True
         elif self.login():
-            self.client.open_url('https://www.betvictoraffiliates.com/en-gb/home/')
-            time.sleep(5)
             self.log("Successfully logged in. Parsing quick stats.")
             self.get_quick_stats()
             self.select_YTD_option()

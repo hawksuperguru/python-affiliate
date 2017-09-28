@@ -68,7 +68,7 @@ class William(object):
                 if affiliate is None:
                     affiliate = Affiliate(name = self.affiliate)
                     db.session.add(affiliate)
-                    db.commit()
+                    db.session.commit()
 
                 history = History.query.filter_by(affiliate_id = affiliate.id, created_at = self.data['created_at']).first()
                 if history is None:
@@ -89,8 +89,8 @@ class William(object):
                     db.session.add(history)
                     db.session.commit()
             return True
-        except:
-            self.log("Something went wrong in DB.", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def get_ajax_data(self, mode = 'daily'):
@@ -205,7 +205,7 @@ class William(object):
                 if self.save():
                     self.log("Successfully stored to DB.")
                 else:
-                    self.log("Something went wrong in DB manipulation.", "error")
+                    self.log("Something went wrong in DB manipulation.")
             else:
                 self.log("Failed to get data", "error")
         else:

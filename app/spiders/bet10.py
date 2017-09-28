@@ -18,7 +18,6 @@ import re
 class Bet10(object):
     """docstring for Bet10"""
     def __init__(self):
-        self.client = UBrowse()
         self.login_url = 'https://partners.10bet.com/login.asp'
         self.report_url = 'https://partners.10bet.com/reporting/quick_summary_report.asp'
         self.username = 'betfyuk'
@@ -123,8 +122,8 @@ class Bet10(object):
             self.client.driver.execute_script("document.getElementById('enddate').value = '{0}'".format(paramDate))
             merchant.select_by_value('0')
             self.client.driver.find_element_by_class_name("button").click()
-        except:
-            self.report_error_log("Failed to set params for daily report.")
+        except Exception as e:
+            self.report_error_log(str(e))
 
     def parse_daily_data(self):
         self.timer = 0
@@ -143,8 +142,8 @@ class Bet10(object):
             self.items.append(pattern.search(temp_array[7]).group(0))
             self.items.append(pattern.search(temp_array[-1]).group(0))
             return True
-        except:
-            self.log("Failed to get daily data.", "error")
+        except Exception as e:
+            self.log(str(e))
             return False
 
     def save(self):
@@ -194,6 +193,25 @@ class Bet10(object):
                 self.log(str(e), "error")
                 return False
 
+    def isExisting(self, date = None):
+        if date is None:
+            date = self.get_delta_date()
+
+        app = scheduler.app
+        with app.app_context():
+            try:
+                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                if affiliate is None:
+                    return False
+
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+                if history is None:
+                    return False
+                else:
+                    return True
+            except:
+                return False
+
     def run(self):
         self.log("""
         ======================================================
@@ -203,7 +221,10 @@ class Bet10(object):
         with app.app_context():
             affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = self.get_delta_date()).first() is None:
+            if self.isExisting():
+                self.log("Already scraped for {0}".format(self.get_delta_date()))
+            else:
+                self.client = UBrowse()
                 self.log('getting page...')
                 self.get_page(self.login_url, 5)
 
@@ -219,10 +240,8 @@ class Bet10(object):
 
                 self.log("Saving to Database...")
                 self.save()
-            else:
-                self.log("Already scraped for {0}".format(self.get_delta_date()))
 
-            self.close()
+                self.close()
 
 
 # Run spider

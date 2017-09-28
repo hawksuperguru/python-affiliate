@@ -227,7 +227,7 @@ class Coral(object):
         with app.app_context():
             affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
-            if affiliate is None or Affiliate.query.filter_by(affiliate_id = affiliate.id, created_at = created_at) is None:
+            if affiliate is None or History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at) is None:
                 if self.login():
                     self.log("Getting quick stats")
                     self.get_quick_stats()

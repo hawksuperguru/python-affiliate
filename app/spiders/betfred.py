@@ -17,7 +17,6 @@ import re
 class BetFred(object):
     """docstring for BetFred"""
     def __init__(self):
-        self.client = UBrowse()
         self.login_url = 'https://secure.activewins.com/login.asp'
         self.report_url = 'https://secure.activewins.com/reporting/quick_summary_report.asp'
         self.username = 'betfyuk'
@@ -254,22 +253,24 @@ class BetFred(object):
         ======  Starting BetFred Spider  ======================
         """)
         if self.isExisting():
-            self.report_error_log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
-        elif self.login():
-            self.get_quick_stats()
-            self.select_YTD_option()
-            self.get_YTD_stats()
-            self.get_stats_report()
-
-            if self.save():
-                self.log("Successfully saved!")
-            else:
-                self.log("Failed to write database")
-
+            self.log("Already scraped for {0} at {1}".format(self.affiliate, self.get_delta_date()))
         else:
-            self.log("Failed to Login.", "error")
-        
-        self.client.close()
+            self.client = UBrowse()
+            if self.login():
+                self.get_quick_stats()
+                self.select_YTD_option()
+                self.get_YTD_stats()
+                self.get_stats_report()
+
+                if self.save():
+                    self.log("Successfully saved!")
+                else:
+                    self.log("Failed to write database")
+
+            else:
+                self.log("Failed to Login.", "error")
+            
+            self.client.close()
 
 
 if __name__ == "__main__":
