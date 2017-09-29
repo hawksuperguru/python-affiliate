@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request, jsonify
+from flask import render_template, url_for, redirect, request, jsonify, make_response
 from flask_login import login_required
 from . import settings_app as settings
 from .. import db as database
@@ -48,13 +48,19 @@ def undo():
         return jsonify(status = False, message = "Failure")
 
 
-@settings.route('/settings/db')
+@settings.route('/settings/db', methods = ['GET', 'POST'])
 @login_required
 def db():
-    issues = get_issues()
-    return render_template("settings/db.html", title = "Issues", issues = issues)
-
-# Action to backup current database
-@settings.route('/settings/db/backup', methods = ['POST'])
-def backup():
-    return render_template("settings/db.html", title = "Issues")
+    if request.method == 'GET':
+        issues = get_issues()
+        return render_template("settings/db.html", title = "Issues", issues = issues)
+    else:
+        from ..common.pg_dump import Backup
+        me = Backup()
+        result = me.dump()
+        full_path = result['full_path']
+        file_name = result['file_name']
+        contents = open(full_path).read().decode("utf-8")
+        response = make_response(contents)
+        response.headers["Content-Disposition"] = "attachment; filename=%s" % (file_name)
+        return response
