@@ -11,7 +11,6 @@ import requests
 class TitanBet(object):
     """docstring for TitanBet"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.affiliate = "TitanBet"
         
@@ -97,10 +96,15 @@ class TitanBet(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting TitanBet Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return False
 
+        self.client = UBrowse()
         self.login()
         try:
             response = json.loads(self.get_data().content)
@@ -133,8 +137,10 @@ class TitanBet(object):
                     )
                     db.session.add(history)
                     db.session.commit()
-        except:
-            self.log("Failed to parse Ajax Response", "error")
+                return True
+        except Exception as e:
+            self.log(str(e), "error")
+            return False
 
 
 if __name__ == '__main__':

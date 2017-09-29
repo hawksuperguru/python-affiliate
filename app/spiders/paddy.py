@@ -11,7 +11,6 @@ import requests
 class Paddy(object):
     """docstring for Paddy"""
     def __init__(self):
-        self.client = UBrowse()
         self.report = SpiderReporter()
         self.affiliate = "Paddy"
         self.headers = {
@@ -56,117 +55,134 @@ class Paddy(object):
         return response
 
     def login(self):
-        self.client.open_url('https://affiliates.paddypartners.com/affiliates/Account/Login')
+        try:
+            self.client.open_url('https://affiliates.paddypartners.com/affiliates/Account/Login')
 
-        self.client.set_loginform('//*[@id="txtUsername"]')
-        self.client.set_passform('//*[@id="txtPassword"]')
-        self.client.set_loginbutton('//*[@id="btnLogin"]')
+            self.client.set_loginform('//*[@id="txtUsername"]')
+            self.client.set_passform('//*[@id="txtPassword"]')
+            self.client.set_loginbutton('//*[@id="btnLogin"]')
 
-        if self.client.login('betfyuk', 'dontfuckwithme') is True:
-            self._get_cookies()
-            self._create_params()
-        else:
+            if self.client.login('betfyuk', 'dontfuckwithme') is True:
+                self._get_cookies()
+                self._create_params()
+            else:
+                return False
+            return True
+        except Exception as e:
+            self.log(str(e), "error")
             return False
-        return True
 
     def isExisting(self, date = None):
-        if date is None:
-            date = self.get_delta_date()
-        app = scheduler.app
-        with app.app_context():
-            affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
-
-            if affiliate is None:
-                return False
-
-            history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
-
-            if history is None:
-                return False
-            else:
-                return True
-        
-        return True
-
-    def run(self):
-        if self.isExisting():
-            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
-            return True
-        elif self.login():
-            response = json.loads(self.get_data().content)
-            data = response['data'][0]
-
-            one_day = datetime.timedelta(days = 1)
-            yesterday = datetime.datetime.now() - one_day
-            date = yesterday.strftime('%Y-%m-%d')
-            
-            views = data[1]['Value']
-            uniqueviews = data[2]['Value']
-            clicks = data[3]['Value']
-            uniqueclicks = data[4]['Value']
-            signups = data[5]['Value']
-            depositingcustomers = data[6]['Value']
-            activecustomers = data[7]['Value']
-            newdepositingcustomers = data[8]['Value']
-            newactivecustomers = data[9]['Value']
-            firsttimedepositingcustomers = data[10]['Value']
-            firsttimeactivecustomers = data[11]['Value']
-            netrevenue = data[12]['Value']
+        try:
+            if date is None:
+                date = self.get_delta_date()
 
             app = scheduler.app
             with app.app_context():
                 affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+
                 if affiliate is None:
-                    affiliate = Affiliate(name = self.affiliate)
-                    db.session.add(affiliate)
-                    db.session.commit()
-                
-                created_at = self.get_delta_date()
-                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                    return False
+
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = date).first()
+
                 if history is None:
-                    history = History(
-                        affiliate_id = affiliate.id,
-                        daily_click = clicks,
-                        daily_signup = signups,
-                        daily_commission = netrevenue,
-                        paid_signup = newdepositingcustomers,
-                        created_at = created_at
-                    )
-                    db.session.add(history)
-                    db.session.commit()
+                    return False
+                else:
+                    return True
+        except Exception as e:
+            self.log(str(e), "error")
+            return False
+
+    def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting Paddy Spider  ======================
+        """)
+        if self.isExisting():
+            self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
+            return True
+        else:
+            self.client = UBrowse()
+            if self.login():
+                try:
+                    response = json.loads(self.get_data().content)
+                    data = response['data'][0]
+
+                    one_day = datetime.timedelta(days = 1)
+                    yesterday = datetime.datetime.now() - one_day
+                    date = yesterday.strftime('%Y-%m-%d')
+                    
+                    views = data[1]['Value']
+                    uniqueviews = data[2]['Value']
+                    clicks = data[3]['Value']
+                    uniqueclicks = data[4]['Value']
+                    signups = data[5]['Value']
+                    depositingcustomers = data[6]['Value']
+                    activecustomers = data[7]['Value']
+                    newdepositingcustomers = data[8]['Value']
+                    newactivecustomers = data[9]['Value']
+                    firsttimedepositingcustomers = data[10]['Value']
+                    firsttimeactivecustomers = data[11]['Value']
+                    netrevenue = data[12]['Value']
+
+                    app = scheduler.app
+                    with app.app_context():
+                        affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
+                        if affiliate is None:
+                            affiliate = Affiliate(name = self.affiliate)
+                            db.session.add(affiliate)
+                            db.session.commit()
+                        
+                        created_at = self.get_delta_date()
+                        history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                        if history is None:
+                            history = History(
+                                affiliate_id = affiliate.id,
+                                daily_click = clicks,
+                                daily_signup = signups,
+                                daily_commission = netrevenue,
+                                paid_signup = newdepositingcustomers,
+                                created_at = created_at
+                            )
+                            db.session.add(history)
+                            db.session.commit()
+                    return False
+                except Exception as e:
+                    self.log(str(e), "error")
+                    return False
+            else:
+                self.log("Failed to login", "error")
+                return False
 
             self.client.driver.close()
-            return False
-        else:
-            self.log("Failed to login", "error")
-            return False
 
 if __name__ == '__main__':
     pp = Paddy()
     pp.run()
 # response = json.loads(pp.get_data().content)
 
-# data = response['data'][0]
+    # data = response['data'][0]
 
-# one_day = datetime.timedelta(days = 1)
-# yesterday = datetime.datetime.now() - one_day
-# date = yesterday.strftime('%Y-%m-%d')
+    # one_day = datetime.timedelta(days = 1)
+    # yesterday = datetime.datetime.now() - one_day
+    # date = yesterday.strftime('%Y-%m-%d')
 
-# views = data[1]['Value']
-# uniqueviews = data[2]['Value']
-# clicks = data[3]['Value']
-# uniqueclicks = data[4]['Value']
-# signups = data[5]['Value']
-# depositingcustomers = data[6]['Value']
-# activecustomers = data[7]['Value']
-# newdepositingcustomers = data[8]['Value']
-# newactivecustomers = data[9]['Value']
-# firsttimedepositingcustomers = data[10]['Value']
-# firsttimeactivecustomers = data[11]['Value']
-# netrevenue = data[12]['Value']
+    # views = data[1]['Value']
+    # uniqueviews = data[2]['Value']
+    # clicks = data[3]['Value']
+    # uniqueclicks = data[4]['Value']
+    # signups = data[5]['Value']
+    # depositingcustomers = data[6]['Value']
+    # activecustomers = data[7]['Value']
+    # newdepositingcustomers = data[8]['Value']
+    # newactivecustomers = data[9]['Value']
+    # firsttimedepositingcustomers = data[10]['Value']
+    # firsttimeactivecustomers = data[11]['Value']
+    # netrevenue = data[12]['Value']
 
-# pp.client.driver.close()
+    # pp.client.driver.close()
 
-# engine = create_engine(get_database_connection_string())
-# result = engine.execute("INSERT INTO paddyies (dateto, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
+    # engine = create_engine(get_database_connection_string())
+    # result = engine.execute("INSERT INTO paddyies (dateto, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", date, views, uniqueviews, clicks, uniqueclicks, signups, depositingcustomers, activecustomers, newdepositingcustomers, newactivecustomers, firsttimedepositingcustomers, firsttimeactivecustomers, netrevenue)
 

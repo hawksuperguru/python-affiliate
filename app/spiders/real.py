@@ -247,6 +247,10 @@ class RealDealBet(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting RealDealBet Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
         else:

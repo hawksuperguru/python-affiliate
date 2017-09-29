@@ -241,6 +241,10 @@ class StanJames(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting StanJames Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return True

@@ -11,7 +11,6 @@ import requests
 class William(object):
     """docstring for William"""
     def __init__(self):
-        self.client = UBrowse()
         self.ajax_url = 'https://account.affiliates.williamhill.com/affiliates/Reports/dailyFiguresReport'
         self.report = SpiderReporter()
         self.data = {}
@@ -112,8 +111,8 @@ class William(object):
             self.data['paid_signup'] = int(data[10]['Value'])
             self.data['created_at'] = self.get_delta_date()
             return True
-        except:
-            self.log("Getting daily report failed in william spider.", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def get_monthly_data(self):
@@ -135,8 +134,8 @@ class William(object):
             self.data['monthly_commission'] = commission
             return True
 
-        except:
-            self.log("Getting monthly report failed in william spider.", "error")
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def get_yearly_data(self):
@@ -157,7 +156,8 @@ class William(object):
             self.data['yearly_signup'] = signup
             self.data['yearly_commission'] = commission
             return True
-        except:
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def get_data(self):
@@ -175,7 +175,8 @@ class William(object):
                 return True
             else:
                 return False
-        except:
+        except Exception as e:
+            self.log(str(e), "error")
             return False
 
     def isExisting(self, date = None):
@@ -198,20 +199,26 @@ class William(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting William Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
-        elif self.login():
-            if self.get_data():
-                if self.save():
-                    self.log("Successfully stored to DB.")
-                else:
-                    self.log("Something went wrong in DB manipulation.")
-            else:
-                self.log("Failed to get data", "error")
         else:
-            self.log("Login Failed in william spider", "error")
+            self.client = UBrowse()
+            if self.login():
+                if self.get_data():
+                    if self.save():
+                        self.log("Successfully stored to DB.")
+                    else:
+                        self.log("Something went wrong in DB manipulation.")
+                else:
+                    self.log("Failed to get data")
+            else:
+                self.log("Login Failed in william spider", "error")
 
-        self.client.close()
+            self.client.close()
 
 
 if __name__ == '__main__':

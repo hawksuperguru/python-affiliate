@@ -241,6 +241,10 @@ class Victor(object):
         
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting Victor Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return True

@@ -61,6 +61,10 @@ class PositionSpider(object):
 
 
     def run(self):
+        self.report.write_log("Positions", """
+        ======================================================
+        ======  Checking Positions  ======================
+        """, self.get_delta_date())
         try:
             r = requests.get(self.url).json()
             for i in r:

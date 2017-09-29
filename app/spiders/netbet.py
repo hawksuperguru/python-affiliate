@@ -40,16 +40,16 @@ class Netbet(object):
             self.data['created_at'] = self.get_delta_date()
             return True
 
-        except:
+        except Exception as e:
             self.data['daily_click'] = 0
             self.data['daily_signup'] = 0
             self.data['daily_commission'] = 0.0
             self.data['paid_signup'] = 0
             self.data['created_at'] = self.get_delta_date()
-            self.log("Filed to get daily data.", "error")
+            self.log(str(e), "error")
             return False
 
-    def log(self, message, type):
+    def log(self, message, type = 'info'):
         self.report.write_log("NetBet", message, self.get_delta_date(), type)
 
     def write_error_log(self, message):
@@ -62,11 +62,11 @@ class Netbet(object):
             self.data['monthly_signup'] = data['registrations']
             self.data['monthly_commission'] = data['commission']
             return True
-        except:
+        except Exception as e:
             self.data['monthly_click'] = 0
             self.data['monthly_signup'] = 0
             self.data['monthly_commission'] = 0.0
-            self.log("Filed to get monthly data.", "error")
+            self.log(str(e), "error")
             return False
 
     def get_yearly_data(self):
@@ -77,11 +77,11 @@ class Netbet(object):
             self.data['yearly_commission'] = data['commission']
             return True
 
-        except:
+        except Exception as e:
             self.data['yearly_click'] = 0
             self.data['yearly_signup'] = 0
             self.data['yearly_commission'] = 0.0
-            self.log("Filed to get yearly data.", "error")
+            self.log(str(e), "error")
             return False
 
     def get_data(self):
@@ -141,6 +141,10 @@ class Netbet(object):
 
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting NetBet Spider  ======================
+        """)
         if self.isExisting() is False and self.get_data():
             return self.save()
         else:

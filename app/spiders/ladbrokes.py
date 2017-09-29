@@ -192,6 +192,10 @@ class LadBrokes(object):
         
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting LadBrokes Spider  ======================
+        """)
         if self.isExisting() is False:
             self.client = UBrowse()
             self.client.open_url('https://portal.ladbrokespartners.com/portal/#/login')

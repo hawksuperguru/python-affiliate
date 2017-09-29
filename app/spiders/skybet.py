@@ -229,6 +229,10 @@ class SkyBet(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting SkyBet Spider  ======================
+        """)
         if self.isExisting:
             self.log("Scrapped for `{0}` already done. Skipping...".format(self.affiliate))
             return False

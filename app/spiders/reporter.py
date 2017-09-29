@@ -28,14 +28,19 @@ class SpiderReporter(object):
     def write_db(self, provider, message, created_at):
         app = scheduler.app
         with app.app_context():
-            log = Log(
-                affiliate = provider,
-                message = message,
-                created_at = created_at
-            )
-            db.session.add(log)
-            db.session.commit()
-            # db.session.close()
+            try:
+                log = Log(
+                    affiliate = provider,
+                    message = message,
+                    created_at = created_at
+                )
+                db.session.add(log)
+                db.session.commit()
+                return True
+            except Exception as e:
+                print("Failed to write error logs.")
+                print(str(e))
+                return False
 
 if __name__ == "__main__":
     report = SpiderReporter()

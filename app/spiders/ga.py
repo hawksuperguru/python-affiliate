@@ -133,34 +133,41 @@ class GoogleAnalyticsReport(object):
             
             print(results)
             return results
-        except:
-            print("An error occured.")
+        except Exception as e:
+            self.log(str(e), "error")
             return []
 
     def save(self, reports):
         # try:
         app = scheduler.app
         with app.app_context():
-            for report in reports:
-                aff = self.affiliates_map.get(report.get('affiliate'))
-                if aff is None:
-                    continue
+            try:
+                for report in reports:
+                    aff = self.affiliates_map.get(report.get('affiliate'))
+                    if aff is None:
+                        continue
 
-                created_at = self.get_delta_date()
-                affiliate = Affiliate.query.filter_by(name = aff).first()
-                if affiliate is None:
-                    self.log_error("Affiliate `{0}` Not found at {1}.".format(aff, created_at))
-                    continue
+                    created_at = self.get_delta_date()
+                    affiliate = Affiliate.query.filter_by(name = aff).first()
+                    if affiliate is None:
+                        self.log_error("Affiliate `{0}` Not found at {1}.".format(aff, created_at))
+                        continue
 
-                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
-                if history is None:
-                    self.log_error("History for affiliate `{0}` Not found at {1}.".format(aff, created_at))
-                    continue
+                    history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                    if history is None:
+                        self.log_error("History for affiliate `{0}` Not found at {1}.".format(aff, created_at))
+                        continue
 
-                history.ga_click = report['clicks']
-                db.session.commit()
+                    history.ga_click = report['clicks']
+                    db.session.commit()
+            except Exception as e:
+                self.log(str(e), "error")
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Checking Google Analytics Result  ======================
+        """)
         analytics = self.initialize_analyticsreporting()
         response = self.get_report(analytics)
         reports = self.parse_result(response)

@@ -177,6 +177,10 @@ class Eight88(object):
         return True
 
     def run(self):
+        self.log("""
+        ======================================================
+        ======  Starting 888 Spider  ======================
+        """)
         if self.isExisting():
             self.log("Scrapped for `{0}` already done.".format(self.affiliate))
         else:
