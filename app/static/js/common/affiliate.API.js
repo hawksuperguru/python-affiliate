@@ -1,3 +1,18 @@
+let Layout = ((window, jQuery) => {
+    const init = () => {
+        let deviceHeight = window.innerHeight,
+            headerHeight = $(".main-header").outerHeight(),
+            footerHeight = 51
+
+        $(".content-wrapper").css("min-height", deviceHeight - headerHeight - footerHeight)
+    }
+    init()
+
+    return {
+        init: init
+    }
+})(window, $)
+
 /**
  * Common Class for API calls
  */

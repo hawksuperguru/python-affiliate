@@ -11,14 +11,11 @@ class SpiderReporter(object):
         self.temp = 0
 
     def write_error_log(self, provider, message, created_at):
-        if ENV == 'dev':
-            self.write_db(provider, message, created_at)
-        else:
-            # Writing to DB.
-            pass
+        self.write_db(provider, message, created_at)
 
     def write_log(self, provider, message, created_at, type = 'info'):
         if type == 'error':
+            print(message)
             self.write_error_log(provider, message, created_at)
         elif ENV == 'dev':
             print(message)
