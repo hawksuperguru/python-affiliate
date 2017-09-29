@@ -21,7 +21,7 @@ from ga import GoogleAnalyticsReport
 
 class Spider(object):
     """
-    Spider class to handle all of spider instances
+    Spider class to handle all of spider instances 
     """
     def __init__(self):
         pass
