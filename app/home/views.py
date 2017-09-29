@@ -21,7 +21,6 @@ def homepage():
     Render the home page template on the / route
     """
     return redirect(url_for('home.dashboard'))
-    # return render_template("home/dashboard.html", title = "Dashbaord")
 
 STATISTIC_COMPUTING_METHOD = 'temp'
 
@@ -55,37 +54,76 @@ def get_from_date_range(start, end):
     histories = db.session.query(
         Affiliate.id,
         Affiliate.name,
-        func.sum(History.daily_click).label('click'),
-        func.sum(History.daily_signup).label('signup'),
-        func.sum(History.daily_commission).label('commission'),
-        func.sum(History.rate).label('rate'),
-        func.sum(History.ga_click).label('ga_click'),
+        History.daily_click,
+        History.daily_signup,
+        History.daily_commission,
+        History.rate,
+        History.ga_click,
+        History.ga_detail,
     ).filter(
         History.created_at >= start,
         History.created_at <= end
-    ).join(History.affiliate).group_by(Affiliate.id).order_by('rate desc').all()
+    ).join(History.affiliate).order_by('rate desc').all()
+
+    pre_results = {}
+    details = {}
+
+    for history in histories:
+        affiliate = history.name
+        if pre_results.get(affiliate) is None:
+            pre_results[affiliate] = {
+                'id': history.id,
+                'name': affiliate,
+                'click': 0,
+                'signup': 0,
+                'commission': 0.0,
+                'rate': 0.0,
+                'ga_click': 0,
+                'count': 0,
+            }
+        
+        pre_results[affiliate]['click'] += history.daily_click
+        pre_results[affiliate]['signup'] += history.daily_signup
+        pre_results[affiliate]['commission'] += history.daily_commission
+        pre_results[affiliate]['rate'] += 0.0 if history.rate is None else history.rate
+        pre_results[affiliate]['ga_click'] += 0 if history.ga_click is None else history.ga_click
+
+        detail = history.ga_detail
+        if detail is None:
+            detail = "[]"
+        detail = json.loads(detail)
+
+        if details.get(affiliate) is None:
+            details[affiliate] = {}
+        for item in detail:
+            if details[affiliate].get(item.get('label')) is None:
+                details[affiliate][item.get('label')] = 0
+            details[affiliate][item.get('label')] += int(item.get('clicks'))
+
+        pre_results[affiliate]['count'] += 1
 
     results = []
-    for history in histories:
-        last_history = History.query.filter(
-            History.affiliate_id == history.id,
-            History.created_at >= start,
-            History.created_at <= end
-        ).order_by(History.created_at.desc()).first()
+    for affiliate in pre_results:
+        item = pre_results.get(affiliate)
+        detail = details.get(affiliate)
+        temp_detail = []
+        for label in detail:
+            temp_detail.append('{0}: {1}'.format(label, detail[label]))
 
         results.append({
-            'id': history.id,
-            'name': history.name,
-            'click': history.click,
-            'signup': history.signup,
-            'commission': history.commission,
-            'affiliate_click': last_history.weekly_click if last_history is not None else 0,
-            'affiliate_signup': last_history.weekly_signup if last_history is not None else 0,
-            'affiliate_commission': last_history.weekly_commission if last_history is not None else 0.0,
-            'rate': history.rate,
-            'ga_click': history.ga_click,
+            'id': item.get('id'),
+            'name': item.get('name'),
+            'click': item.get('click'),
+            'signup': item.get('signup'),
+            'commission': round(item.get('commission'), 2),
+            'affiliate_click': item.get('click'),
+            'affiliate_signup': item.get('signup'),
+            'affiliate_commission': round(item.get('commission'), 2),
+            'rate': round(item.get('rate') / item['count'], 2),
+            'ga_click': item.get('ga_click'),
+            'ga_detail': "\n".join(temp_detail),
         })
-    return results
+    return sorted(results, key = lambda k: k['rate'], reverse=True)
 
 def get_histories(mode, range = None):
     if mode == 'daily':
@@ -93,19 +131,28 @@ def get_histories(mode, range = None):
         histories = History.query.join(Affiliate).filter(History.created_at == initial_date).order_by(History.rate.desc()).all()
         results = []
         for history in histories:
+            if history.ga_detail is None:
+                history.ga_detail = "[]"
+
+            ga_details = json.loads(history.ga_detail)
+            tooltip = []
+            for item in ga_details:
+                tooltip.append("{0}: {1}".format(item.get('label'), item.get('clicks')))
+
             results.append({
                 'id': history.affiliate_id,
                 'name': history.affiliate.name,
                 'click': history.daily_click,
                 'signup': history.daily_signup,
-                'commission': history.daily_commission,
+                'commission': round(history.daily_commission, 2),
                 'affiliate_click': history.daily_click,
                 'affiliate_signup': history.daily_signup,
-                'affiliate_commission': history.daily_commission,
+                'affiliate_commission': round(history.daily_commission, 2),
                 'rate': history.rate,
-                'ga_click': history.ga_click
+                'ga_click': history.ga_click,
+                'ga_detail': "\n".join(tooltip)
             })
-        return results
+        return sorted(results, key = lambda k: k['rate'], reverse=True)
     elif mode == 'weekly':
         return get_weekly_histories()
     elif mode == "monthly":
@@ -163,3 +210,11 @@ def server_error(e):
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(e), 500
+
+@home.errorhandler(404)
+def page_not_found(e):
+    logging.exception("Page not found.")
+    return """
+    Page not found: <pre>{}</pre>
+    See logs for full track.
+    """.format(e), 404

@@ -85,7 +85,7 @@ class GoogleAnalyticsReport(object):
                 'viewId': self.VIEW_ID,
                 'dateRanges': [{'startDate': start, 'endDate': end}],
                 'metrics': [{'expression': 'ga:totalEvents'}],
-                'dimensions': [{'name': 'ga:eventCategory'}, {'name': 'ga:eventAction'}]
+                'dimensions': [{'name': 'ga:eventCategory'}, {'name': 'ga:eventAction'}, {'name': 'ga:eventLabel'}],
                 }]
             }
         ).execute()
@@ -121,17 +121,38 @@ class GoogleAnalyticsReport(object):
         try:
             report = response.get('reports', [])[0]
             results = []
+            temp = {}
             
             for row in report.get('data', {}).get('rows', []):
                 dimensions = row.get('dimensions')
+                category = dimensions[0]
+                action = dimensions[1]
+                label = dimensions[2]
+
+                if category != 'outbound':
+                    continue
+
                 clicks = row.get('metrics')[0].get('values', [])[0]
-                results.append({
-                    'category': dimensions[0],
-                    'affiliate': urllib.unquote(dimensions[1]).decode('utf8'),
+
+                if temp.get(action) is None:
+                    temp[action] = {
+                        'category': category,
+                        'affiliate': action,
+                        'totalClicks': 0,
+                        'detail': []
+                    }
+                
+                temp[action]['totalClicks'] += int(clicks)
+                temp[action]['detail'].append({
+                    'label': label,
                     'clicks': int(clicks)
                 })
             
-            print(results)
+            for key in temp:
+                results.append(
+                    temp[key]
+                )
+
             return results
         except Exception as e:
             self.log(str(e), "error")
@@ -141,27 +162,32 @@ class GoogleAnalyticsReport(object):
         # try:
         app = scheduler.app
         with app.app_context():
-            try:
-                for report in reports:
-                    aff = self.affiliates_map.get(report.get('affiliate'))
-                    if aff is None:
-                        continue
+            # try:
+            for report in reports:
+                aff = self.affiliates_map.get(report.get('affiliate'))
+                print (aff)
+                if aff is None:
+                    continue
 
-                    created_at = self.get_delta_date()
-                    affiliate = Affiliate.query.filter_by(name = aff).first()
-                    if affiliate is None:
-                        self.log_error("Affiliate `{0}` Not found at {1}.".format(aff, created_at))
-                        continue
+                created_at = self.get_delta_date()
+                affiliate = Affiliate.query.filter_by(name = aff).first()
+                if affiliate is None:
+                    self.log_error("Affiliate `{0}` Not found at {1}.".format(aff, created_at))
+                    continue
 
-                    history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
-                    if history is None:
-                        self.log_error("History for affiliate `{0}` Not found at {1}.".format(aff, created_at))
-                        continue
+                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
+                if history is None:
+                    self.log_error("History for affiliate `{0}` Not found at {1}.".format(aff, created_at))
+                    continue
 
-                    history.ga_click = report['clicks']
-                    db.session.commit()
-            except Exception as e:
-                self.log(str(e), "error")
+                history.ga_click = report.get('totalClicks')
+                print(report.get('detail'))
+                print(json.dumps(report.get('detail')))
+                history.ga_detail = json.dumps(report.get('detail'))
+                db.session.commit()
+            # except Exception as e:
+            #     print(str(e))
+            #     self.log(str(e), "error")
 
     def run(self):
         self.log("""
@@ -169,10 +195,10 @@ class GoogleAnalyticsReport(object):
         ======  Checking Google Analytics Result  ======================
         """)
         analytics = self.initialize_analyticsreporting()
-        response = self.get_report(analytics)
+        response = self.get_report(analytics, 'today', 'today')
         reports = self.parse_result(response)
         if self.save(reports):
-            return result
+            return reports
         else:
             return []
 

@@ -156,7 +156,7 @@ class Paddy(object):
                 self.log("Failed to login", "error")
                 return False
 
-            self.client.driver.close()
+            self.client.close()
 
 if __name__ == '__main__':
     pp = Paddy()
