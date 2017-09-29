@@ -3,7 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from reporter import SpiderReporter
 from .. import scheduler
 from ..models import Affiliate, History, db
-from env import KEYFILE_PATH
+from env import *
 
 import logging
 import datetime
@@ -40,7 +40,7 @@ class GoogleAnalyticsReport(object):
         }
         pass
 
-    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = DELTA_DAYS, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)

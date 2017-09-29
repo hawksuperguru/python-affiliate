@@ -2,6 +2,7 @@ from selenium_browser import UBrowse
 from reporter import *
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 import psycopg2
 import datetime
@@ -20,7 +21,7 @@ class Netbet(object):
         self.monthly_ajax_url = "https://admin.livepartners.com/stats/quick-stats?start=0&limit=25&format=json&group_by%5B%5D=affiliate_website_id&search_period=last_30_days&apikey=5pokw8jnonkexde8beihufmf7cshjsrplpwgasow"
         self.yearly_ajax_url = "https://admin.livepartners.com/stats/quick-stats?start=0&limit=25&format=json&group_by%5B%5D=affiliate_website_id&search_period=current_year&apikey=5pokw8jnonkexde8beihufmf7cshjsrplpwgasow"
 
-    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = DELTA_DAYS, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)

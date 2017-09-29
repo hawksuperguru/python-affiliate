@@ -2,6 +2,7 @@ from selenium_browser import UBrowse
 from reporter import *
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 import psycopg2
 import datetime
@@ -30,7 +31,7 @@ class LadBrokes(object):
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:54.0) Gecko/20100101 Firefox/54.0',
             }
 
-    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = DELTA_DAYS, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)

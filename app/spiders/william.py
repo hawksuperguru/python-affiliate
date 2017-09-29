@@ -2,6 +2,7 @@ from selenium_browser import UBrowse
 from reporter import SpiderReporter
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 import dateutil.relativedelta
 import datetime
@@ -54,7 +55,7 @@ class William(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 2):
+    def get_delta_date(self, delta = DELTA_DAYS):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime("%Y/%m/%d")

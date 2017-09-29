@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from reporter import *
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 import datetime
 import json
@@ -53,7 +54,7 @@ class StanJames(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = DELTA_DAYS, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)

@@ -2,6 +2,7 @@ from selenium_browser import UBrowse
 from reporter import SpiderReporter
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 import psycopg2
 import datetime
@@ -41,7 +42,7 @@ class Paddy(object):
         for i in cookies:
             self.cookies[i['name']] = i['value']
 
-    def get_delta_date(self, delta = 2, format_string = "%Y/%m/%d"):
+    def get_delta_date(self, delta = DELTA_DAYS, format_string = "%Y/%m/%d"):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime(format_string)

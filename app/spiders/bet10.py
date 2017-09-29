@@ -8,6 +8,7 @@ from reporter import SpiderReporter
 from flask import Blueprint, current_app
 from app import scheduler
 from ..models import Affiliate, History, db
+from env import *
 
 # import psycopg2
 import datetime
@@ -108,7 +109,7 @@ class Bet10(object):
         self.timer = 0
         self.extract_table_values()
 
-    def get_delta_date(self, delta = 2):
+    def get_delta_date(self, delta = DELTA_DAYS):
         today = datetime.datetime.today()
         diff = datetime.timedelta(days = delta)
         return (today - diff).strftime("%Y/%m/%d")
