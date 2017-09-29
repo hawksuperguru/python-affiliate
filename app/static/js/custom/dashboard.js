@@ -11,14 +11,15 @@ let Dashboard = ((window, jQuery) => {
             let rowData = [
                 index,
                 element.name,
-                element.ga_click,
+                `<div title="${element.ga_detail}">${element.ga_click}</div>`,
                 element.click,
                 element.signup,
                 element.commission,
                 element.affiliate_click,
                 element.affiliate_signup,
                 element.affiliate_commission,
-                element.rate,
+                // element.rate,
+                index,
             ]
             _resultsTable.row.add(rowData).draw()
             index++

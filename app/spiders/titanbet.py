@@ -119,7 +119,7 @@ class TitanBet(object):
             
             created_at = self.get_delta_date()
 
-            self.client.driver.close()
+            self.client.close()
             
             app = scheduler.app
             with app.app_context():

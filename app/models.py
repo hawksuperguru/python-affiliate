@@ -84,6 +84,7 @@ class History(db.Model):
     affiliate_id = db.Column(db.Integer, db.ForeignKey('affiliates.id'))
     rate = db.Column(db.Float, default = 0.0)
     ga_click = db.Column(db.Integer, default = 0)
+    ga_detail = db.Column(db.Text, default = "[]")
     daily_click = db.Column(db.Integer, default = 0)
     daily_signup = db.Column(db.Integer, default = 0)
     daily_commission = db.Column(db.Float, default = 0.0)
