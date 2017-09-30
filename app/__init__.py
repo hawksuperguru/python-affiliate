@@ -4,7 +4,7 @@ from config import app_config
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
-from apscheduler.scheduler.blocking import BlockingScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 import logging
 
