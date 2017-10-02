@@ -195,7 +195,7 @@ class GoogleAnalyticsReport(object):
         ======  Checking Google Analytics Result  ======================
         """)
         analytics = self.initialize_analyticsreporting()
-        response = self.get_report(analytics, 'today', 'today')
+        response = self.get_report(analytics)
         reports = self.parse_result(response)
         if self.save(reports):
             return reports
