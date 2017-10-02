@@ -63,7 +63,9 @@ let Dashboard = ((window, jQuery) => {
             yearRange: '1900:2020'
         })
 
-        _resultsTable = $("#dashboard-results").DataTable()
+        _resultsTable = $("#dashboard-results").DataTable({
+            paging: false
+        })
         _dateRange = $("#date-range").val()
     }
 
