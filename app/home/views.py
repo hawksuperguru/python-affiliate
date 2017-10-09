@@ -81,6 +81,9 @@ def get_from_date_range(start, end):
                 'ga_click': 0,
                 'count': 0,
             }
+
+        if counts.get(affiliate) is None:
+            counts[affiliate] = 0
         
         pre_results[affiliate]['click'] += history.daily_click
         pre_results[affiliate]['signup'] += history.daily_signup
@@ -99,8 +102,8 @@ def get_from_date_range(start, end):
             if details[affiliate].get(item.get('label')) is None:
                 details[affiliate][item.get('label')] = 0
             details[affiliate][item.get('label')] += int(item.get('clicks'))
-
-        pre_results[affiliate]['count'] += 1
+        if history.rate > 0:
+            pre_results[affiliate]['count'] += 1
 
     results = []
     for affiliate in pre_results:

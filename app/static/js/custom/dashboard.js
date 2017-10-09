@@ -38,7 +38,6 @@ let Dashboard = ((window, jQuery) => {
             case 'weekly':
             case 'monthly':
             case 'yearly':
-                console.log("Correct")
                 $("#date-range-container").addClass("hide")
                 AffiliateAPI.get(value, null, drawTable)
                 break
