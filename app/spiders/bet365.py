@@ -13,6 +13,7 @@ import psycopg2
 import datetime
 import json
 import time
+import dateutil.relativedelta
 import re
 
 class Bet365(object):
@@ -22,6 +23,7 @@ class Bet365(object):
         self.stats_url = 'https://www.bet365affiliates.com/members/CMSitePages/Router.aspx?TargetPage=Members%2fStatistics&lng=1'
         self.report = SpiderReporter()
         self.affiliate = "Bet365"
+        self.data = {}
         
         self.headers = {
             'Host': 'www.bet365affiliates.com',
@@ -45,6 +47,7 @@ class Bet365(object):
                 ('operatorID', '1'),
                 )
 
+
     def _get_cookies(self):
         self.cookies = dict()
         cookies = self.client.driver.get_cookies()
@@ -66,112 +69,124 @@ class Bet365(object):
         app = scheduler.app
         with app.app_context():
             try:
-                monthly_click = int(self.items[2])
-                monthly_signup = int(self.items[3])
-                monthly_commission = float(self.items[5])
-                yearly_click = int(self.items[8])
-                yearly_signup = int(self.items[9])
-                yearly_commission = float((self.items[11]).replace(",", ""))
-                daily_click = int(self.items[13])
-                daily_signup = int(self.items[14])
-                daily_commission = float(self.items[16])
-                paid_signup = int(self.items[4])
                 created_at = self.get_delta_date()
-
                 affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
 
                 if affiliate is None:
                     affiliate = Affiliate(name = self.affiliate)
                     db.session.add(affiliate)
-                    db.session.commit()
                     
                 history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
 
                 if history is None:
                     history = History(
                         affiliate_id = affiliate.id,
-                        daily_click = daily_click,
-                        daily_signup = daily_signup,
-                        daily_commission = daily_commission,
-                        monthly_click = monthly_click,
-                        monthly_signup = monthly_signup,
-                        monthly_commission = monthly_commission,
-                        yearly_click = yearly_click,
-                        yearly_signup = yearly_signup,
-                        yearly_commission = yearly_commission,
-                        paid_signup = paid_signup,
                         created_at = created_at
                     )
                     db.session.add(history)
-                    db.session.commit()
+
+                history.daily_click = self.data.get('daily_click')
+                history.daily_signup = self.data.get('daily_signup')
+                history.daily_deposit = self.data.get('daily_deposit')
+                history.daily_commission = self.data.get('daily_commission')
+                history.weekly_click = self.data.get('weekly_click')
+                history.weekly_signup = self.data.get('weekly_signup')
+                history.weekly_deposit = self.data.get('weekly_deposit')
+                history.weekly_commission = self.data.get('weekly_commission')
+                history.monthly_click = self.data.get('monthly_click')
+                history.monthly_signup = self.data.get('monthly_signup')
+                history.monthly_deposit = self.data.get('monthly_deposit')
+                history.monthly_commission = self.data.get('monthly_commission')
+                history.yearly_click = self.data.get('yearly_click')
+                history.yearly_signup = self.data.get('yearly_signup')
+                history.yearly_deposit = self.data.get('yearly_deposit')
+                history.yearly_commission = self.data.get('yearly_commission')
+                db.session.commit()
                 return True
             except Exception as e:
                 self.log(str(e), "error")
                 return False
 
-    def parse_report_table(self, table_name):
+    def parse_report_table(self, table_name, mode = 'daily'):
         app = scheduler.app
-        with app.app_context():
-            try:
-                tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
-                table = tblWrapper.find_element_by_tag_name('table')
-                row = table.find_elements_by_tag_name('tr')[-1]
+        try:
+            tblWrapper = self.client.driver.find_element_by_class_name('dataTables_scrollBody')
+            table = tblWrapper.find_element_by_tag_name('table')
+            row = table.find_elements_by_tag_name('tr')[-1]
 
-                pattern = re.compile(r'[\-\d.\d]+')
+            pattern = re.compile(r'[\-\d.\d]+')
 
-                monthly_click = int(pattern.search(row.find_elements_by_tag_name('td')[0].text).group(0))
-                monthly_signup = int(pattern.search(row.find_elements_by_tag_name('td')[1].text).group(0))
-                paid_signup = int(pattern.search(row.find_elements_by_tag_name('td')[9].text).group(0))
-                monthly_commission = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text).group(0).replace(',', '.'))
-                created_at = self.get_delta_date()
+            if mode == 'daily':
+                self.data['daily_click'] = int(pattern.search(row.find_elements_by_tag_name('td')[0].text.replace(',', '')).group(0))
+                self.data['daily_signup'] = int(pattern.search(row.find_elements_by_tag_name('td')[1].text.replace(',', '')).group(0))
+                self.data['daily_deposit'] = int(pattern.search(row.find_elements_by_tag_name('td')[9].text.replace(',', '')).group(0))
+                self.data['daily_commission'] = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text.replace(',', '')).group(0))
+            elif mode == 'weekly':
+                self.data['weekly_click'] = int(pattern.search(row.find_elements_by_tag_name('td')[0].text.replace(',', '')).group(0))
+                self.data['weekly_signup'] = int(pattern.search(row.find_elements_by_tag_name('td')[1].text.replace(',', '')).group(0))
+                self.data['weekly_deposit'] = int(pattern.search(row.find_elements_by_tag_name('td')[9].text.replace(',', '')).group(0))
+                self.data['weekly_commission'] = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text.replace(',', '')).group(0))
+            elif mode == 'monthly':
+                self.data['monthly_click'] = int(pattern.search(row.find_elements_by_tag_name('td')[0].text.replace(',', '')).group(0))
+                self.data['monthly_signup'] = int(pattern.search(row.find_elements_by_tag_name('td')[1].text.replace(',', '')).group(0))
+                self.data['monthly_deposit'] = int(pattern.search(row.find_elements_by_tag_name('td')[9].text.replace(',', '')).group(0))
+                self.data['monthly_commission'] = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text.replace(',', '')).group(0))
+            elif mode == 'yearly':
+                self.data['yearly_click'] = int(pattern.search(row.find_elements_by_tag_name('td')[0].text.replace(',', '')).group(0))
+                self.data['yearly_signup'] = int(pattern.search(row.find_elements_by_tag_name('td')[1].text.replace(',', '')).group(0))
+                self.data['yearly_deposit'] = int(pattern.search(row.find_elements_by_tag_name('td')[9].text.replace(',', '')).group(0))
+                self.data['yearly_commission'] = float(pattern.search(row.find_elements_by_tag_name('td')[-1].text.replace(',', '')).group(0))
+            return True
+        except Exception as e:
+            self.log(str(e), "error")
+            return False
 
-                affiliate = Affiliate.query.filter_by(name = self.affiliate).first()
-
-                if affiliate is None:
-                    affiliate = Affiliate(name = self.affiliate)
-                    db.session.add(affiliate)
-                    db.session.commit()
-                    
-                history = History.query.filter_by(affiliate_id = affiliate.id, created_at = created_at).first()
-
-                if history is None:
-                    history = History(
-                        affiliate_id = affiliate.id,
-                        monthly_click = monthly_click,
-                        monthly_signup = monthly_signup,
-                        monthly_commission = monthly_commission,
-                        paid_signup = paid_signup,
-                        created_at = created_at
-                    )
-                    db.session.add(history)
-                    db.session.commit()
-
-                return True
-            except Exception as e:
-                self.log(str(e), "error")
-                return False
+    def select_date_range(self, start, end, wait_for = 3):
+        report_option = Select(self.client.driver.find_element_by_xpath('//*[@id="m_mainPlaceholder_ReportCriteria"]'))
+        report_option.select_by_value('-1')
+        time.sleep(1)
+        report_option = Select(self.client.driver.find_element_by_xpath('//*[@id="m_mainPlaceholder_ReportCriteria"]'))
+        report_option.select_by_value('dailyReport')
+        time.sleep(wait_for)
+        self.client.driver.execute_script("document.getElementById('m_mainPlaceholder_FromDate').value = '{0}'".format(start))
+        time.sleep(wait_for)
+        self.client.driver.execute_script("document.getElementById('m_mainPlaceholder_ToDate').value = '{0}'".format(end))
+        time.sleep(wait_for)
+        self.client.driver.find_element_by_id('m_mainPlaceholder_Refresh').click()
+        time.sleep(wait_for)
+        pass
 
     def parse_stats(self, wait_for = 10, table_name = "bet365s"):
-        # time.sleep(10)
+        # time.sleep(wait_for)
         val = []
         try:
             self.client.open_url(self.stats_url)
-            time.sleep(10)
-            param_date = self.client.get_delta_date(2, "%d/%m/%Y")
-
-            report_option = Select(self.client.driver.find_element_by_xpath('//*[@id="m_mainPlaceholder_ReportCriteria"]'))
-            report_option.select_by_value('dailyReport')
             time.sleep(3)
 
-            self.client.driver.execute_script("document.getElementById('m_mainPlaceholder_FromDate').value = '{0}'".format(param_date))
-            time.sleep(3)
-            self.client.driver.execute_script("document.getElementById('m_mainPlaceholder_ToDate').value = '{0}'".format(param_date))
-            time.sleep(3)
-            self.client.driver.find_element_by_id('m_mainPlaceholder_Refresh').click()
-            time.sleep(5)
+            today = datetime.datetime.today()
+            diff = datetime.timedelta(days = DELTA_DAYS)
+            end_date = (today - diff)
 
-            result = self.parse_report_table(table_name)
-            return result
+            param_date = end_date.strftime("%d/%m/%Y")
+            self.select_date_range(param_date, param_date)
+            self.parse_report_table(table_name, 'daily')
+
+            delta = dateutil.relativedelta.relativedelta(weeks = 1)
+            start_date = end_date - delta
+            self.select_date_range(start_date.strftime("%d/%m/%Y"), end_date.strftime("%d/%m/%Y"))
+            self.parse_report_table(table_name, 'weekly')
+
+            delta = dateutil.relativedelta.relativedelta(months = 1)
+            start_date = end_date - delta
+            self.select_date_range(start_date.strftime("%d/%m/%Y"), end_date.strftime("%d/%m/%Y"))
+            self.parse_report_table(table_name, 'monthly')
+
+            delta = dateutil.relativedelta.relativedelta(years = 1)
+            start_date = end_date - delta
+            self.select_date_range(start_date.strftime("%d/%m/%Y"), end_date.strftime("%d/%m/%Y"))
+            self.parse_report_table(table_name, 'yearly')
+
+            return self.save()
         except Exception as e:
             self.report_error_log(str(e))
             return False
@@ -179,7 +194,7 @@ class Bet365(object):
     def login(self, username = 'betfyuk', password = 'passiveincome'):
         try:
             self.client.open_url(self.login_url)
-            time.sleep(10)
+            time.sleep(1)
             
             self.client.driver.find_element_by_css_selector("input[name='ctl00$MasterHeaderPlaceHolder$ctl00$userNameTextbox']").send_keys(username)
             tmp_pass = self.client.driver.find_element_by_xpath("//*[@id='ctl00_MasterHeaderPlaceHolder_ctl00_tempPasswordTextbox']")
@@ -215,16 +230,16 @@ class Bet365(object):
         """)
         self.log("Getting data with (" + username + ":" + password + ")")
         self.affiliate = provider
-        if self.isExisting():
-            self.log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
+        # if self.isExisting():
+        #     self.log("Already scraped for {0} at {1}".format(provider, self.get_delta_date()))
+        # else:
+        self.client = UBrowse()
+        if self.login(username, password):
+            self.parse_stats()
         else:
-            self.client = UBrowse()
-            if self.login(username, password):
-                self.parse_stats()
-            else:
-                self.log("Failed to Login with current account.", "error")
-            
-            self.client.close()
+            self.log("Failed to Login with current account.", "error")
+        
+        self.client.close()
         
 
 if __name__ == '__main__':
